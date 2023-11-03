@@ -1,70 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.00//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- interface StudentMapper를 mapper로 설정-->
-<mapper namespace="com.bit.sm.model.student.mapper.StudentMapper">
+<mapper namespace="com.sona.gi.model.member.mapper.MemberMapper">
 
 
 
-    <!-- resultType 결과를 넣는 객체 경로를 지정 -->
-    <!-- 서비스, 매퍼, 모델 -->
-    <select id="findAll" resultType="StudentDto">
-        SELECT ID,NAME, KOR_SCORE, ENG_SCORE, MATH_SCORE FROM SPRING_Student
-    </select>
-
-    <!-- insert문 -->
-    <!-- 컬럼 명을 다 정의 -> * 치면 나중에 유지보수 어려움 -> 주석처리로 컬럼이 어떤 값을 저장하는지 -->
-    <!-- 컬럼에서 컬럼이 더 추가되면 상관없는데 없으면 오류남(null) -->
-    <insert id="regist" parameterType="StudentDto">
-        INSERT INTO SPRING_STUDENT (ID, NAME, KOR_SCORE,ENG_SCORE,MATH_SCORE)
-        VALUES (#{id}, #{name}, #{korScore}, #{engScore}, #{mathScore})
+    <insert id="regist" parameterType="MemberDto">
+        INSERT INTO Member (ID)
+        VALUES (#{id})
     </insert>
-
-
-
-    <update id="modify" parameterType="StudentDto">
-        UPDATE SPRING_STUDENT SET KOR_SCORE=#{korScore},
-                                  ENG_SCORE=#{engScore}, MATH_SCORE=#{mathScore}
-        WHERE ID=#{id}
-    </update>
-
-
-    <delete id="delete" parameterType="StudentDto">
-        DELETE FROM SPRING_STUDENT
-        WHERE ID = #{id}
-    </delete>
-
-
-
-
-    <select id="findSearch" parameterType="StudentDto" resultType="StudentDto">
-        SELECT ID,NAME, KOR_SCORE, ENG_SCORE, MATH_SCORE
-        FROM SPRING_Student
-        <if test='keyword!=null and keyword!=""'>
-            where ${searchCode} = #{keyword} <!-- $표시 -> statement -->
-        </if>
-    </select>
-    <!-- statement 사용 : 문자든 숫자든 그냥 작성 가능 (웬만하면 안씀) -->
-
-
-    <!-- 보여주기 위한 예시 파일 -->
-    <select id="findSearch2" parameterType="StudentDto" resultType="StudentDto">
-        SELECT ID,NAME, KOR_SCORE, ENG_SCORE, MATH_SCORE
-        FROM SPRING_Student
-        where 1=1
-        <choose>
-            <when test='id!=null and id!=""'>
-                and NAME = #{id}
-            </when>
-            <when test='name!=null and name!=""'>
-                and NAME = #{name}
-            </when>
-            <otherwise>
-                AND KOR_SCORE = #{korScore}
-            </otherwise>
-        </choose>
-    </select>
-
-
 
 </mapper>
