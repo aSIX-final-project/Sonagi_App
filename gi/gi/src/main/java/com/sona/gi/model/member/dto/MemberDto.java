@@ -24,10 +24,10 @@ public class MemberDto {
     private String homepage;
 
     //총 인원수 (HC : head count)
-    private String totalHC;
+    private int totalHC;
 
     //현재 인원수
-    private String currHC;
+    private int currHC;
 
 
 }
