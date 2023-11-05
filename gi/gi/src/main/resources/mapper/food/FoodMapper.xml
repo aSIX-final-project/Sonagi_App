@@ -6,8 +6,34 @@
 
 
     <insert id="regist" parameterType="FoodDto">
-        INSERT INTO Member (ID)
+        INSERT INTO Food (ID)
         VALUES (#{id})
     </insert>
+
+    <select id="findAll" resultType="FoodDto">
+        SELECT ID,NAME, KOR_SCORE, ENG_SCORE, MATH_SCORE FROM Food
+    </select>
+
+
+    <update id="modify" parameterType="FoodDto">
+        UPDATE Food SET KOR_SCORE=#{korScore},
+                            ENG_SCORE=#{engScore}, MATH_SCORE=#{mathScore}
+        WHERE ID=#{id}
+    </update>
+
+
+    <delete id="delete" parameterType="FoodDto">
+        DELETE FROM Food
+        WHERE ID = #{id}
+    </delete>
+
+
+    <select id="findSearch" parameterType="FoodDto" resultType="FoodDto">
+        SELECT ID,NAME, KOR_SCORE, ENG_SCORE, MATH_SCORE
+        FROM Food
+        <if test='keyword!=null and keyword!=""'>
+            where ${searchCode} = #{keyword} <!-- $표시 -> statement -->
+        </if>
+    </select>
 
 </mapper>

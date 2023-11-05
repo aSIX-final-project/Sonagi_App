@@ -10,4 +10,31 @@
         VALUES (#{id})
     </insert>
 
+    <select id="findAll" resultType="MemberDto">
+        SELECT ID,NAME, KOR_SCORE, ENG_SCORE, MATH_SCORE FROM Member
+    </select>
+
+
+    <update id="modify" parameterType="MemberDto">
+        UPDATE Member SET KOR_SCORE=#{korScore},
+                        ENG_SCORE=#{engScore}, MATH_SCORE=#{mathScore}
+        WHERE ID=#{id}
+    </update>
+
+
+    <delete id="delete" parameterType="MemberDto">
+        DELETE FROM Member
+        WHERE ID = #{id}
+    </delete>
+
+
+    <select id="findSearch" parameterType="MemberDto" resultType="MemberDto">
+        SELECT ID,NAME, KOR_SCORE, ENG_SCORE, MATH_SCORE
+        FROM Member
+        <if test='keyword!=null and keyword!=""'>
+            where ${searchCode} = #{keyword} <!-- $표시 -> statement -->
+        </if>
+    </select>
+
+
 </mapper>

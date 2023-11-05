@@ -7,7 +7,27 @@ import lombok.Setter;
 @Setter
 public class MemberDto {
 
-    String id;
+    //보육원 DTO
+
+    private String id; //primary key
+    private String password;
+    //보육원 이름
+    private String adName;
+    //시설 전화번호
+    private String adTel;
+    //시설장 이름
+    private String managerName; //primary key?
+    //개인 전화번호
+    private String phoneNum;
+
+    private String address;
+    private String homepage;
+
+    //총 인원수 (HC : head count)
+    private String totalHC;
+
+    //현재 인원수
+    private String currHC;
 
 
 }
