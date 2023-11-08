@@ -11,7 +11,7 @@
     </insert>
 
     <select id="findAll" resultType="MemberDto">
-        SELECT ID,NAME, KOR_SCORE, ENG_SCORE, MATH_SCORE FROM Member
+        SELECT * FROM Member
     </select>
 
 

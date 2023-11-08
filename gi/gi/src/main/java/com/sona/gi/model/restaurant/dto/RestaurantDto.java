@@ -19,6 +19,4 @@ public class RestaurantDto {
 
     //사업자 등록 번호
     private String bNum;
-
-    
 }
