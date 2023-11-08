@@ -1,44 +1,54 @@
-import React, { useCallback, useRef } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import React, { useCallback, useRef, useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Button } from 'react-native';
+// 바텀시트
+import BottomSheet from './Bottomsheet';
 
 
+const Signup = ({ navigation }, props) => {
 
-const Signup = ({ navigation }) => {
+    // 바텀시트
+    const [modalVisible, setModalVisible] = useState(false);
+    const pressButton = () => {
+        setModalVisible(true);
+    }
 
     return (
         <View style={styles.container}>
-            <View style={{ flexDirection: 'columm', alignItems: 'center', bottom: '3%' }}>
+
+
+
+            <View style={{ flexDirection: 'columm', alignItems: 'center', top: '25%' }}>
                 {/* 회원가입 */}
                 <Image
                     style={{ width: 130, height: 130, bottom: '0.5%', right: '20%', top: '2%' }}
                     source={require('../assets/signupMain.png')}
                     resizeMode="contain"
                 />
-                
-
-                    {/* 기부자 */}
-                    <TouchableOpacity onPress={() => navigation.navigate('GiveSignUp') }>
-                        <View style={{ width: 300, height: 70, alignItems: 'center', justifyContent: 'center'}}>
-                            <Image
-                                style={{ width: '100%', height: '100%' }}
-                                source={require('../assets/gibuja.png')}
-                                resizeMode="contain"
-                            />
-                        </View>
-                    </TouchableOpacity>
 
 
-                    {/* 피기부자 */}
-                    <TouchableOpacity onPress={() => navigation.navigate('NurseySignUp') }>
-                        <View style={{ width: 300, height: 80, alignItems: 'center', justifyContent: 'center' }}>
-                            <Image
-                                style={{ width: '100%', height: '100%' }}
-                                source={require('../assets/pigibuja.png')}
-                                resizeMode="contain"
-                            />
-                        </View>
-                    </TouchableOpacity>
-                
+                {/* 기부자 */}
+                <TouchableOpacity onPress={pressButton}>
+                    <View style={{ width: 300, height: 70, alignItems: 'center', justifyContent: 'center' }}>
+                        <Image
+                            style={{ width: '100%', height: '100%' }}
+                            source={require('../assets/gibuja.png')}
+                            resizeMode="contain"
+                        />
+                    </View>
+                </TouchableOpacity>
+
+
+                {/* 피기부자 */}
+                <TouchableOpacity onPress={() => navigation.navigate('NurseySignUp')}>
+                    <View style={{ width: 300, height: 80, alignItems: 'center', justifyContent: 'center' }}>
+                        <Image
+                            style={{ width: '100%', height: '100%' }}
+                            source={require('../assets/pigibuja.png')}
+                            resizeMode="contain"
+                        />
+                    </View>
+                </TouchableOpacity>
+
                 {/* 로그인으로 넘어가는 부분 */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', bottom: '0%', right: '8%', bottom: '5%' }}>
                     <Image
@@ -56,6 +66,14 @@ const Signup = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
+
+            {/* 바텀시트 view */}
+            <View style={styles.rootContainer}>
+                <BottomSheet
+                    modalVisible={modalVisible}
+                    setModalVisible={setModalVisible}
+                />
+            </View>
         </View>
     );
 };
@@ -67,6 +85,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         backgroundColor: '#44A5FF'
 
+    },
+
+    rootContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     }
 });
 export default Signup;
