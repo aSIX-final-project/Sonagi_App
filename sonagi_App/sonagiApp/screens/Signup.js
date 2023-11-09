@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Button } from 'react-n
 import BottomSheet from './Bottomsheet';
 
 
-const Signup = ({ navigation }, props) => {
+const Signup = ({ navigation }) => {
 
     // 바텀시트
     const [modalVisible, setModalVisible] = useState(false);
@@ -72,6 +72,7 @@ const Signup = ({ navigation }, props) => {
                 <BottomSheet
                     modalVisible={modalVisible}
                     setModalVisible={setModalVisible}
+                    navigation={navigation}
                 />
             </View>
         </View>

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Modal, Button } from 'react-native';
 import axios from 'axios';
@@ -10,22 +10,20 @@ const Login = ({ navigation }) => {
 
     const username = watch('username', ''); // username 필드의 값을 실시간으로 감시
 
-    const [modalVisible, setModalVisible] = useState(false); // 모달 알림창의 상태
+
 
     // 로그인 버튼을 눌렀을때 값을 서버에 보냄
-    const onSubmit = async data => {
+    const [isLoginSuccessModalVisible, setLoginSuccessModalVisible] = useState(false); // 모달 알림창의 상태
 
-        setModalVisible(true); // 모달 팝업
-        setTimeout(()=>{
-            setModalVisible(false);
-        }, 2000);
 
-        // try {
-        //     const res = await axios.post('http://172.16.102.57:8888/boot/member/login', data); //스프링 부트 : db에서 값 가져오기
-        //     console.log(res.data);
-        // } catch (error) {
-        //     console.error(error);
-        // }
+    const handleLoginButtonClick = () => {
+        setLoginSuccessModalVisible(true); // 가입 버튼 클릭 시 모달 표시
+
+        // 3초 후에 모달 숨김
+        setTimeout(() => {
+            setLoginSuccessModalVisible(false);
+        }, 3000);
+
     };
 
     React.useEffect(() => {
@@ -42,7 +40,7 @@ const Login = ({ navigation }) => {
             <Modal
                 animationType="fade"
                 transparent={true}
-                visible={modalVisible}
+                visible={isLoginSuccessModalVisible}
             >
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
@@ -51,10 +49,13 @@ const Login = ({ navigation }) => {
                             source={require('../assets/loginsuccess.png')}
                             resizeMode="contain"
                         />
+                        <TouchableOpacity
+                            onPress={() => setLoginSuccessModalVisible(false)} // 모달 내부의 버튼 클릭 시 모달 숨김
+                        ></TouchableOpacity>
                     </View>
                 </View>
             </Modal>
-            
+
             {/* 로그인 글씨 */}
             <Image
                 style={{ width: 100, height: 100, bottom: '0.5%', right: '32%' }}
@@ -124,9 +125,10 @@ const Login = ({ navigation }) => {
 
             </View>
 
-            <TouchableOpacity onPress={handleSubmit(onSubmit)}>
+            {/* 로그인 버튼 */}
+            <TouchableOpacity onPress={handleLoginButtonClick}>
                 <Image
-                    style={{ width: 60, height: 90, top: '90%', left: '35%' }}
+                    style={{ width: 70, height: 100, marginLeft: "70%" }}
                     source={require('../assets/login1.png')}
                     resizeMode="contain"
                 />
@@ -152,6 +154,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         marginVertical: 8,
         borderRadius: 4,
+        fontSize: 20,
     },
     inputpw: {
         width: '88%',
@@ -161,7 +164,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         marginVertical: 8,
         borderRadius: 4,
-        left: '25%'
+        left: '25%',
+        fontSize: 20,
     },
 
     centeredView: {
