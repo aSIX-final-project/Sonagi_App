@@ -22,7 +22,10 @@ const Login = ({ navigation }) => {
         // 3초 후에 모달 숨김
         setTimeout(() => {
             setLoginSuccessModalVisible(false);
+            navigation.navigate('Home'); // 메인화면으로 이동
         }, 3000);
+
+       
 
     };
 

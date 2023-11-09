@@ -108,7 +108,7 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                     />
 
                     <Image
-                        style={{ width: 130, height: 100, top: '0%', right: '27%' }}
+                        style={{ width: 130, height: 100, top: '0%', right: '29%' }}
                         source={require('../assets/signup3.png')}
                         resizeMode="contain"
                     />
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
 
     scrollViewContainer: {
         alignItems: 'center',
-        paddingTop: 10,
+        paddingTop: 0,
 
     },
 
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
 
     inputtext: {
         width: '100%',
-        paddingBottom: 35,
+        paddingBottom:25,
         borderColor: '#828282',
         top: '2%',
         left: '6%',
