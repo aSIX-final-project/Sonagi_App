@@ -1,17 +1,13 @@
 package com.sona.gi.controller.member;
 
-import com.google.firebase.auth.FirebaseAuthException;
 import com.sona.gi.model.member.dto.MemberDto;
-import com.sona.gi.service.firebase.FireBaseService;
 import com.sona.gi.service.member.MemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,8 +21,7 @@ public class MemberController {
 
     @Autowired
     private MemberService memberService;
-    @Autowired
-    private FireBaseService fireBaseService;
+
 
     @PostMapping("/regist")
     public HashMap<String, Object> regist(@RequestBody MemberDto memberDto){
@@ -62,15 +57,6 @@ public class MemberController {
         int resultCnt= memberService.delete(memberDto);
         mv.put("resultCnt",resultCnt);
         return mv;
-    }
-
-    @PostMapping("/files")
-    public String uploadFile(@RequestParam("file") MultipartFile file, String nameFile)
-            throws IOException, FirebaseAuthException {
-        if (file.isEmpty()) {
-            return "is empty";
-        }
-        return fireBaseService.uploadFiles(file, nameFile);
     }
 
 }

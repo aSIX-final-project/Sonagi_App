@@ -1,5 +1,0 @@
-
-
-java:S1130"‡Remove the declaration of thrown exception 'com.google.firebase.auth.FirebaseAuthException', as it cannot be thrown from method's body.(´øÜ6
-f
-java:S1858"K"nameFile" is already a string, there's no need to call "toString()" on it.(¨™œ‚ıÿÿÿÿ

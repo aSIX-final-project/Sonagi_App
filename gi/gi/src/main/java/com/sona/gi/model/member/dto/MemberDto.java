@@ -9,25 +9,25 @@ public class MemberDto {
 
     //보육원 DTO
 
-    private String id; //primary key
-    private String password;
+    public String id; //primary key
+    public String password;
     //보육원 이름
-    private String adName;
+    public String adName;
     //시설 전화번호
-    private String adTel;
+    public String adTel;
     //시설장 이름
-    private String managerName; //primary key?
+    public String managerName; //primary key?
     //개인 전화번호
-    private String phoneNum;
+    public String phoneNum;
 
-    private String address;
-    private String homepage;
+    public String address;
+    public String homepage;
 
     //총 인원수 (HC : head count)
-    private int totalHC;
+    public int totalHc;
 
     //현재 인원수
-    private int currHC;
+    public int currHc;
 
 
 }
