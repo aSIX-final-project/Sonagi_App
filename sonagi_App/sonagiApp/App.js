@@ -12,6 +12,8 @@ import Notice from './screens/Notice';
 import Profiles from './screens/Profiles';
 import Thankyou from './screens/Thankyou';
 import KakaoMap from './screens/KakaoMap';
+import ChangePw from './screens/ChangePw'
+import ChangeInfo from './screens/ChangeInfo';
 
 import { useState } from 'react';
 // 폰트 관련 코드
@@ -101,6 +103,18 @@ export default function App() {
         <Stack.Screen
           name="KakaoMap"
           component={KakaoMap}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="ChangePw"
+          component={ChangePw}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="ChangeInfo"
+          component={ChangeInfo}
           options={{
             headerShown: false,
           }} />

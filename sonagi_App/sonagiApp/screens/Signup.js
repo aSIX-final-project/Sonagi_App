@@ -14,9 +14,6 @@ const Signup = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-
-
-
             <View style={{ flexDirection: 'columm', alignItems: 'center', top: '25%' }}>
                 {/* 회원가입 */}
                 <Image
