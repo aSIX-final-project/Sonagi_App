@@ -11,7 +11,7 @@ const Home = ({ navigation }) => {
       {/* 첫번째 라인 */}
       <Image
         style={{ width: '20%', height: '9%', justifyContent: 'flex-start', alignItems: 'center', marginTop: '6%' }}
-        source={require('../assets/logo.png')}
+        source={require('../../assets/logo.png')}
         resizeMode="contain"
       />
 
@@ -19,16 +19,16 @@ const Home = ({ navigation }) => {
 
       <View style={{ flexDirection: 'row', width: '90%', height: '10%', justifyContent: 'flex-start', alignItems: 'center', bottom: '0%' }}>
         <View style={{ marginLeft: '5%' }}>
-          <Text style={{ color: 'blue', fontSize: 22, fontFamily: 'Play-Regular' }}>00 회사</Text>
+          <Text style={{ color: 'blue', fontSize: 22, fontFamily: 'Play-Regular' }}>00 보육시설</Text>
           <Text style={{ fontSize: 32, fontWeight: 'bold', fontFamily: 'Play-Bold' }}>최광혁님</Text>
           <Text style={{ fontSize: 32, fontWeight: 'bold', fontFamily: 'Play-Bold' }}>감사합니다.</Text>
         </View>
 
         <View>
-          <TouchableOpacity onPress={() => navigation.navigate('Profiles')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Profilesp')}>
             <Image
               style={{ width: 70, height: 90, bottom: '0%', marginLeft: '54%' }}
-              source={require('../assets/profile.png')}
+              source={require('../../assets/profile.png')}
               resizeMode="contain"
             />
           </TouchableOpacity>
@@ -40,19 +40,19 @@ const Home = ({ navigation }) => {
         <View style={{ flexDirection: 'row', left: '10%' }}>
           <Image
             style={{ width: 90, height: 90, top: '8%', marginRight: '10%' }}
-            source={require('../assets/moneygage.png')}
+            source={require('../../assets/moneygage.png')}
             resizeMode="contain"
           />
           <View style={{ flexDirection: 'columm', left: '15%' }}>
             <Image
               style={{ width: 110, height: 40, bottom: '0%', marginLeft: '0%' }}
-              source={require('../assets/lastmoney.png')}
+              source={require('../../assets/lastmoney.png')}
               resizeMode="contain"
             />
             <Text style={{ fontSize: 22, fontWeight: 'bold', fontFamily: 'Play-Bold' }}>100,000,000 원</Text>
             <Image
               style={{ width: 110, height: 40, bottom: '0%', marginLeft: '0%' }}
-              source={require('../assets/last2money.png')}
+              source={require('../../assets/last2money.png')}
               resizeMode="contain"
             />
             <Text style={{ fontSize: 22, fontWeight: 'bold', fontFamily: 'Play-Bold' }}>100,000,000 원</Text>
@@ -62,13 +62,13 @@ const Home = ({ navigation }) => {
 
       {/* 네번째 라인 (공지사항) */}
       <View style={styles.fourthContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Notice')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Noticep')}>
           <View style={styles.fourthOneContainer}>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', top: '12%', left: '3%' }}>
               <Text style={{ fontSize: 22, fontFamily: 'Play-Regular', color: 'white', marginRight: '14%' }}>공지사항</Text>
               <Image
                 style={{ width: 50, height: 25, left: '10%' }}
-                source={require('../assets/notice.png')}
+                source={require('../../assets/notice.png')}
                 resizeMode="contain"
               />
             </View>
@@ -81,7 +81,7 @@ const Home = ({ navigation }) => {
         </TouchableOpacity>
 
         {/* 네번째 라인 (고마운 분들) */}
-        <TouchableOpacity onPress={() => navigation.navigate('Thankyou')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Thankyoup')}>
           <View style={styles.fourthTwoContainer}>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', top: '12%', left: '3%' }}>
               <Text style={{ fontSize: 22, fontFamily: 'Play-Regular', color: '#6F6A6A', marginRight: '30%' }}>고마운 분들</Text>
@@ -111,17 +111,17 @@ const Home = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.navigate('KakaoMap')}>
           <View style={styles.fifthOneContainer}>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', top: '12%', left: '3%' }}>
-              <Text style={{ fontSize: 22, fontFamily: 'Play-Regular', color: '#6F6A6A', marginRight: '14%' }}>기부 하기</Text>
+              <Text style={{ fontSize: 22, fontFamily: 'Play-Regular', color: '#6F6A6A', marginRight: '14%' }}>기부 받기</Text>
               <Image
                 style={{ width: 50, height: 25, left: '10%' }}
-                source={require('../assets/give.png')}
+                source={require('../../assets/give.png')}
                 resizeMode="contain"
               />
             </View>
             <View style={{ justifyContent: 'flex-start', alignItems: 'center', top: '15%', right: '10%' }}>
               <Image
                 style={{ width: 140, height: 145, left: '10%', borderRadius: 30, }}
-                source={require('../assets/map.jpg')}
+                source={require('../../assets/map.jpg')}
                 resizeMode="cover"
               />
             </View>
@@ -129,7 +129,7 @@ const Home = ({ navigation }) => {
         </TouchableOpacity>
 
         {/* 다섯번째 라인(기부 내역) */}
-        <TouchableOpacity onPress={() => navigation.navigate('Donate')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Donatep')}>
           <View style={styles.fifthTwoContainer}>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', top: '12%', left: '3%' }}>
               <Text style={{ fontSize: 22, fontFamily: 'Play-Regular', color: '#6F6A6A', marginRight: '40%' }}>기부 내역</Text>
@@ -138,7 +138,7 @@ const Home = ({ navigation }) => {
             <View style={{ justifyContent: 'flex-start', alignItems: 'center', top: '22%', right: '10%' }}>
               <Image
                 style={{ width: 100, height: 100, left: '10%', borderRadius: 30, }}
-                source={require('../assets/givemoneylist.png')}
+                source={require('../../assets/givemoneylist.png')}
                 resizeMode="contain"
               />
             </View>
@@ -150,7 +150,7 @@ const Home = ({ navigation }) => {
       {/* 마지막 라인(광고) */}
       <Image
         style={{ width: '100%', height: '15%' }}
-        source={require('../assets/ad.png')}
+        source={require('../../assets/ad.png')}
         resizeMode="contain"
       />
 

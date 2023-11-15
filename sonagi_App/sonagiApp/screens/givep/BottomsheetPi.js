@@ -15,7 +15,7 @@ import {
     Keyboard
 } from 'react-native';
 
-const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
+const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
     // 로그인 완료 모달 표시 여부를 관리하는 상태 변수
     const [isSignupSuccessModalVisible, setSignupSuccessModalVisible] = useState(false);
 
@@ -104,16 +104,19 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
 
                         <Image
                             style={{ width: 70, height: 50, bottom: '0%' }}
-                            source={require('../assets/bottomsheethandle.png')}
+                            source={require('../../assets/bottomsheethandle.png')}
                             resizeMode="contain"
                         />
 
-                        <Image
-                            style={{ width: 130, height: 100, top: '0%', right: '29%' }}
-                            source={require('../assets/signup3.png')}
-                            resizeMode="contain"
-                        />
+                        <View style={{ flexDirection: 'row', height: '10%', width: '90%', marginBottom: '5%'}}>
+                            <Image
+                                style={{ width: 130, height: 100, top: '0%' , marginRight: '3%' }}
+                                source={require('../../assets/signup3.png')}
+                                resizeMode="contain"
+                            />
 
+                            <Text style={{ fontFamily: 'Play-Bold', fontSize: 20, color: '#000000', marginTop: '13.5%', marginLeft: '44%' }}>(피기부자)</Text>
+                        </View>
 
 
 
@@ -124,12 +127,14 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                             {/* 아이디 */}
                             <Image
                                 style={{ width: 50, height: 50, top: '1.2%', right: '38.5%' }}
-                                source={require('../assets/id2.png')}
+                                source={require('../../assets/id2.png')}
                                 resizeMode="contain"
                             />
 
                             <TextInput
                                 style={styles.inputtext}
+                                placeholder="Enter ID"
+                                placeholderTextColor="#808080"
                             ></TextInput>
 
                             {/* 선 긋기 */}
@@ -140,12 +145,14 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                             {/* 비밀번호 */}
                             <Image
                                 style={{ width: 60, height: 60, top: '1.5%', right: '36.5%' }}
-                                source={require('../assets/password2.png')}
+                                source={require('../../assets/password2.png')}
                                 resizeMode="contain"
                             />
 
                             <TextInput
                                 style={styles.inputtext}
+                                placeholder="Enter password"
+                                placeholderTextColor="#808080"
                             ></TextInput>
 
                             {/* 선 긋기 */}
@@ -156,12 +163,14 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                             {/* 이름 */}
                             <Image
                                 style={{ width: 30, height: 50, top: '1.5%', right: '40.5%' }}
-                                source={require('../assets/name.png')}
+                                source={require('../../assets/name.png')}
                                 resizeMode="contain"
                             />
 
                             <TextInput
                                 style={styles.inputtext}
+                                placeholder="Enter name"
+                                placeholderTextColor="#808080"
                             ></TextInput>
 
                             {/* 선 긋기 */}
@@ -172,12 +181,14 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                             {/* 전화번호 */}
                             <Image
                                 style={{ width: 60, height: 60, top: '1.5%', right: '36.7%' }}
-                                source={require('../assets/phonenumber.png')}
+                                source={require('../../assets/phonenumber.png')}
                                 resizeMode="contain"
                             />
 
                             <TextInput
                                 style={styles.inputtext}
+                                placeholder="010-0000-0000"
+                                placeholderTextColor="#808080"
                             ></TextInput>
 
                             {/* 선 긋기 */}
@@ -188,12 +199,14 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                             {/* 시설 전화번호 */}
                             <Image
                                 style={{ width: 90, height: 60, top: '1.5%', right: '33.5%' }}
-                                source={require('../assets/storephonenumber.png')}
+                                source={require('../../assets/storephonenumber.png')}
                                 resizeMode="contain"
                             />
 
                             <TextInput
                                 style={styles.inputtext}
+                                placeholder="010-0000-0000"
+                                placeholderTextColor="#808080"
                             ></TextInput>
 
                             {/* 선 긋기 */}
@@ -204,12 +217,14 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                             {/* 시설 이름 */}
                             <Image
                                 style={{ width: 60, height: 60, top: '1.5%', right: '37%' }}
-                                source={require('../assets/storename.png')}
+                                source={require('../../assets/storename.png')}
                                 resizeMode="contain"
                             />
 
                             <TextInput
                                 style={styles.inputtext}
+                                placeholder="Enter name"
+                                placeholderTextColor="#808080"
                             ></TextInput>
 
                             {/* 선 긋기 */}
@@ -219,13 +234,15 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
 
                             {/* 시설 주소 */}
                             <Image
-                                style={{ width: 60, height: 60, top: '1.5%', right: '37%' }}
-                                source={require('../assets/storeaddress.png')}
+                                style={{ width: 60, height: 60, top: '1.5%', right: '37.5%' }}
+                                source={require('../../assets/storeaddress.png')}
                                 resizeMode="contain"
                             />
 
                             <TextInput
                                 style={styles.inputtext}
+                                placeholder="Enter address"
+                                placeholderTextColor="#808080"
                             ></TextInput>
 
                             {/* 선 긋기 */}
@@ -233,15 +250,53 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
 
                             {/* ///////////////////////////////////////////////////////////// */}
 
-                            {/* 사업자 등록 번호 */}
+                            {/* 홈페이지 주소 */}
                             <Image
-                                style={{ width: 100, height: 60, top: '1.5%', right: '32%' }}
-                                source={require('../assets/storenumber.png')}
+                                style={{ width: 90, height: 60, top: '1.5%', right: '34%' }}
+                                source={require('../../assets/hompagead.png')}
                                 resizeMode="contain"
                             />
 
                             <TextInput
                                 style={styles.inputtext}
+                                placeholder="www.naver.com"
+                                placeholderTextColor="#808080"
+                            ></TextInput>
+
+                            {/* 선 긋기 */}
+                            <View style={styles.lineStyle} />
+
+                            {/* ///////////////////////////////////////////////////////////// */}
+
+                            {/* 총 인원 수 */}
+                            <Image
+                                style={{ width: 65, height: 60, top: '1.5%', right: '36.5%' }}
+                                source={require('../../assets/allmember.png')}
+                                resizeMode="contain"
+                            />
+
+                            <TextInput
+                                style={styles.inputtext}
+                                placeholder="Enter number"
+                                placeholderTextColor="#808080"
+                            ></TextInput>
+
+                            {/* 선 긋기 */}
+                            <View style={styles.lineStyle} />
+
+                            {/* ///////////////////////////////////////////////////////////// */}
+
+                            {/* 현재 인원 수 */}
+                            <Image
+                                style={{ width: 80, height: 60, top: '1.5%', right: '35%' }}
+                                source={require('../../assets/todaymember.png')}
+                                resizeMode="contain"
+                            />
+
+                            <TextInput
+                                style={styles.inputtext}
+                                placeholder="Enter number"
+                                placeholderTextColor="#808080"
                             ></TextInput>
 
                             {/* 선 긋기 */}
@@ -256,7 +311,7 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                         >
                             <Image
                                 style={{ width: 350, height: 100, top: '5%', right: '0%', marginRight: 10 }}
-                                source={require('../assets/signupbutton.png')}
+                                source={require('../../assets/signupbutton.png')}
                                 resizeMode="contain"
                             />
                         </TouchableOpacity>
@@ -264,14 +319,14 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                         <View style={{ flexDirection: 'row', alignItems: 'center', bottom: '0%', right: '1.5%', bottom: '5%', paddingTop: 0 }}>
                             <Image
                                 style={{ width: 150, height: 150, bottom: '0%', right: '0%', marginRight: 10 }}
-                                source={require('../assets/login2-2.png')}
+                                source={require('../../assets/login2-2.png')}
                                 resizeMode="contain"
                             />
 
                             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                                 <Image
                                     style={{ width: 60, height: 90, bottom: '0%', left: '5%' }}
-                                    source={require('../assets/login3-2.png')}
+                                    source={require('../../assets/login3-2.png')}
                                     resizeMode="contain"
                                 />
                             </TouchableOpacity>
@@ -286,7 +341,7 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                                     <View style={styles.modalView}>
                                         <Image
                                             style={{ width: 130, height: 130, bottom: '0.5%', right: '0%' }}
-                                            source={require('../assets/signupsucess.png')}
+                                            source={require('../../assets/signupsucess.png')}
                                             resizeMode="contain"
                                         />
                                         <TouchableOpacity
@@ -371,4 +426,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default BottomSheet;
+export default BottomSheetP;

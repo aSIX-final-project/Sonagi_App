@@ -24,10 +24,19 @@ const Login = ({ navigation }) => {
             setLoginSuccessModalVisible(false);
             navigation.navigate('Home'); // 메인화면으로 이동
         }, 2000);
-
-
-
     };
+
+    const handleLoginButton2Click = () => {
+        setLoginSuccessModalVisible(true); // 가입 버튼 클릭 시 모달 표시
+
+        // 2초 후에 모달 숨김
+        setTimeout(() => {
+            setLoginSuccessModalVisible(false);
+            navigation.navigate('Homep'); // 메인화면으로 이동
+        }, 2000);
+    };
+
+
 
     React.useEffect(() => {
         register('username', { required: '아이디는 필수입니다', minLength: { value: 4, message: '아이디는 4자 이상이어야 합니다' }, maxLength: { value: 12, message: '아이디는 12자 이하여야 합니다' } });
@@ -49,7 +58,7 @@ const Login = ({ navigation }) => {
                         <View style={styles.modalView}>
                             <Image
                                 style={{ width: 130, height: 130, bottom: '0.5%', right: '0%' }}
-                                source={require('../assets/loginsuccess.png')}
+                                source={require('../../assets/loginsuccess.png')}
                                 resizeMode="contain"
                             />
                             <TouchableOpacity
@@ -62,14 +71,14 @@ const Login = ({ navigation }) => {
                 {/* 로그인 글씨 */}
                 <Image
                     style={{ width: 100, height: 100, bottom: '0.5%', right: '32%' }}
-                    source={require('../assets/login.png')}
+                    source={require('../../assets/login.png')}
                     resizeMode="contain"
                 />
 
                 {/* id */}
                 <Image
                     style={{ width: 20, height: 20, bottom: '0%', right: '40.5%' }}
-                    source={require('../assets/id.png')}
+                    source={require('../../assets/id.png')}
                     resizeMode="contain"
                 />
 
@@ -86,7 +95,7 @@ const Login = ({ navigation }) => {
                 {/* password */}
                 <Image
                     style={{ width: 100, height: 40, bottom: '0%', right: '30.3%' }}
-                    source={require('../assets/password.png')}
+                    source={require('../../assets/password.png')}
                     resizeMode="contain"
                 />
 
@@ -102,7 +111,7 @@ const Login = ({ navigation }) => {
                     {/* 비밀번호 가리기 */}
                     <Image
                         style={{ width: 30, height: 30, bottom: '0%', right: '60%' }}
-                        source={require('../assets/lookpwd.png')}
+                        source={require('../../assets/lookpwd.png')}
                         resizeMode="contain"
                     />
                 </View>
@@ -113,28 +122,41 @@ const Login = ({ navigation }) => {
                 <View style={{ flexDirection: 'row', alignItems: 'center', bottom: '0%', right: '6.6%' }}>
                     <Image
                         style={{ width: 150, height: 150, bottom: '0%', right: '0%', marginRight: 10 }}
-                        source={require('../assets/signup1.png')}
+                        source={require('../../assets/signup1.png')}
                         resizeMode="contain"
                     />
 
                     <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
                         <Image
                             style={{ width: 60, height: 90, bottom: '0%', right: '0%' }}
-                            source={require('../assets/signup2.png')}
+                            source={require('../../assets/signup2.png')}
                             resizeMode="contain"
                         />
                     </TouchableOpacity>
 
                 </View>
 
-                {/* 로그인 버튼 */}
-                <TouchableOpacity onPress={handleLoginButtonClick}>
-                    <Image
-                        style={{ width: 70, height: 100, marginLeft: "70%" }}
-                        source={require('../assets/login1.png')}
-                        resizeMode="contain"
-                    />
-                </TouchableOpacity>
+                {/* 로그인 버튼 (기부자) */}
+                <View style={{ flexDirection: 'row', marginLeft: '70%' }}>
+                    <TouchableOpacity onPress={handleLoginButtonClick}>
+                        <Image
+                            style={{ width: 70, height: 100 }}
+                            source={require('../../assets/login1.png')}
+                            resizeMode="contain"
+                        />
+                    </TouchableOpacity>
+                </View>
+
+                {/* 로그인 버튼 (피기부자 */}
+                <View style={{ flexDirection: 'row', marginLeft: '70%' }}>
+                    <TouchableOpacity onPress={handleLoginButton2Click}>
+                        <Image
+                            style={{ width: 40, height: 40 }}
+                            source={require('../../assets/login1.png')}
+                            resizeMode="contain"
+                        />
+                    </TouchableOpacity>
+                </View>
             </View >
         </TouchableWithoutFeedback>
     );

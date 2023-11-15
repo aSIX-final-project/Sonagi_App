@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Linking, Platform, Tex
 
 
 
-const ChangeInfo = ({ navigation }) => {
+const ChangePw = ({ navigation }) => {
     // 로그아웃 버튼을 눌렀을때 값을 서버에 보냄
     const [isLogoutSuccessModalVisible, setLogoutSuccessModalVisible] = useState(false); // 모달 알림창의 상태
 
@@ -32,7 +32,7 @@ const ChangeInfo = ({ navigation }) => {
                             <View style={styles.modalView}>
                                 <Image
                                     style={{ width: 130, height: 130, bottom: '0.5%', right: '0%' }}
-                                    source={require('../assets/logoutsuccess.png')}
+                                    source={require('../../assets/logoutsuccess.png')}
                                     resizeMode="contain"
                                 />
                                 <TouchableOpacity
@@ -47,7 +47,7 @@ const ChangeInfo = ({ navigation }) => {
                             <TouchableOpacity style={{ marginLeft: '6%', marginRight: '2%' }} onPress={() => navigation.navigate('Profiles')}>
                                 <Image
                                     style={{ width: 50, height: 50 }}
-                                    source={require('../assets/backkey.png')}
+                                    source={require('../../assets/backkey.png')}
                                     resizeMode="contain"
                                 />
                             </TouchableOpacity>
@@ -62,11 +62,11 @@ const ChangeInfo = ({ navigation }) => {
                             <TouchableOpacity style={{}} onPress={() => navigation.navigate('')}>
                                 <Image
                                     style={{ width: 90, height: 90 }}
-                                    source={require('../assets/profileedit.png')}
+                                    source={require('../../assets/profileedit.png')}
                                     resizeMode="contain"
                                 />
                             </TouchableOpacity>
-                            <Text style={{ fontFamily: 'Play-Bold', fontSize: 25, color: 'white', marginTop: '2%' }}>최광혁 대표님</Text>
+                            <Text style={{ fontFamily: 'Play-Bold', fontSize: 25, color: 'white', marginTop: '2%' }}>최광혁 님</Text>
                             <Text style={{ fontFamily: 'Play-Regular', fontSize: 20, color: 'white', marginTop: '1%' }}>주식회사 야놀자</Text>
 
                         </View>
@@ -79,36 +79,36 @@ const ChangeInfo = ({ navigation }) => {
                         <View style={{ marginTop: '0%', width: '88%', height: '15%', backgroundColor: '#C3E2FF', borderRadius: 16, justifyContent: 'center', alignItems: 'center' }}>
                             <Image
                                 style={{ width: 43, height: 43, marginRight: '0%', marginLeft: '0%' }}
-                                source={require('../assets/pwchange.png')}
+                                source={require('../../assets/pwchange.png')}
                                 resizeMode="contain"
                             />
                         </View>
-                        <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#393939', marginRight: '55%', marginTop: '7%' }}>시설 주소 수정</Text>
+                        <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#393939', marginRight: '56%', marginTop: '7%' }}>현재 비밀번호</Text>
                         <TextInput
                             style={styles.input}
                             autoCapitalize="none"
                             returnKeyType="next"
                             clearButtonMode="while-editing"
-                            placeholder="Enter address"
-                            name="Changeadd"
+                            placeholder="Enter password"
+                            name="CurPw"
                         />
-                        <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#393939', marginRight: '46%', marginTop: '2%' }}>시설 전화번호 수정</Text>
+                        <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#393939', marginRight: '56%', marginTop: '2%' }}>변경 비밀번호</Text>
                         <TextInput
                             style={styles.input}
                             autoCapitalize="none"
                             returnKeyType="next"
                             clearButtonMode="while-editing"
-                            placeholder="Enter number"
-                            name="Changenum"
+                            placeholder="Enter password"
+                            name="ChangePw"
                         />
-                        <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#393939', marginRight: '55%', marginTop: '2%' }}>시설 이름 수정</Text>
+                        <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#393939', marginRight: '46%', marginTop: '2%' }}>변경 비밀번호 확인</Text>
                         <TextInput
                             style={styles.input}
                             autoCapitalize="none"
                             returnKeyType="next"
                             clearButtonMode="while-editing"
-                            placeholder="Enter name"
-                            name="Changename"
+                            placeholder="Enter password"
+                            name="ChangePwCheck"
                         />
                         <TouchableOpacity style={{ marginTop: '2%', width: '88%', height: '10%', backgroundColor: '#E1F1FF', borderColor: '#62B4FF', borderWidth: 1, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('Login')}>
                             <Text style={{ fontFamily: 'Play-Regular', fontSize: 22, color: '#69B7FF', }}>수정</Text>
@@ -118,7 +118,7 @@ const ChangeInfo = ({ navigation }) => {
                     {/* 마지막 라인(광고) */}
                     <Image
                         style={{ width: '100%', height: '15%' }}
-                        source={require('../assets/ad.png')}
+                        source={require('../../assets/ad.png')}
                         resizeMode="contain"
                     />
                 </View>
@@ -142,7 +142,6 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         fontSize: 20,
     },
-
     modalView: {
         marginBottom: 20,
         backgroundColor: "white",
@@ -168,4 +167,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default ChangeInfo
+export default ChangePw
