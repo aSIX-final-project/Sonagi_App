@@ -2,18 +2,25 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import NurseySignUp from './screens/NurseySignUp';
-import GiveSignUp from './screens/GiveSignUp';
-import Home from './screens/Home';
-import Login from './screens/Login';
-import Signup from './screens/Signup';
-import Donate from './screens/Donate';
-import Notice from './screens/Notice';
-import Profiles from './screens/Profiles';
-import Thankyou from './screens/Thankyou';
-import KakaoMap from './screens/KakaoMap';
-import ChangePw from './screens/ChangePw'
-import ChangeInfo from './screens/ChangeInfo';
+import GiveSignUp from './screens/give/GiveSignUp';
+import Home from './screens/give/Home';
+import Login from './screens/give/Login';
+import Signup from './screens/give/Signup';
+import Donate from './screens/give/Donate';
+import Notice from './screens/give/Notice';
+import Profiles from './screens/give/Profiles';
+import Thankyou from './screens/give/Thankyou';
+import KakaoMap from './screens/give/KakaoMap';
+import ChangePw from './screens/give/ChangePw';
+import ChangeInfo from './screens/give/ChangeInfo';
+// 피기부자 
+import Homep from './screens/givep/Homep';
+import Profilesp from './screens/givep/Profilesp';
+import ChangeInfop from './screens/givep/ChangeInfop';
+import ChangePwp from './screens/givep/ChangePwp';
+import Thankyoup from './screens/givep/Thankyoup';
+import Noticep from './screens/givep/Noticep';
+import Donatep from './screens/givep/Donatep';
 
 import { useState } from 'react';
 // 폰트 관련 코드
@@ -65,12 +72,6 @@ export default function App() {
             headerShown: false,
           }} />
         <Stack.Screen
-          name="NurseySignUp"
-          component={NurseySignUp}
-          options={{
-            headerShown: false,
-          }} />
-        <Stack.Screen
           name="GiveSignUp"
           component={GiveSignUp}
           options={{
@@ -115,6 +116,48 @@ export default function App() {
         <Stack.Screen
           name="ChangeInfo"
           component={ChangeInfo}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="Homep"
+          component={Homep}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="Profilesp"
+          component={Profilesp}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="ChangeInfop"
+          component={ChangeInfop}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="ChangePwp"
+          component={ChangePwp}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="Thankyoup"
+          component={Thankyoup}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="Noticep"
+          component={Noticep}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="Donatep"
+          component={Donatep}
           options={{
             headerShown: false,
           }} />
