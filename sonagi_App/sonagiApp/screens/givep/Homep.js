@@ -17,6 +17,7 @@ const Home = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+
       {/* 첫번째 라인 */}
       <Image
         style={{ width: '20%', height: '9%', justifyContent: 'flex-start', alignItems: 'center', marginTop: '6%' }}
@@ -44,10 +45,47 @@ const Home = ({ navigation }) => {
         </View>
       </View>
 
-      {/* 세번째 라인 */}
-      <View style={ styles.thirdContainer}>
-        <Image source={image} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+      {/* 세번째 라인(기부하기) */}
+
+      <View style={styles.fifthContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('KakaoMap')}>
+          <View style={styles.fifthOneContainer}>
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', top: '12%', left: '3%' }}>
+              <Text style={{ fontSize: 22, fontFamily: 'Play-Regular', color: '#6F6A6A', marginRight: '14%' }}>기부 받기</Text>
+              <Image
+                style={{ width: 50, height: 25, left: '10%' }}
+                source={require('../../assets/give.png')}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={{ justifyContent: 'flex-start', alignItems: 'center', top: '15%', right: '10%' }}>
+              <Image
+                style={{ width: 140, height: 145, left: '10%', borderRadius: 30, }}
+                source={require('../../assets/map.jpg')}
+                resizeMode="cover"
+              />
+            </View>
+          </View>
+        </TouchableOpacity>
+
+        {/* 세번째 라인(기부 내역) */}
+        <TouchableOpacity onPress={() => navigation.navigate('Donatep')}>
+          <View style={styles.fifthTwoContainer}>
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', top: '12%', left: '3%' }}>
+              <Text style={{ fontSize: 22, fontFamily: 'Play-Regular', color: '#6F6A6A', marginRight: '40%' }}>기부 내역</Text>
+            </View>
+
+            <View style={{ justifyContent: 'flex-start', alignItems: 'center', top: '22%', right: '10%' }}>
+              <Image
+                style={{ width: 100, height: 100, left: '10%', borderRadius: 30, }}
+                source={require('../../assets/givemoneylist.png')}
+                resizeMode="contain"
+              />
+            </View>
+          </View>
+        </TouchableOpacity>
       </View>
+
 
       {/* 네번째 라인 (공지사항) */}
       <View style={styles.fourthContainer}>
@@ -94,45 +132,9 @@ const Home = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* 다섯번째 라인(기부하기) */}
-
-      <View style={styles.fifthContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('KakaoMap')}>
-          <View style={styles.fifthOneContainer}>
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', top: '12%', left: '3%' }}>
-              <Text style={{ fontSize: 22, fontFamily: 'Play-Regular', color: '#6F6A6A', marginRight: '14%' }}>기부 받기</Text>
-              <Image
-                style={{ width: 50, height: 25, left: '10%' }}
-                source={require('../../assets/give.png')}
-                resizeMode="contain"
-              />
-            </View>
-            <View style={{ justifyContent: 'flex-start', alignItems: 'center', top: '15%', right: '10%' }}>
-              <Image
-                style={{ width: 140, height: 145, left: '10%', borderRadius: 30, }}
-                source={require('../../assets/map.jpg')}
-                resizeMode="cover"
-              />
-            </View>
-          </View>
-        </TouchableOpacity>
-
-        {/* 다섯번째 라인(기부 내역) */}
-        <TouchableOpacity onPress={() => navigation.navigate('Donatep')}>
-          <View style={styles.fifthTwoContainer}>
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', top: '12%', left: '3%' }}>
-              <Text style={{ fontSize: 22, fontFamily: 'Play-Regular', color: '#6F6A6A', marginRight: '40%' }}>기부 내역</Text>
-            </View>
-
-            <View style={{ justifyContent: 'flex-start', alignItems: 'center', top: '22%', right: '10%' }}>
-              <Image
-                style={{ width: 100, height: 100, left: '10%', borderRadius: 30, }}
-                source={require('../../assets/givemoneylist.png')}
-                resizeMode="contain"
-              />
-            </View>
-          </View>
-        </TouchableOpacity>
+      {/* 다섯번째 라인 */}
+      <View style={styles.thirdContainer}>
+        <Image source={image} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
       </View>
 
 
@@ -142,6 +144,7 @@ const Home = ({ navigation }) => {
         source={require('../../assets/ad.png')}
         resizeMode="contain"
       />
+
 
     </View>
   )

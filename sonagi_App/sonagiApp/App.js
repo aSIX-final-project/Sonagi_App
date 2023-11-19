@@ -13,6 +13,7 @@ import Thankyou from './screens/give/Thankyou';
 import KakaoMap from './screens/give/KakaoMap';
 import ChangePw from './screens/give/ChangePw';
 import ChangeInfo from './screens/give/ChangeInfo';
+import Mapadd from './screens/give/Mapadd';
 // 피기부자 
 import Homep from './screens/givep/Homep';
 import Profilesp from './screens/givep/Profilesp';
@@ -158,6 +159,12 @@ export default function App() {
         <Stack.Screen
           name="Donatep"
           component={Donatep}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="Mapadd"
+          component={Mapadd}
           options={{
             headerShown: false,
           }} />

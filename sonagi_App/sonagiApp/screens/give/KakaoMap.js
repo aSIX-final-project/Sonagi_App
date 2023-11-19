@@ -5,6 +5,11 @@ import { Linking, View, TouchableOpacity, Image, Text, handleLogoutButtonClick }
 import * as Location from 'expo-location';
 
 export default function App({ navigation }) {
+  // testClick 클릭
+  const testClick = () => {
+    navigation.navigate('Mapadd'); // 'Mapadd' 페이지로 이동합니다.
+  };
+
   const [locations, setLocations] = useState([]);
   const [currentPosition, setCurrentPosition] = useState(null);
   const [permissionStatus, setPermissionStatus] = useState(null);
@@ -297,14 +302,28 @@ export default function App({ navigation }) {
             />
           </TouchableOpacity>
           <Text style={{ fontFamily: 'Play-Bold', fontSize: 25, color: 'white' }}>프로필</Text>
-          <TouchableOpacity style={{ marginTop: '2%', marginLeft: '36%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { handleLogoutButtonClick }>
+
+          {/* 테스트 아이콘 */}
+          <TouchableOpacity style={{ marginTop: '2%', marginLeft: '10%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { testClick }>
+            <Image
+              style={{ width: 40, height: 40 }}
+              source={require('../../assets/deliver.png')}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+
+
+          <TouchableOpacity style={{ marginTop: '2%', marginLeft: '0%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { handleLogoutButtonClick }>
             <Image
               style={{ width: 90, height: 70 }}
               source={require('../../assets/add.png')}
               resizeMode="contain"
             />
           </TouchableOpacity>
+          
+          
         </View>
+        
       </View>
       <WebView
         originWhitelist={['*']}
@@ -331,6 +350,8 @@ export default function App({ navigation }) {
           return true;
         }}
       />
+      
     </View>
+    
   );
 }
