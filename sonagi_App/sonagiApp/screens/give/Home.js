@@ -1,10 +1,19 @@
 //홈화면
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 
 
 const Home = ({ navigation }) => {
 
+  const [image, setImage] = useState(require('../../assets/policy.png'));
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setImage(prevImage => prevImage === require('../../assets/policy.png')
+        ? require('../../assets/policy2.png')
+        : require('../../assets/policy.png'));
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -36,28 +45,8 @@ const Home = ({ navigation }) => {
       </View>
 
       {/* 세번째 라인 */}
-      <View style={styles.thirdContainer}>
-        <View style={{ flexDirection: 'row', left: '10%' }}>
-          <Image
-            style={{ width: 90, height: 90, top: '8%', marginRight: '10%' }}
-            source={require('../../assets/moneygage.png')}
-            resizeMode="contain"
-          />
-          <View style={{ flexDirection: 'columm', left: '15%' }}>
-            <Image
-              style={{ width: 110, height: 40, bottom: '0%', marginLeft: '0%' }}
-              source={require('../../assets/lastmoney.png')}
-              resizeMode="contain"
-            />
-            <Text style={{ fontSize: 22, fontWeight: 'bold', fontFamily: 'Play-Bold' }}>100,000,000 원</Text>
-            <Image
-              style={{ width: 110, height: 40, bottom: '0%', marginLeft: '0%' }}
-              source={require('../../assets/last2money.png')}
-              resizeMode="contain"
-            />
-            <Text style={{ fontSize: 22, fontWeight: 'bold', fontFamily: 'Play-Bold' }}>100,000,000 원</Text>
-          </View>
-        </View>
+      <View style={ styles.thirdContainer}>
+        <Image source={image} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
       </View>
 
       {/* 네번째 라인 (공지사항) */}
@@ -169,12 +158,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '90%',
     height: '17%',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
     borderRadius: 30,
     marginTop: 20,
-    marginBottom: 20
+    marginBottom: 20,
+    overflow: 'hidden',
   },
 
   fourthContainer: {
