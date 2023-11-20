@@ -48,7 +48,7 @@ const Login = ({ navigation }) => {
 
       // 백엔드 서버로 POST 요청 보내기
       const response = await axios.post(
-        "http://172.16.104.7:8888/boot/member/login",
+        "http://172.16.106.14:8888/boot/member/login",
         formData
       );
       const userInfo = response.data[0];

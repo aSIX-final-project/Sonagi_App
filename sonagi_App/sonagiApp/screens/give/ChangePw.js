@@ -55,7 +55,7 @@ const ChangePw = ({ navigation, route }) => {
 
         // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
         const response = await axios.post(
-          "http://172.16.104.7:8888/boot/member/modify",
+          "http://172.16.106.14:8888/boot/member/modify",
           formData
         );
         // 백엔드로부터 온 응답 처리
