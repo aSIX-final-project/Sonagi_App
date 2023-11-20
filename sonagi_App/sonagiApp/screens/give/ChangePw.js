@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 22
     },
+
 });
 
 

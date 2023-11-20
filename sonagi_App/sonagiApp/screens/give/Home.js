@@ -25,7 +25,6 @@ const Home = ({ navigation }) => {
       />
 
       {/* 두번째 라인 */}
-
       <View style={{ flexDirection: 'row', width: '90%', height: '10%', justifyContent: 'flex-start', alignItems: 'center', bottom: '0%' }}>
         <View style={{ marginLeft: '5%' }}>
           <Text style={{ color: 'blue', fontSize: 22, fontFamily: 'Play-Regular' }}>00 회사</Text>

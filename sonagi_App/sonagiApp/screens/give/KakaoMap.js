@@ -3,12 +3,23 @@ import { WebView } from 'react-native-webview';
 import axios from 'axios';
 import { Linking, View, TouchableOpacity, Image, Text, handleLogoutButtonClick } from 'react-native';
 import * as Location from 'expo-location';
+import RegistGive from './Registgive';
 
 export default function App({ navigation }) {
   // testClick 클릭
   const testClick = () => {
     navigation.navigate('Mapadd'); // 'Mapadd' 페이지로 이동합니다.
   };
+
+  // 등록 버튼 클릭
+  const RegistGive = () => {
+    navigation.navigate('RegistGive');
+  }
+
+  // 기부 요청목록 버튼 클릭
+  const GiveReq = () => {
+    navigation.navigate('GiveReq');
+  }
 
   const [locations, setLocations] = useState([]);
   const [currentPosition, setCurrentPosition] = useState(null);
@@ -301,10 +312,10 @@ export default function App({ navigation }) {
               resizeMode="contain"
             />
           </TouchableOpacity>
-          <Text style={{ fontFamily: 'Play-Bold', fontSize: 25, color: 'white' }}>프로필</Text>
+
 
           {/* 테스트 아이콘 */}
-          <TouchableOpacity style={{ marginTop: '2%', marginLeft: '10%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { testClick }>
+          <TouchableOpacity style={{ marginTop: '2%', marginRight: '13%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { testClick }>
             <Image
               style={{ width: 40, height: 40 }}
               source={require('../../assets/deliver.png')}
@@ -312,8 +323,17 @@ export default function App({ navigation }) {
             />
           </TouchableOpacity>
 
+          {/* 기부요청 목록 */}
+          <TouchableOpacity style={{ marginTop: '2%', marginRight:'2%', backgroundColor: '#68B7FF', marginLeft: '0%', width: '11%', height: '200%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { GiveReq }>
+            <Image
+              style={{ width: 35, height: 35 }}
+              source={require('../../assets/star.png')}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
 
-          <TouchableOpacity style={{ marginTop: '2%', marginLeft: '0%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { handleLogoutButtonClick }>
+          {/* 등록 버튼 */}
+          <TouchableOpacity style={{ marginTop: '2%', marginLeft: '0%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { RegistGive }>
             <Image
               style={{ width: 90, height: 70 }}
               source={require('../../assets/add.png')}
@@ -325,6 +345,7 @@ export default function App({ navigation }) {
         </View>
         
       </View>
+      
       <WebView
         originWhitelist={['*']}
         source={{ html }}

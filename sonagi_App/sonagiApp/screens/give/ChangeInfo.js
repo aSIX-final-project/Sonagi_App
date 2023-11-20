@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Linking, Platform, Tex
 
 
 const ChangeInfo = ({ navigation }) => {
-    // 로그아웃 버튼을 눌렀을때 값을 서버에 보냄
+    // 로그아웃
     const [isLogoutSuccessModalVisible, setLogoutSuccessModalVisible] = useState(false); // 모달 알림창의 상태
 
     const handleLogoutButtonClick = () => {

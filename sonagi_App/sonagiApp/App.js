@@ -14,6 +14,9 @@ import KakaoMap from './screens/give/KakaoMap';
 import ChangePw from './screens/give/ChangePw';
 import ChangeInfo from './screens/give/ChangeInfo';
 import Mapadd from './screens/give/Mapadd';
+import RegistGive from './screens/give/Registgive';
+import GiveReq from './screens/give/GiveReq';
+
 // 피기부자 
 import Homep from './screens/givep/Homep';
 import Profilesp from './screens/givep/Profilesp';
@@ -168,6 +171,19 @@ export default function App() {
           options={{
             headerShown: false,
           }} />
+        <Stack.Screen
+          name="RegistGive"
+          component={RegistGive}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="GiveReq"
+          component={GiveReq}
+          options={{
+            headerShown: false,
+          }} />
+        
           
       </Stack.Navigator>
     </NavigationContainer>

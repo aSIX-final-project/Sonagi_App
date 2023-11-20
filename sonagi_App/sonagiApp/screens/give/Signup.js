@@ -6,6 +6,19 @@ import BottomSheetP from '../givep/./BottomsheetPi';
 
 const Signup = ({ navigation }) => {
 
+    // 로그아웃 버튼을 눌렀을때 값을 서버에 보냄
+    const [isLogoutSuccessModalVisible, setLogoutSuccessModalVisible] = useState(false); // 모달 알림창의 상태
+
+    const handleLogoutButtonClick = () => {
+        setLogoutSuccessModalVisible(true); // 가입 버튼 클릭 시 모달 표시
+
+        // 2초 후에 모달 숨김
+        setTimeout(() => {
+            setLogoutSuccessModalVisible(false);
+            navigation.navigate('Login'); // 메인화면으로 이동
+        }, 2000);
+    };
+
     // 바텀시트
     const [modalVisible, setModalVisible] = useState(false);
     const pressButton = () => {
