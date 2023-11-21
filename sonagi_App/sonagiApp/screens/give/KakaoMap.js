@@ -130,11 +130,9 @@ export default function App({ navigation }) {
     }
   };
 
-  const kakaoMap = (x, y, name) => {
+  const kakaoMap = (x, y) => {
     // 카카오 네비게이션 API를 이용해 길찾기 실행
-    console.log("x,y,name : ", x, y, name);
     const url = `kakaomap://route?sp=${currentPosition.y},${currentPosition.x}&ep=${y},${x}&by=CAR`;
-    console.log(url);
 
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
   };
@@ -202,7 +200,7 @@ export default function App({ navigation }) {
         kakao.maps.event.addListener(marker${i}, 'click', function() {
           infowindow${i}.open(map, marker${i});  
           document.getElementById('routeButton${i}').addEventListener('click', function() {
-            window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}, name: ${location.adName}');
+            window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}');
           });
         });
       `;
@@ -334,8 +332,7 @@ export default function App({ navigation }) {
             const coordinateStrings = message.split(', ');
             const x = parseFloat(coordinateStrings[0].split(': ')[1]);
             const y = parseFloat(coordinateStrings[1].split(': ')[1]);
-            const name = parseFloat(coordinateStrings[2].split(': ')[2]);
-            kakaoMap(x, y, name); // 호출
+            kakaoMap(x, y); // 호출
           }
         }}
         onShouldStartLoadWithRequest={(request) => {
