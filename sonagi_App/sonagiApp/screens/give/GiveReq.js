@@ -125,7 +125,7 @@ const GiveReq = ({ navigation }) => {
 
 
             {/* 기부 요청목록 */}
-            <View style={{ flexDirection: 'row', height: '10%', width: '50%', marginBottom: '0%', marginTop: '10%', marginRight: '40%', backgroundColor: 'yellow' }}>
+            <View style={{ flexDirection: 'row', height: '8%', width: '50%', marginBottom: '0%', marginTop: '0%', marginRight: '40%', backgroundColor: 'yellow' }}>
                 <Image
                     style={{ width: 27, height: 27, marginBottom: '1%', marginRight: '1%' }}
                     source={require('../../assets/food.png')}
@@ -136,9 +136,38 @@ const GiveReq = ({ navigation }) => {
 
             {/* 선 긋기 */}
             <View style={styles.lineStyle} />
-            <ScrollView style={{ backgroundColor: 'lightblue', width: '90%', height: '50%' }}>
+            <View style={{ flex: 1, width: '90%', height: '70%', backgroundColor: 'lightgreen' }} >
+                {/* 목록 */}
+                <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+                    <View style={{ width: '100%', height: '100%', backgroundColor: '#E1F1FF', flexDirection: 'row' }}>
+                        <Image
+                            style={{ width: 60, height: 60, marginBottom: '1%', marginRight: '1%' }}
+                            source={require('../../assets/profilep.png')}
+                            resizeMode="contain"
+                        />
+                        <View style={{ width: '100%', height: '100%', backgroundColor: '#E1F1FF', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', }}>
+                            <View style={{ flexDirection: 'column', width: '80%', height: '30%', backgroundColor: '#E1F1FF', flexDirection: 'row' }}>
+                                <Text style={{ fontSize: 23.5, fontFamily: 'Play-Bold', color: '#383838' }}>상호명</Text>
+                                <Text style={{ fontSize: 23.5, fontFamily: 'Play-Regular', color: '#383838' }}>: 명륜 보육원</Text>
+                            </View>
+                            <View style={{ flexDirection: 'column', width: '80%', height: '30%', backgroundColor: '#E1F1FF', flexDirection: 'row' }}>
+                                <Text style={{ fontSize: 23.5, fontFamily: 'Play-Bold', color: '#383838' }}>후원</Text>
+                                <Text style={{ fontSize: 23.5, fontFamily: 'Play-Regular', color: '#383838' }}>: 잡채 50인분</Text>
+                            </View>
+                        </View>
+                        <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center', backgroundColor: 'yellow' }}>
+                            <Image
+                                style={{ width: 80, height: 80 }}
+                                source={require('../../assets/phone.png')}
+                                resizeMode="contain"
+                            />
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+                <TouchableOpacity style={{ backgroundColor: '#44A5FF'}}>
 
-            </ScrollView>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };

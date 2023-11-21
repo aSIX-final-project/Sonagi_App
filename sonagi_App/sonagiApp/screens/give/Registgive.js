@@ -56,6 +56,8 @@ const RegistGive = ({ navigation }) => {
     const heartCount = 3; // 원하는 숫자를 넣으세요.
 
     return (
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={styles.overlay}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
             <Modal
                 animationType="fade"
@@ -187,6 +189,8 @@ const RegistGive = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
         </View>
+        </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 };
 const styles = StyleSheet.create({
