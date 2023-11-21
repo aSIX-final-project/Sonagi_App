@@ -72,9 +72,9 @@ export default function App({ navigation }) {
 
         // linePath를 JSON 문자열로 변환
         const showEndRoute = linePath.length > 0;
-        if(linePath.length > 0){
+        if (linePath.length > 0) {
           setShowEndRoute(true);
-        }else{
+        } else {
           setShowEndRoute(false);
         }
         const linePathString = JSON.stringify(linePath);
@@ -130,6 +130,15 @@ export default function App({ navigation }) {
     }
   };
 
+  const kakaoMap = (x, y, name) => {
+    // 카카오 네비게이션 API를 이용해 길찾기 실행
+    console.log("x,y,name : ", x, y, name);
+    const url = `kakaomap://route?sp=${currentPosition.y},${currentPosition.x}&ep=${y},${x}&by=CAR`;
+    console.log(url);
+
+    Linking.openURL(url).catch(err => console.error('An error occurred', err));
+  };
+
   //현재 위치 업데이트 하기
   const updateCurrentPosition = (location) => {
     setCurrentPosition({
@@ -165,10 +174,15 @@ export default function App({ navigation }) {
     let markersData = '';
     if (currentPosition) {
       markersData += `
-        var currentMarkerPosition = new kakao.maps.LatLng(${currentPosition.y}, ${currentPosition.x}); 
-        var currentMarker = new kakao.maps.Marker({ position: currentMarkerPosition });
-        currentMarker.setMap(map);
+        var imageSrc = 'https://i.postimg.cc/FsqzKNmz/sonagi-char.png'; // 마커이미지의 주소입니다
+        var imageSize = new kakao.maps.Size(64, 69); // 마커이미지의 크기입니다
+        var imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 
+        var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+        var currentMarkerPosition = new kakao.maps.LatLng(${currentPosition.y}, ${currentPosition.x}); 
+        var currentMarker = new kakao.maps.Marker({ position: currentMarkerPosition, image: markerImage });
+        currentMarker.setMap(map);
+    
         var currentMarkerInfoWindow = new kakao.maps.InfoWindow({ content: '<div style="padding:5px;">현위치</div>' });
         kakao.maps.event.addListener(currentMarker, 'click', function() {
           currentMarkerInfoWindow.open(map, currentMarker);
@@ -188,7 +202,7 @@ export default function App({ navigation }) {
         kakao.maps.event.addListener(marker${i}, 'click', function() {
           infowindow${i}.open(map, marker${i});  
           document.getElementById('routeButton${i}').addEventListener('click', function() {
-            window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}');
+            window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}, name: ${location.adName}');
           });
         });
       `;
@@ -233,7 +247,7 @@ export default function App({ navigation }) {
       
       <!-- 지도 확대, 축소 컨트롤 div 입니다 -->
       <!-- <div class="custom_zoomcontrol radius_border"> 
-          <span onclick="zoomIn()"><img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>  
+          <span onclick="zoomIn()"><img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
           <span onclick="zoomOut()"><img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
       </div> -->
     </div>
@@ -297,7 +311,7 @@ export default function App({ navigation }) {
             />
           </TouchableOpacity>
           <Text style={{ fontFamily: 'Play-Bold', fontSize: 25, color: 'white' }}>프로필</Text>
-          <TouchableOpacity style={{ marginTop: '2%', marginLeft: '36%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { handleLogoutButtonClick }>
+          <TouchableOpacity style={{ marginTop: '2%', marginLeft: '36%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={handleLogoutButtonClick}>
             <Image
               style={{ width: 90, height: 70 }}
               source={require('../../assets/add.png')}
@@ -320,7 +334,8 @@ export default function App({ navigation }) {
             const coordinateStrings = message.split(', ');
             const x = parseFloat(coordinateStrings[0].split(': ')[1]);
             const y = parseFloat(coordinateStrings[1].split(': ')[1]);
-            setMarkerCoordinates({ x, y });
+            const name = parseFloat(coordinateStrings[2].split(': ')[2]);
+            kakaoMap(x, y, name); // 호출
           }
         }}
         onShouldStartLoadWithRequest={(request) => {
