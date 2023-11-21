@@ -56,7 +56,7 @@ const Home = ({ navigation, route }) => {
               fontFamily: "Play-Bold",
             }}
           >
-            {userInfo.managerName} 님
+            {userInfo.name} 님
           </Text>
           <Text
             style={{

@@ -36,9 +36,10 @@ const ChangeInfo = ({ navigation, route }) => {
         id: userInfo.id,
         adName: watch("Changename"),
         adTel: watch("Changenum"),
-        managerName: userInfo.managerName,
+        managerName: userInfo.name,
         address: watch("Changeadd"),
-        introduction: userInfo.introduction,
+        totalHc: 0,
+        introduction: null,
       };
 
       // 폼 데이터를 JSON 문자열로 변환하여 확인
@@ -47,7 +48,7 @@ const ChangeInfo = ({ navigation, route }) => {
 
       // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
       const response = await axios.post(
-        "http://172.16.106.14:8888/boot/admin/requestAdmin",
+        "http://172.16.106.73:8888/boot/admin/requestAdmin",
         formData
       );
       console.log(response.data);
@@ -202,7 +203,7 @@ const ChangeInfo = ({ navigation, route }) => {
                   marginTop: "2%",
                 }}
               >
-                {userInfo.managerName} 님
+                {userInfo.name} 님
               </Text>
               <Text
                 style={{
