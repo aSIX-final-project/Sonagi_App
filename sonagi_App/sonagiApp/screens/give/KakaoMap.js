@@ -167,46 +167,63 @@ export default function App({ navigation }) {
   };
 
 
-  //마커 데이터 생성
+  // 마커 데이터 생성
   const makeMarkersData = () => {
     let markersData = '';
+
+    // Current position marker
     if (currentPosition) {
       markersData += `
-        var imageSrc = 'https://i.postimg.cc/FsqzKNmz/sonagi-char.png'; // 마커이미지의 주소입니다
-        var imageSize = new kakao.maps.Size(64, 69); // 마커이미지의 크기입니다
-        var imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+      var imageSrcCurrent = 'https://i.postimg.cc/FsqzKNmz/sonagi-char.png';
+      var imageSizeCurrent = new kakao.maps.Size(64, 69);
+      var imageOptionCurrent = { offset: new kakao.maps.Point(27, 69) };
+      var markerImageCurrent = new kakao.maps.MarkerImage(imageSrcCurrent, imageSizeCurrent, imageOptionCurrent);
+      var currentMarkerPosition = new kakao.maps.LatLng(${currentPosition.y}, ${currentPosition.x}); 
+      var currentMarker = new kakao.maps.Marker({ position: currentMarkerPosition, image: markerImageCurrent });
+      currentMarker.setMap(map);
 
-        var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
-        var currentMarkerPosition = new kakao.maps.LatLng(${currentPosition.y}, ${currentPosition.x}); 
-        var currentMarker = new kakao.maps.Marker({ position: currentMarkerPosition, image: markerImage });
-        currentMarker.setMap(map);
-    
-        var currentMarkerInfoWindow = new kakao.maps.InfoWindow({ content: '<div style="padding:5px;">현위치</div>' });
-        kakao.maps.event.addListener(currentMarker, 'click', function() {
-          currentMarkerInfoWindow.open(map, currentMarker);
-        });
-      `;
+      var currentMarkerInfoWindow = new kakao.maps.InfoWindow({ content: '<div style="padding:5px;">현위치</div>' });
+      kakao.maps.event.addListener(currentMarker, 'click', function() {
+        currentMarkerInfoWindow.open(map, currentMarker);
+      });
+    `;
     }
-    locations.forEach((location, i) => {
-      markersData += `
-        var markerPosition${i} = new kakao.maps.LatLng(${location.coordinates.y}, ${location.coordinates.x}); 
-        var marker${i} = new kakao.maps.Marker({ position: markerPosition${i} });
-        marker${i}.setMap(map);
 
-        var iwContent${i} = '<div style="padding:5px;">시설명: ${location.adName}</div><div>시설장 이름: ${location.managerName}</div><a href="${location.homepage}">${location.homepage}</a><div>${location.phoneNum}</div><button id="routeButton${i}" style="margin-top: 5px;">길 찾기</button>';
-        
-        var infowindow${i} = new kakao.maps.InfoWindow({ content: iwContent${i}, removable: true });
+    // Location markers
+     locations.forEach((location, i) => {
+    markersData += `
+      var imageSrc${i} = 'https://i.postimg.cc/DzyDm8yR/klipartz-com.png';
+      var imageSize${i} = new kakao.maps.Size(64, 69);
+      var imageOption${i} = { offset: new kakao.maps.Point(27, 69) };
+      var markerImage${i} = new kakao.maps.MarkerImage(imageSrc${i}, imageSize${i}, imageOption${i});
+      var markerPosition${i} = new kakao.maps.LatLng(${location.coordinates.y}, ${location.coordinates.x}); 
+      var marker${i} = new kakao.maps.Marker({ position: markerPosition${i}, image: markerImage${i} });
+      marker${i}.setMap(map);
 
-        kakao.maps.event.addListener(marker${i}, 'click', function() {
-          infowindow${i}.open(map, marker${i});  
-          document.getElementById('routeButton${i}').addEventListener('click', function() {
-            window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}');
-          });
+      var iwContent${i} = \`
+        <div style="padding:10px;">
+          <div class="info-title">시설명: ${location.adName}</div>
+          <div>시설장 이름: ${location.managerName}</div>
+          <div>홈페이지: <a href="${location.homepage}" target="_blank">${location.homepage}</a></div>
+          <div>전화번호: ${location.phoneNum}</div>
+          <button id="routeButton${i}" style="margin-top: 5px;">길 찾기</button>
+        </div>
+      \`;
+
+      var infowindow${i} = new kakao.maps.InfoWindow({ content: iwContent${i}, removable: true });
+
+      kakao.maps.event.addListener(marker${i}, 'click', function() {
+        infowindow${i}.open(map, marker${i});  
+        document.getElementById('routeButton${i}').addEventListener('click', function() {
+          window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}, name: ${location.adName}');
         });
-      `;
-    });
+      });
+    `;
+  });
+
     return markersData;
   };
+
 
 
   //HTML 생성
