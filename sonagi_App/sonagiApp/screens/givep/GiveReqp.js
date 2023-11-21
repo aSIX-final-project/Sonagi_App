@@ -17,7 +17,7 @@ import {
 import { KeyboardAvoidingView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
-const GiveReq = ({ navigation }) => {
+const GiveReqp = ({ navigation }) => {
 
     {/* 카메라, 갤러리 모달 관리 */ }
     const openCamera = async () => {
@@ -131,7 +131,7 @@ const GiveReq = ({ navigation }) => {
                     source={require('../../assets/food.png')}
                     resizeMode="contain"
                 />
-                <Text style={{ fontSize: 35, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#383838' }}>기부 요청 목록</Text>
+                <Text style={{ fontSize: 35, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#383838' }}>기부 받은 목록</Text>
             </View>
 
             {/* 선 긋기 */}
@@ -143,13 +143,13 @@ const GiveReq = ({ navigation }) => {
                         <View style={{ flexDirection: 'row' }}>
                             <Image
                                 style={{ width: 80, height: 80, borderTopLeftRadius: 30 }}
-                                source={require('../../assets/profilep.png')}
+                                source={require('../../assets/yanoljalogo.png')}
                                 resizeMode="contain"
                             />
                             <View style={{ width: '57%', height: '77%', backgroundColor: '#E1F1FF', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                                 <View style={{ flexDirection: 'column', width: '80%', height: '40%', backgroundColor: '#E1F1FF', flexDirection: 'row' }}>
                                     <Text style={{ fontSize: 23.5, fontFamily: 'Play-Bold', color: '#383838' }}>상호명</Text>
-                                    <Text style={{ fontSize: 23.5, fontFamily: 'Play-Regular', color: '#383838' }}>: 명륜 보육원</Text>
+                                    <Text style={{ fontSize: 23.5, fontFamily: 'Play-Regular', color: '#383838' }}>: 야놀자</Text>
                                 </View>
                                 <View style={{ flexDirection: 'column', width: '80%', height: '40%', backgroundColor: '#E1F1FF', flexDirection: 'row' }}>
                                     <Text style={{ fontSize: 23.5, fontFamily: 'Play-Bold', color: '#383838' }}>후원</Text>
@@ -216,4 +216,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default GiveReq;
+export default GiveReqp;

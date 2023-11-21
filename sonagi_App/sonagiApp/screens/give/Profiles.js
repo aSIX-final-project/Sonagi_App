@@ -123,7 +123,7 @@ const Profiles = ({ navigation }) => {
           resizeMode="contain"
         />
 
-        <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#8B8E90', marginRight: '34%' }}>시설 소개</Text>
+        <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#8B8E90', marginRight: '23%' }}>시설 정보 변경</Text>
 
         <TouchableOpacity style={{}} onPress={() => navigation.navigate('ChangeInfo')}>
           <Image

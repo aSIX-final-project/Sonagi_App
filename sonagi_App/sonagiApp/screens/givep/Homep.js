@@ -45,10 +45,10 @@ const Home = ({ navigation }) => {
         </View>
       </View>
 
-      {/* 세번째 라인(기부하기) */}
+      {/* 세번째 라인(기부받기) */}
 
       <View style={styles.fifthContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('KakaoMap')}>
+        <TouchableOpacity onPress={() => navigation.navigate('KakaoMapp')}>
           <View style={styles.fifthOneContainer}>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', top: '12%', left: '3%' }}>
               <Text style={{ fontSize: 22, fontFamily: 'Play-Regular', color: '#6F6A6A', marginRight: '14%' }}>기부 받기</Text>

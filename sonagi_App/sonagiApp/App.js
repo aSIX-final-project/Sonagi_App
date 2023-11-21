@@ -25,6 +25,9 @@ import ChangePwp from './screens/givep/ChangePwp';
 import Thankyoup from './screens/givep/Thankyoup';
 import Noticep from './screens/givep/Noticep';
 import Donatep from './screens/givep/Donatep';
+import KakaoMapp from './screens/givep/KakaoMapp';
+import GiveReqp from './screens/givep/GiveReqp';
+import Mapaddp from './screens/givep/Mapaddp';
 
 import { useState } from 'react';
 // 폰트 관련 코드
@@ -180,6 +183,24 @@ export default function App() {
         <Stack.Screen
           name="GiveReq"
           component={GiveReq}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="KakaoMapp"
+          component={KakaoMapp}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="GiveReqp"
+          component={GiveReqp}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="Mapaddp"
+          component={Mapaddp}
           options={{
             headerShown: false,
           }} />
