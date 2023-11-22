@@ -3,7 +3,6 @@ import { WebView } from 'react-native-webview';
 import axios from 'axios';
 import { Linking, View, TouchableOpacity, Image, Text, handleLogoutButtonClick } from 'react-native';
 import * as Location from 'expo-location';
-import storage from '@react-native-firebase/storage';
 
 export default function App({ navigation }) {
   const [locations, setLocations] = useState([]);
@@ -168,19 +167,6 @@ export default function App({ navigation }) {
   };
 
 
-  const getImageFromStorage = async (imageName) => {
-    try {
-      const imageRef = storage().ref(imageName);
-      const imageUrl = await imageRef.getDownloadURL();
-      return imageUrl;
-    } catch (error) {
-      console.error('Error getting image from storage:', error);
-      // 오류 처리 - 기본 이미지 URL 또는 다른 대체 수단을 사용할 수 있습니다.
-      return 'https://example.com/default-image.png';
-    }
-  }
-
-
   // 마커 데이터 생성
   const makeMarkersData = () => {
     let markersData = '';
@@ -203,17 +189,13 @@ export default function App({ navigation }) {
     `;
 
     }
-    const processLocation = async (location, i) => {
-      const phoneNum = location.phoneNum;
-      const overlayImageSrc = await getImageFromStorage('dlalwl');
 
+    // Location markers
+    locations.forEach((location, i) => {
+      var phoneNum = location.phoneNum;
+      phoneNum = phoneNum.slice(0, 3) + "-" + phoneNum.slice(3, 7) + "-" + phoneNum.slice(7);
 
-      // Location markers
-      locations.forEach((location, i) => {
-        var phoneNum = location.phoneNum;
-        phoneNum = phoneNum.slice(0, 3) + "-" + phoneNum.slice(3, 7) + "-" + phoneNum.slice(7);
-
-        markersData += `
+      markersData += `
     var imageSrc${i} = 'https://i.postimg.cc/j2SG8ZJZ/pngegg.png';
     var imageSize${i} = new kakao.maps.Size(80, 85);
     var imageOption${i} = { offset: new kakao.maps.Point(26, 69) };
@@ -238,7 +220,7 @@ export default function App({ navigation }) {
     <div style="padding:10px; border: 2px solid #FF0000;">
       <div style="display: flex; align-items: center;">
         <div style="float: left; width: 50%;">
-          <img src="${overlayImageSrc}" style="width: 150px; height: auto;">
+          <img src="https://i.postimg.cc/DzyDm8yR/klipartz-com.png" style="width: 150px; height: auto;">
         </div>
         <div style="float: right; width: 50%;">
           <div class="info-title">시설 이름: ${location.adName}</div>
@@ -265,16 +247,16 @@ export default function App({ navigation }) {
     kakao.maps.event.addListener(marker${i}, 'click', commonClickHandler);
     kakao.maps.event.addListener(overlay${i}, 'click', commonClickHandler);
   `;
-      });
+    });
 
-      return markersData;
-    }
-
-
+    return markersData;
+  }
 
 
-    //HTML 생성
-    const generateHTML = (markersData, linePathString, showEndRoute) => `
+
+
+  //HTML 생성
+  const generateHTML = (markersData, linePathString, showEndRoute) => `
     <!DOCTYPE html>
     <html>
     <head>
@@ -355,58 +337,58 @@ export default function App({ navigation }) {
     </html>
   `;
 
-    if (!locations.length || permissionStatus === null) {
-      return null;
-    }
-
-
-    return (
-      <View style={{ flex: 1 }}>
-        <View style={{ backgroundColor: '#44A5FF', width: '100%', height: '12%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-          {/* 상단부분 */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#44A5FF', width: '100%', height: '20%', marginTop: '13%' }}>
-            <TouchableOpacity style={{ marginLeft: '6%', marginRight: '2%' }} onPress={() => navigation.navigate('Home')}>
-              <Image
-                style={{ width: 50, height: 50 }}
-                source={require('../../assets/backkey.png')}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-            <Text style={{ fontFamily: 'Play-Bold', fontSize: 25, color: 'white' }}>프로필</Text>
-            <TouchableOpacity style={{ marginTop: '2%', marginLeft: '36%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={handleLogoutButtonClick}>
-              <Image
-                style={{ width: 90, height: 70 }}
-                source={require('../../assets/add.png')}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <WebView
-          originWhitelist={['*']}
-          source={{ html }}
-          style={{ flex: 1 }}
-          onMessage={(event) => {
-            const message = event.nativeEvent.data;
-            console.log(message);
-            if (message === 'endRoute') {
-              setMarkerCoordinates({ x: null, y: null });
-              setShowEndRoute(false);
-            } else {
-              const coordinateStrings = message.split(', ');
-              const x = parseFloat(coordinateStrings[0].split(': ')[1]);
-              const y = parseFloat(coordinateStrings[1].split(': ')[1]);
-              kakaoMap(x, y); // 호출
-            }
-          }}
-          onShouldStartLoadWithRequest={(request) => {
-            if (request.url.startsWith('http') && request.url !== 'about:blank') {
-              Linking.openURL(request.url);
-              return false;
-            }
-            return true;
-          }}
-        />
-      </View>
-    );
+  if (!locations.length || permissionStatus === null) {
+    return null;
   }
+
+
+  return (
+    <View style={{ flex: 1 }}>
+      <View style={{ backgroundColor: '#44A5FF', width: '100%', height: '12%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
+        {/* 상단부분 */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#44A5FF', width: '100%', height: '20%', marginTop: '13%' }}>
+          <TouchableOpacity style={{ marginLeft: '6%', marginRight: '2%' }} onPress={() => navigation.navigate('Home')}>
+            <Image
+              style={{ width: 50, height: 50 }}
+              source={require('../../assets/backkey.png')}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+          <Text style={{ fontFamily: 'Play-Bold', fontSize: 25, color: 'white' }}>프로필</Text>
+          <TouchableOpacity style={{ marginTop: '2%', marginLeft: '36%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={handleLogoutButtonClick}>
+            <Image
+              style={{ width: 90, height: 70 }}
+              source={require('../../assets/add.png')}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <WebView
+        originWhitelist={['*']}
+        source={{ html }}
+        style={{ flex: 1 }}
+        onMessage={(event) => {
+          const message = event.nativeEvent.data;
+          console.log(message);
+          if (message === 'endRoute') {
+            setMarkerCoordinates({ x: null, y: null });
+            setShowEndRoute(false);
+          } else {
+            const coordinateStrings = message.split(', ');
+            const x = parseFloat(coordinateStrings[0].split(': ')[1]);
+            const y = parseFloat(coordinateStrings[1].split(': ')[1]);
+            kakaoMap(x, y); // 호출
+          }
+        }}
+        onShouldStartLoadWithRequest={(request) => {
+          if (request.url.startsWith('http') && request.url !== 'about:blank') {
+            Linking.openURL(request.url);
+            return false;
+          }
+          return true;
+        }}
+      />
+    </View>
+  );
+}

@@ -48,7 +48,7 @@ const Login = ({ navigation }) => {
 
       // 백엔드 서버로 POST 요청 보내기
       const response = await axios.post(
-        "http://172.16.106.73:8888/boot/restaurant/login",
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/login",
         formData
       );
       const userInfo = response.data[0];
