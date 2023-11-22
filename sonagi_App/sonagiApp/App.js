@@ -16,6 +16,9 @@ import ChangeInfo from './screens/give/ChangeInfo';
 import Mapadd from './screens/give/Mapadd';
 import RegistGive from './screens/give/Registgive';
 import GiveReq from './screens/give/GiveReq';
+import ManagePage from './screens/give/ManagePage';
+import ManageNotice from './screens/give/ManageNotice';
+import ManageReq from './screens/give/ManageReq';
 
 // 피기부자 
 import Homep from './screens/givep/Homep';
@@ -28,6 +31,7 @@ import Donatep from './screens/givep/Donatep';
 import KakaoMapp from './screens/givep/KakaoMapp';
 import GiveReqp from './screens/givep/GiveReqp';
 import Mapaddp from './screens/givep/Mapaddp';
+
 
 import { useState } from 'react';
 // 폰트 관련 코드
@@ -201,6 +205,24 @@ export default function App() {
         <Stack.Screen
           name="Mapaddp"
           component={Mapaddp}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="ManagePage"
+          component={ManagePage}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="ManageNotice"
+          component={ManageNotice}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="ManageReq"
+          component={ManageReq}
           options={{
             headerShown: false,
           }} />

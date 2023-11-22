@@ -15,7 +15,7 @@ const Login = ({ navigation }) => {
     // 로그인 버튼을 눌렀을때 값을 서버에 보냄
     const [isLoginSuccessModalVisible, setLoginSuccessModalVisible] = useState(false); // 모달 알림창의 상태
 
-
+    {/* 기부자 페이지 */}
     const handleLoginButtonClick = () => {
         setLoginSuccessModalVisible(true); // 가입 버튼 클릭 시 모달 표시
 
@@ -26,6 +26,7 @@ const Login = ({ navigation }) => {
         }, 2000);
     };
 
+    {/* 피기부자 페이지 */}
     const handleLoginButton2Click = () => {
         setLoginSuccessModalVisible(true); // 가입 버튼 클릭 시 모달 표시
 
@@ -33,6 +34,17 @@ const Login = ({ navigation }) => {
         setTimeout(() => {
             setLoginSuccessModalVisible(false);
             navigation.navigate('Homep'); // 메인화면으로 이동
+        }, 2000);
+    };
+
+    {/* 관리자 페이지 */}
+    const handleLoginButton3Click = () => {
+        setLoginSuccessModalVisible(true); // 가입 버튼 클릭 시 모달 표시
+
+        // 2초 후에 모달 숨김
+        setTimeout(() => {
+            setLoginSuccessModalVisible(false);
+            navigation.navigate('ManagePage'); // 메인화면으로 이동
         }, 2000);
     };
 
@@ -147,9 +159,19 @@ const Login = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
 
-                {/* 로그인 버튼 (피기부자 */}
+                {/* 로그인 버튼 (피기부자) */}
                 <View style={{ flexDirection: 'row', marginLeft: '70%' }}>
                     <TouchableOpacity onPress={handleLoginButton2Click}>
+                        <Image
+                            style={{ width: 40, height: 40 }}
+                            source={require('../../assets/login1.png')}
+                            resizeMode="contain"
+                        />
+                    </TouchableOpacity>
+                </View>
+                {/* 로그인 버튼 (관리자) */}
+                <View style={{ flexDirection: 'row', marginLeft: '70%' }}>
+                    <TouchableOpacity onPress={handleLoginButton3Click}>
                         <Image
                             style={{ width: 40, height: 40 }}
                             source={require('../../assets/login1.png')}
