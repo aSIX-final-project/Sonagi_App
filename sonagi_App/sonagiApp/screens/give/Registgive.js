@@ -16,8 +16,58 @@ import {
 } from "react-native";
 import { KeyboardAvoidingView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { useForm } from "react-hook-form";
+import axios from "axios";
 
-const RegistGive = ({ navigation }) => {
+const RegistGive = ({ navigation, route }) => {
+  const { userInfo } = route.params;
+
+  const {
+    watch, // 입력 값 감시
+    setValue, // 입력 값 설정
+    formState: { errors }, // 폼 상태와 에러
+  } = useForm();
+
+  // 수정 필요 함수 구현 다시 해야댐 Food DB에 값 추가할꺼임
+  const handleFoodRegist = async () => {
+    try {
+      // POST 요청에 필요한 데이터
+      const formData = {
+        id: userInfo.id,
+        adName: watch("Changename"),
+        adTel: watch("Changenum"),
+        managerName: userInfo.name,
+        address: watch("Changeadd"),
+        totalHc: 0,
+        introduction: null,
+      };
+
+      // 폼 데이터를 JSON 문자열로 변환하여 확인
+      const jsonData = JSON.stringify(formData);
+      console.log(jsonData);
+
+      // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
+      const response = await axios.post(
+        "http://172.16.106.73:8888/boot/admin/requestAdmin",
+        formData
+      );
+      console.log(response.data);
+      // 백엔드로부터 온 응답 처리
+      if (response.status === 200) {
+        // 시설 정보 변경 요청 성공
+        console.log("시설 정보 변경 요청 성공");
+        // 여기에서 필요한 추가 작업 수행 가능
+      } else {
+        // 시설 정보 변경 요청 실패
+        console.log("시설 정보 변경 요청 실패");
+        // 에러 처리 로직
+      }
+    } catch (error) {
+      console.error("에러:", error);
+      // 에러 처리 로직
+    }
+  };
+
   {
     /* 카메라, 갤러리 모달 관리 */
   }
@@ -132,7 +182,9 @@ const RegistGive = ({ navigation }) => {
             >
               <TouchableOpacity
                 style={{ marginLeft: "6%", marginRight: "2%" }}
-                onPress={() => navigation.navigate("KakaoMap")}
+                onPress={() =>
+                  navigation.navigate("KakaoMap", { userInfo: userInfo })
+                }
               >
                 <Image
                   style={{ width: 50, height: 50 }}
@@ -216,6 +268,7 @@ const RegistGive = ({ navigation }) => {
                 style={styles.inputtext2}
                 textAlign="center" // 가운데 정렬
                 maxLength={11} // 3자리수 까지 입력가능
+                onChangeText={(text) => setValue("foodName", text)}
               />
             </View>
             <View style={styles.lineStyle} />
@@ -302,6 +355,7 @@ const RegistGive = ({ navigation }) => {
                 textAlign="center" // 가운데 정렬
                 keyboardType="numeric" // 숫자만 입력
                 maxLength={3} // 3자리수 까지 입력가능
+                onChangeText={(text) => setValue("foodAmount", text)}
               />
               <Text
                 style={{
@@ -342,6 +396,7 @@ const RegistGive = ({ navigation }) => {
                 alignItems: "center",
                 justifyContent: "center",
               }}
+              onPress={handleFoodRegist}
             >
               <Text
                 style={{
