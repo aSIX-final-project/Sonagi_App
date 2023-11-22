@@ -2,8 +2,8 @@
   "expoServerPort": 19000,
   "packagerPort": 19000,
   "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerNgrokUrl": "https://z5-cp5.nahollo.sonagiapp.exp.direct",
+  "packagerNgrokUrl": "https://z5-cp5.nahollo.sonagiapp.exp.direct",
+  "ngrokPid": 5864,
   "webpackServerPort": null
 }
