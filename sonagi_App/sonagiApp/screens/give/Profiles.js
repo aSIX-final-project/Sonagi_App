@@ -8,6 +8,8 @@ import {
   Linking,
   Platform,
   Modal,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 
 const Profiles = ({ navigation, route }) => {
@@ -131,7 +133,7 @@ const Profiles = ({ navigation, route }) => {
               marginTop: "2%",
             }}
           >
-            {userInfo.managerName} 님
+            {userInfo.name} 님
           </Text>
           <Text
             style={{
@@ -255,10 +257,10 @@ const Profiles = ({ navigation, route }) => {
             fontFamily: "Play-Bold",
             fontSize: 23,
             color: "#8B8E90",
-            marginRight: "34%",
+            marginRight: "23%",
           }}
         >
-          시설 소개
+          시설 정보 변경
         </Text>
 
         <TouchableOpacity

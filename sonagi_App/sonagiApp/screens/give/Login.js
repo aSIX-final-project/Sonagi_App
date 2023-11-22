@@ -48,7 +48,7 @@ const Login = ({ navigation }) => {
 
       // 백엔드 서버로 POST 요청 보내기
       const response = await axios.post(
-        "http://172.16.104.7:8888/boot/member/login",
+        "http://172.16.106.73:8888/boot/restaurant/login",
         formData
       );
       const userInfo = response.data[0];
@@ -76,14 +76,46 @@ const Login = ({ navigation }) => {
     }
   };
 
-  const handleLoginButton2Click = () => {
-    setLoginSuccessModalVisible(true); // 가입 버튼 클릭 시 모달 표시
+  const handleLoginButton2Click = async () => {
+    try {
+      // 사용자 이름과 비밀번호 폼 데이터 가져오기
+      const formData = {
+        id: watch("username"),
+        password: watch("password"),
+      };
 
-    // 2초 후에 모달 숨김
-    setTimeout(() => {
-      setLoginSuccessModalVisible(false);
-      navigation.navigate("Homep"); // 메인화면으로 이동
-    }, 2000);
+      // 폼 데이터를 JSON 문자열로 변환하여 확인
+      const jsonData = JSON.stringify(formData);
+      console.log(jsonData);
+
+      // 백엔드 서버로 POST 요청 보내기
+      const response = await axios.post(
+        "http://172.16.106.73:8888/boot/member/login",
+        formData
+      );
+      const userInfo = response.data[0];
+
+      // 이름이 일치할 경우
+      if (userInfo.id === watch("username")) {
+        // 로그인 성공
+        console.log("로그인 성공", userInfo);
+
+        // 모달 표시
+        setLoginSuccessModalVisible(true);
+
+        // 2초 후에 홈 화면으로 이동
+        setTimeout(() => {
+          setLoginSuccessModalVisible(false);
+          navigation.navigate("Homep", { userInfo: userInfo });
+        }, 2000);
+      } else {
+        // 사용자 정보가 없는 경우
+        console.log("로그인 실패: 사용자 정보 없음");
+      }
+    } catch (error) {
+      // 에러 발생 시 처리
+      console.error("로그인 실패", error);
+    }
   };
 
   // 사용자 이름 필드에 대한 유효성 검사 및 등록

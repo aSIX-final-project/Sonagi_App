@@ -13,11 +13,60 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { useForm } from "react-hook-form";
+import axios from "axios";
 
-const ChangeInfo = ({ navigation }) => {
+const ChangeInfo = ({ navigation, route }) => {
+  const { userInfo } = route.params;
+
+  const {
+    watch, // 입력 값 감시
+    setValue, // 입력 값 설정
+    formState: { errors }, // 폼 상태와 에러
+  } = useForm();
+
   // 로그아웃 버튼을 눌렀을때 값을 서버에 보냄
   const [isLogoutSuccessModalVisible, setLogoutSuccessModalVisible] =
     useState(false); // 모달 알림창의 상태
+
+  const handleInfoChange = async () => {
+    try {
+      // POST 요청에 필요한 데이터
+      const formData = {
+        id: userInfo.id,
+        adName: watch("Changename"),
+        adTel: watch("Changenum"),
+        managerName: userInfo.name,
+        address: watch("Changeadd"),
+        totalHc: 0,
+        introduction: null,
+      };
+
+      // 폼 데이터를 JSON 문자열로 변환하여 확인
+      const jsonData = JSON.stringify(formData);
+      console.log(jsonData);
+
+      // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
+      const response = await axios.post(
+        "http://172.16.106.73:8888/boot/admin/requestAdmin",
+        formData
+      );
+      console.log(response.data);
+      // 백엔드로부터 온 응답 처리
+      if (response.status === 200) {
+        // 시설 정보 변경 요청 성공
+        console.log("시설 정보 변경 요청 성공");
+        // 여기에서 필요한 추가 작업 수행 가능
+      } else {
+        // 시설 정보 변경 요청 실패
+        console.log("시설 정보 변경 요청 실패");
+        // 에러 처리 로직
+      }
+    } catch (error) {
+      console.error("에러:", error);
+      // 에러 처리 로직
+    }
+  };
 
   const handleLogoutButtonClick = () => {
     setLogoutSuccessModalVisible(true); // 가입 버튼 클릭 시 모달 표시
@@ -83,7 +132,9 @@ const ChangeInfo = ({ navigation }) => {
             >
               <TouchableOpacity
                 style={{ marginLeft: "6%", marginRight: "2%" }}
-                onPress={() => navigation.navigate("Profiles")}
+                onPress={() =>
+                  navigation.navigate("Profiles", { userInfo: userInfo })
+                }
               >
                 <Image
                   style={{ width: 50, height: 50 }}
@@ -152,7 +203,7 @@ const ChangeInfo = ({ navigation }) => {
                   marginTop: "2%",
                 }}
               >
-                최광혁 님
+                {userInfo.name} 님
               </Text>
               <Text
                 style={{
@@ -162,7 +213,7 @@ const ChangeInfo = ({ navigation }) => {
                   marginTop: "1%",
                 }}
               >
-                주식회사 야놀자
+                {userInfo.adName}
               </Text>
             </View>
           </View>
@@ -219,6 +270,7 @@ const ChangeInfo = ({ navigation }) => {
               style={styles.input}
               autoCapitalize="none"
               returnKeyType="next"
+              onChangeText={(text) => setValue("Changeadd", text)}
               clearButtonMode="while-editing"
               placeholder="Enter address"
               name="Changeadd"
@@ -238,6 +290,7 @@ const ChangeInfo = ({ navigation }) => {
               style={styles.input}
               autoCapitalize="none"
               returnKeyType="next"
+              onChangeText={(text) => setValue("Changenum", text)}
               clearButtonMode="while-editing"
               placeholder="Enter number"
               name="Changenum"
@@ -257,6 +310,7 @@ const ChangeInfo = ({ navigation }) => {
               style={styles.input}
               autoCapitalize="none"
               returnKeyType="next"
+              onChangeText={(text) => setValue("Changename", text)}
               clearButtonMode="while-editing"
               placeholder="Enter name"
               name="Changename"
@@ -273,7 +327,7 @@ const ChangeInfo = ({ navigation }) => {
                 justifyContent: "center",
                 alignItems: "center",
               }}
-              onPress={() => navigation.navigate("Login")}
+              onPress={handleInfoChange}
             >
               <Text
                 style={{
@@ -282,7 +336,7 @@ const ChangeInfo = ({ navigation }) => {
                   color: "#69B7FF",
                 }}
               >
-                수정
+                변경 신청
               </Text>
             </TouchableOpacity>
           </View>

@@ -56,7 +56,7 @@ const Home = ({ navigation, route }) => {
               fontFamily: "Play-Bold",
             }}
           >
-            {userInfo.managerName} 님
+            {userInfo.name} 님
           </Text>
           <Text
             style={{
@@ -185,7 +185,9 @@ const Home = ({ navigation, route }) => {
 
       {/* 네번째 라인 (공지사항) */}
       <View style={styles.fourthContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate("Notice")}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Notice", { userInfo: userInfo })}
+        >
           <View style={styles.fourthOneContainer}>
             <View
               style={{

@@ -42,11 +42,11 @@ const ChangePw = ({ navigation, route }) => {
         const formData = {
           id: userInfo.id,
           password: watch("ChangePw"),
+          name: userInfo.name,
           adTel: userInfo.adTel,
           adName: userInfo.adName,
           address: userInfo.address,
-          totalHc: userInfo.totalHc,
-          introduction: userInfo.introduction,
+          bNum: userInfo.bNum,
         };
 
         // 폼 데이터를 JSON 문자열로 변환하여 확인
@@ -55,7 +55,7 @@ const ChangePw = ({ navigation, route }) => {
 
         // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
         const response = await axios.post(
-          "http://172.16.104.7:8888/boot/member/modify",
+          "http://172.16.106.73:8888/boot/restaurant/modify",
           formData
         );
         // 백엔드로부터 온 응답 처리
@@ -210,7 +210,7 @@ const ChangePw = ({ navigation, route }) => {
                   marginTop: "2%",
                 }}
               >
-                {userInfo.managerName} 님
+                {userInfo.name} 님
               </Text>
               <Text
                 style={{
