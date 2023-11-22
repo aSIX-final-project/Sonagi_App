@@ -3,6 +3,7 @@ import { WebView } from 'react-native-webview';
 import axios from 'axios';
 import { Linking, View, TouchableOpacity, Image, Text, handleLogoutButtonClick } from 'react-native';
 import * as Location from 'expo-location';
+import storage from '@react-native-firebase/storage';
 
 export default function App({ navigation }) {
   const [locations, setLocations] = useState([]);
@@ -167,6 +168,19 @@ export default function App({ navigation }) {
   };
 
 
+  const getImageFromStorage = async (imageName) => {
+    try {
+      const imageRef = storage().ref(imageName);
+      const imageUrl = await imageRef.getDownloadURL();
+      return imageUrl;
+    } catch (error) {
+      console.error('Error getting image from storage:', error);
+      // 오류 처리 - 기본 이미지 URL 또는 다른 대체 수단을 사용할 수 있습니다.
+      return 'https://example.com/default-image.png';
+    }
+  }
+
+
   // 마커 데이터 생성
   const makeMarkersData = () => {
     let markersData = '';
@@ -181,53 +195,86 @@ export default function App({ navigation }) {
       var currentMarkerPosition = new kakao.maps.LatLng(${currentPosition.y}, ${currentPosition.x}); 
       var currentMarker = new kakao.maps.Marker({ position: currentMarkerPosition, image: markerImageCurrent });
       currentMarker.setMap(map);
-
+  
       var currentMarkerInfoWindow = new kakao.maps.InfoWindow({ content: '<div style="padding:5px;">현위치</div>' });
       kakao.maps.event.addListener(currentMarker, 'click', function() {
         currentMarkerInfoWindow.open(map, currentMarker);
       });
     `;
+
+    }
+    const processLocation = async (location, i) => {
+      const phoneNum = location.phoneNum;
+      const overlayImageSrc = await getImageFromStorage('dlalwl');
+
+
+      // Location markers
+      locations.forEach((location, i) => {
+        var phoneNum = location.phoneNum;
+        phoneNum = phoneNum.slice(0, 3) + "-" + phoneNum.slice(3, 7) + "-" + phoneNum.slice(7);
+
+        markersData += `
+    var imageSrc${i} = 'https://i.postimg.cc/j2SG8ZJZ/pngegg.png';
+    var imageSize${i} = new kakao.maps.Size(80, 85);
+    var imageOption${i} = { offset: new kakao.maps.Point(26, 69) };
+    var markerImage${i} = new kakao.maps.MarkerImage(imageSrc${i}, imageSize${i}, imageOption${i});
+    var markerPosition${i} = new kakao.maps.LatLng(${location.coordinates.y}, ${location.coordinates.x}); 
+    var marker${i} = new kakao.maps.Marker({ position: markerPosition${i}, image: markerImage${i} });
+    marker${i}.setMap(map);
+
+    var overlayImageSrc${i} = 'https://i.postimg.cc/FsqzKNmz/sonagi-char.png';  // 추가하려는 이미지 URL
+    var overlayContent${i} = '<div><img src="' + overlayImageSrc${i} + '" style="width: 30px; height: 30px;"></div>';  // 오버레이 내용
+
+    var overlay${i} = new kakao.maps.CustomOverlay({
+      position: markerPosition${i},
+      content: overlayContent${i},
+      yAnchor: 1.55,  // 오버레이가 마커의 위에 위치하도록
+      xAnchor: 0.08   // 오버레이를 오른쪽으로 이동
+    });
+
+    overlay${i}.setMap(map);
+
+    var iwContent${i} = \`
+    <div style="padding:10px; border: 2px solid #FF0000;">
+      <div style="display: flex; align-items: center;">
+        <div style="float: left; width: 50%;">
+          <img src="${overlayImageSrc}" style="width: 150px; height: auto;">
+        </div>
+        <div style="float: right; width: 50%;">
+          <div class="info-title">시설 이름: ${location.adName}</div>
+          <div>시설장 이름: ${location.managerName}</div>
+          <div>${phoneNum}</div>
+        </div>
+      </div>
+      <div style="clear: both; text-align: center;">
+        <button id="routeButton${i}" style="margin-top: 5px; width: 150px;">길 찾기</button>
+      </div>
+    </div>
+    \`;
+
+    var infowindow${i} = new kakao.maps.InfoWindow({ content: iwContent${i}, removable: true });
+
+    // 공통 이벤트 핸들러
+    var commonClickHandler = function() {
+      infowindow${i}.open(map, marker${i});
+      document.getElementById('routeButton${i}').addEventListener('click', function() {
+        window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}, name: ${location.adName}');
+      });
+    };
+
+    kakao.maps.event.addListener(marker${i}, 'click', commonClickHandler);
+    kakao.maps.event.addListener(overlay${i}, 'click', commonClickHandler);
+  `;
+      });
+
+      return markersData;
     }
 
-    // Location markers
-     locations.forEach((location, i) => {
-    markersData += `
-      var imageSrc${i} = 'https://i.postimg.cc/DzyDm8yR/klipartz-com.png';
-      var imageSize${i} = new kakao.maps.Size(64, 69);
-      var imageOption${i} = { offset: new kakao.maps.Point(27, 69) };
-      var markerImage${i} = new kakao.maps.MarkerImage(imageSrc${i}, imageSize${i}, imageOption${i});
-      var markerPosition${i} = new kakao.maps.LatLng(${location.coordinates.y}, ${location.coordinates.x}); 
-      var marker${i} = new kakao.maps.Marker({ position: markerPosition${i}, image: markerImage${i} });
-      marker${i}.setMap(map);
-
-      var iwContent${i} = \`
-        <div style="padding:10px;">
-          <div class="info-title">시설명: ${location.adName}</div>
-          <div>시설장 이름: ${location.managerName}</div>
-          <div>홈페이지: <a href="${location.homepage}" target="_blank">${location.homepage}</a></div>
-          <div>전화번호: ${location.phoneNum}</div>
-          <button id="routeButton${i}" style="margin-top: 5px;">길 찾기</button>
-        </div>
-      \`;
-
-      var infowindow${i} = new kakao.maps.InfoWindow({ content: iwContent${i}, removable: true });
-
-      kakao.maps.event.addListener(marker${i}, 'click', function() {
-        infowindow${i}.open(map, marker${i});  
-        document.getElementById('routeButton${i}').addEventListener('click', function() {
-          window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}, name: ${location.adName}');
-        });
-      });
-    `;
-  });
-
-    return markersData;
-  };
 
 
 
-  //HTML 생성
-  const generateHTML = (markersData, linePathString, showEndRoute) => `
+    //HTML 생성
+    const generateHTML = (markersData, linePathString, showEndRoute) => `
     <!DOCTYPE html>
     <html>
     <head>
@@ -271,9 +318,9 @@ export default function App({ navigation }) {
         var container = document.getElementById('map');
         var options = {
           center: new kakao.maps.LatLng(${currentPosition ? currentPosition.y : locations[0].coordinates.y}, ${currentPosition ? currentPosition.x : locations[0].coordinates.x}),
-          maxLevel:8,
-          minLevel:0,
-          level: 2
+          maxLevel:3,
+          minLevel:1,
+          level: 1
         };
         var map = new kakao.maps.Map(container, options); //맵 생성
         ${markersData}
@@ -308,58 +355,58 @@ export default function App({ navigation }) {
     </html>
   `;
 
-  if (!locations.length || permissionStatus === null) {
-    return null;
-  }
+    if (!locations.length || permissionStatus === null) {
+      return null;
+    }
 
 
-  return (
-    <View style={{ flex: 1 }}>
-      <View style={{ backgroundColor: '#44A5FF', width: '100%', height: '12%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-        {/* 상단부분 */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#44A5FF', width: '100%', height: '20%', marginTop: '13%' }}>
-          <TouchableOpacity style={{ marginLeft: '6%', marginRight: '2%' }} onPress={() => navigation.navigate('Home')}>
-            <Image
-              style={{ width: 50, height: 50 }}
-              source={require('../../assets/backkey.png')}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-          <Text style={{ fontFamily: 'Play-Bold', fontSize: 25, color: 'white' }}>프로필</Text>
-          <TouchableOpacity style={{ marginTop: '2%', marginLeft: '36%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={handleLogoutButtonClick}>
-            <Image
-              style={{ width: 90, height: 70 }}
-              source={require('../../assets/add.png')}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
+    return (
+      <View style={{ flex: 1 }}>
+        <View style={{ backgroundColor: '#44A5FF', width: '100%', height: '12%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
+          {/* 상단부분 */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#44A5FF', width: '100%', height: '20%', marginTop: '13%' }}>
+            <TouchableOpacity style={{ marginLeft: '6%', marginRight: '2%' }} onPress={() => navigation.navigate('Home')}>
+              <Image
+                style={{ width: 50, height: 50 }}
+                source={require('../../assets/backkey.png')}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <Text style={{ fontFamily: 'Play-Bold', fontSize: 25, color: 'white' }}>프로필</Text>
+            <TouchableOpacity style={{ marginTop: '2%', marginLeft: '36%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={handleLogoutButtonClick}>
+              <Image
+                style={{ width: 90, height: 70 }}
+                source={require('../../assets/add.png')}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </View>
         </View>
+        <WebView
+          originWhitelist={['*']}
+          source={{ html }}
+          style={{ flex: 1 }}
+          onMessage={(event) => {
+            const message = event.nativeEvent.data;
+            console.log(message);
+            if (message === 'endRoute') {
+              setMarkerCoordinates({ x: null, y: null });
+              setShowEndRoute(false);
+            } else {
+              const coordinateStrings = message.split(', ');
+              const x = parseFloat(coordinateStrings[0].split(': ')[1]);
+              const y = parseFloat(coordinateStrings[1].split(': ')[1]);
+              kakaoMap(x, y); // 호출
+            }
+          }}
+          onShouldStartLoadWithRequest={(request) => {
+            if (request.url.startsWith('http') && request.url !== 'about:blank') {
+              Linking.openURL(request.url);
+              return false;
+            }
+            return true;
+          }}
+        />
       </View>
-      <WebView
-        originWhitelist={['*']}
-        source={{ html }}
-        style={{ flex: 1 }}
-        onMessage={(event) => {
-          const message = event.nativeEvent.data;
-          console.log(message);
-          if (message === 'endRoute') {
-            setMarkerCoordinates({ x: null, y: null });
-            setShowEndRoute(false);
-          } else {
-            const coordinateStrings = message.split(', ');
-            const x = parseFloat(coordinateStrings[0].split(': ')[1]);
-            const y = parseFloat(coordinateStrings[1].split(': ')[1]);
-            kakaoMap(x, y); // 호출
-          }
-        }}
-        onShouldStartLoadWithRequest={(request) => {
-          if (request.url.startsWith('http') && request.url !== 'about:blank') {
-            Linking.openURL(request.url);
-            return false;
-          }
-          return true;
-        }}
-      />
-    </View>
-  );
-}
+    );
+  }
