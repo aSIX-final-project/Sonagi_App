@@ -17,7 +17,8 @@ import {
 import { KeyboardAvoidingView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
-const GiveReq = ({ navigation }) => {
+const GiveReq = ({ navigation, route }) => {
+  const { userInfo } = route.params;
   {
     /* 카메라, 갤러리 모달 관리 */
   }

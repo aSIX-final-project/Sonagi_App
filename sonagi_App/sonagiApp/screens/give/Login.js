@@ -47,16 +47,27 @@ const Login = ({ navigation }) => {
       console.log(jsonData);
 
       // 백엔드 서버로 POST 요청 보내기
-      const response = await axios.post(
+      const responseR = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/login",
+
+        formData
+      );
+      const userInfoR = responseR.data[0];
+
+      // 백엔드 서버로 POST 요청 보내기
+      const responseM = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/login",
         formData
       );
-      const userInfo = response.data[0];
+      const userInfoM = responseM.data[0];
+
+      console.log(userInfoR);
+      console.log(userInfoM);
 
       // 이름이 일치할 경우
-      if (userInfo.id === watch("username")) {
+      if (userInfoR && userInfoR.id === watch("username")) {
         // 로그인 성공
-        console.log("로그인 성공", userInfo);
+        console.log("로그인 성공", userInfoR);
 
         // 모달 표시
         setLoginSuccessModalVisible(true);
@@ -64,41 +75,11 @@ const Login = ({ navigation }) => {
         // 2초 후에 홈 화면으로 이동
         setTimeout(() => {
           setLoginSuccessModalVisible(false);
-          navigation.navigate("Home", { userInfo: userInfo });
+          navigation.navigate("Home", { userInfo: userInfoR });
         }, 2000);
-      } else {
-        // 사용자 정보가 없는 경우
-        console.log("로그인 실패: 사용자 정보 없음");
-      }
-    } catch (error) {
-      // 에러 발생 시 처리
-      console.error("로그인 실패", error);
-    }
-  };
-
-  const handleLoginButton2Click = async () => {
-    try {
-      // 사용자 이름과 비밀번호 폼 데이터 가져오기
-      const formData = {
-        id: watch("username"),
-        password: watch("password"),
-      };
-
-      // 폼 데이터를 JSON 문자열로 변환하여 확인
-      const jsonData = JSON.stringify(formData);
-      console.log(jsonData);
-
-      // 백엔드 서버로 POST 요청 보내기
-      const response = await axios.post(
-        "http://172.16.106.73:8888/boot/member/login",
-        formData
-      );
-      const userInfo = response.data[0];
-
-      // 이름이 일치할 경우
-      if (userInfo.id === watch("username")) {
+      } else if (userInfoM && userInfoM.id === watch("username")) {
         // 로그인 성공
-        console.log("로그인 성공", userInfo);
+        console.log("로그인 성공", userInfoM);
 
         // 모달 표시
         setLoginSuccessModalVisible(true);
@@ -106,7 +87,7 @@ const Login = ({ navigation }) => {
         // 2초 후에 홈 화면으로 이동
         setTimeout(() => {
           setLoginSuccessModalVisible(false);
-          navigation.navigate("Homep", { userInfo: userInfo });
+          navigation.navigate("Homep", { userInfo: userInfoM });
         }, 2000);
       } else {
         // 사용자 정보가 없는 경우
@@ -241,22 +222,11 @@ const Login = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {/* 로그인 버튼 (기부자) */}
+        {/* 로그인 버튼 (기부자)(피기부자) */}
         <View style={{ flexDirection: "row", marginLeft: "70%" }}>
           <TouchableOpacity onPress={handleLoginButtonClick}>
             <Image
               style={{ width: 70, height: 100 }}
-              source={require("../../assets/login1.png")}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        </View>
-
-        {/* 로그인 버튼 (피기부자 */}
-        <View style={{ flexDirection: "row", marginLeft: "70%" }}>
-          <TouchableOpacity onPress={handleLoginButton2Click}>
-            <Image
-              style={{ width: 40, height: 40 }}
               source={require("../../assets/login1.png")}
               resizeMode="contain"
             />

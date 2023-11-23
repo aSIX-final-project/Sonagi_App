@@ -13,7 +13,8 @@ import {
 // 바텀시트
 import Bottomsheetfood from "./Bottomsheetfood";
 
-const Mapadd = ({ navigation }) => {
+const Mapadd = ({ navigation, route }) => {
+  const { userInfo } = route.params;
   // 바텀시트
   const [modalVisible, setModalVisible] = useState(false);
   const pressButton = () => {

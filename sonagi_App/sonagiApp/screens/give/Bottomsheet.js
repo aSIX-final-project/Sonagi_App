@@ -48,7 +48,7 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
 
       // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
       const response = await axios.post(
-        "http://172.16.106.73:8888/boot/restaurant/regist",
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/regist",
         formData
       );
 
@@ -246,7 +246,7 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
 
               <TextInput
                 style={styles.inputtext}
-                placeholder="010-0000-0000"
+                placeholder="010-1234-5678"
                 onChangeText={(text) => setValue("phoneNum", text)}
                 placeholderTextColor="#808080"
               ></TextInput>
@@ -265,7 +265,7 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
 
               <TextInput
                 style={styles.inputtext}
-                placeholder="010-0000-0000"
+                placeholder="02-123-4567"
                 onChangeText={(text) => setValue("adTel", text)}
                 placeholderTextColor="#808080"
               ></TextInput>
