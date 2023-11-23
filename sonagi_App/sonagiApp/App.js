@@ -13,12 +13,12 @@ import Thankyou from "./screens/give/Thankyou";
 import KakaoMap from "./screens/give/KakaoMap";
 import ChangePw from "./screens/give/ChangePw";
 import ChangeInfo from "./screens/give/ChangeInfo";
-// import Mapadd from "./screens/give/Mapadd";
+import Mapadd from "./screens/give/Mapadd";
 import Registgive from "./screens/give/Registgive";
-// import GiveReq from "./screens/give/GiveReq";
-// import ManagePage from "./screens/give/ManagePage";
-// import ManageNotice from "./screens/give/ManageNotice";
-// import ManageReq from "./screens/give/ManageReq";
+import GiveReq from "./screens/give/GiveReq";
+import ManagePage from "./screens/give/ManagePage";
+import ManageNotice from "./screens/give/ManageNotice";
+import ManageReq from "./screens/give/ManageReq";
 
 // 피기부자
 import Homep from "./screens/givep/Homep";
@@ -29,8 +29,8 @@ import Thankyoup from "./screens/givep/Thankyoup";
 import Noticep from "./screens/givep/Noticep";
 import Donatep from "./screens/givep/Donatep";
 import KakaoMapP from "./screens/givep/KakaoMapP";
-// import GiveReqp from "./screens/givep/GiveReqp";
-// import Mapaddp from "./screens/givep/Mapaddp";
+import GiveReqp from "./screens/givep/GiveReqp";
+import Mapaddp from "./screens/givep/Mapaddp";
 
 import { useState } from "react";
 // 폰트 관련 코드
@@ -201,6 +201,56 @@ export default function App() {
         <Stack.Screen
           name="Donatep"
           component={Donatep}
+          options={{
+            headerShown: false,
+          }}
+        />
+        mmmm
+        <Stack.Screen
+          name="Mapadd"
+          component={Mapadd}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="GiveReq"
+          component={GiveReq}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="GiveReqp"
+          component={GiveReqp}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Mapaddp"
+          component={Mapaddp}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="ManagePage"
+          component={ManagePage}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="ManageNotice"
+          component={ManageNotice}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="ManageReq"
+          component={ManageReq}
           options={{
             headerShown: false,
           }}
