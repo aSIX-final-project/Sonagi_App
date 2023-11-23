@@ -156,7 +156,7 @@ export default function App({ navigation, route }) {
     Linking.openURL(url).catch((err) =>
       console.error("An error occurred", err)
     );
-  };
+
 
   //현재 위치 업데이트 하기
   const updateCurrentPosition = (location) => {
@@ -197,6 +197,7 @@ export default function App({ navigation, route }) {
   const makeMarkersData = () => {
     let markersData = "";
 
+
     // Current position marker
     if (currentPosition) {
       markersData += `
@@ -229,6 +230,7 @@ export default function App({ navigation, route }) {
     var imageSrc${i} = 'https://i.postimg.cc/d3LL1YD8/happy5.gif'; 
     var imageSize${i} = new kakao.maps.Size(55, 55);
     var imageOption${i} = { offset: new kakao.maps.Point(33, 96) };
+
     var markerImage${i} = new kakao.maps.MarkerImage(imageSrc${i}, imageSize${i}, imageOption${i});
     var markerPosition${i} = new kakao.maps.LatLng(${location.coordinates.y}, ${location.coordinates.x}); 
     var marker${i} = new kakao.maps.Marker({ position: markerPosition${i}, image: markerImage${i} });
@@ -242,6 +244,7 @@ export default function App({ navigation, route }) {
     var overlay${i} = new kakao.maps.CustomOverlay({
       position: markerPosition${i},
       content: overlayContent${i},
+
       yAnchor: 0.95, 
       xAnchor: 0.58  
     });
@@ -264,10 +267,12 @@ export default function App({ navigation, route }) {
         <div style="clear: both; text-align: center;">
         <button id="routeButton${i}" style="margin-top: -15px; width: 200px; height: 50px; font-size: 18px; padding: 10px;">길 찾기</button>
         </div>
+
     </div>
     \`;
 
     var infowindow${i} = new kakao.maps.InfoWindow({ content: iwContent${i}, removable: true });
+
 
     (function(marker, infowindow, overlayContent, location) {
       var commonClickHandler = function() {
@@ -280,11 +285,14 @@ export default function App({ navigation, route }) {
       kakao.maps.event.addListener(marker, 'click', commonClickHandler);
       overlayContent.addEventListener('click', commonClickHandler);
     })(marker${i}, infowindow${i}, overlayContent${i}, location);
+
   `;
     });
 
     return markersData;
-  };
+  }
+
+
 
   //HTML 생성
   const generateHTML = (markersData, linePathString, showEndRoute) => `
@@ -330,11 +338,13 @@ export default function App({ navigation, route }) {
       <script>
         var container = document.getElementById('map');
         var options = {
+
           center: new kakao.maps.LatLng(${
             currentPosition ? currentPosition.y : locations[0].coordinates.y
           }, ${
             currentPosition ? currentPosition.x : locations[0].coordinates.x
           }),
+
           maxLevel:3,
           minLevel:1,
           level: 1
@@ -469,6 +479,7 @@ export default function App({ navigation, route }) {
             }}
             onPress={handleFoodRegistClick}
           >
+
             <Image
               style={{ width: 90, height: 70 }}
               source={require("../../assets/add.png")}
@@ -491,6 +502,7 @@ export default function App({ navigation, route }) {
             const coordinateStrings = message.split(", ");
             const x = parseFloat(coordinateStrings[0].split(": ")[1]);
             const y = parseFloat(coordinateStrings[1].split(": ")[1]);
+
             kakaoMap(x, y); // 호출
           }
         }}
