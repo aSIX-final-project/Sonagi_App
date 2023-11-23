@@ -87,7 +87,11 @@ const Home = ({ navigation, route }) => {
       {/* 세번째 라인(기부하기) */}
 
       <View style={styles.fifthContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate("KakaoMap")}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("KakaoMapP", { userInfo: userInfo })
+          }
+        >
           <View style={styles.fifthOneContainer}>
             <View
               style={{
