@@ -34,12 +34,16 @@ const RegistGive = ({ navigation, route }) => {
       // POST 요청에 필요한 데이터
       const formData = {
         id: userInfo.id,
-        adName: watch("Changename"),
-        adTel: watch("Changenum"),
-        managerName: userInfo.name,
-        address: watch("Changeadd"),
-        totalHc: 0,
-        introduction: null,
+        foodName: watch("foodName"),
+        foodAmount: watch("foodAmount"),
+        foodPrice: 13333,
+        foodTel: userInfo.adTel,
+        foodAddress: userInfo.address,
+        foodGiver: userInfo.adName,
+        foodImage:
+          // watch("foodImage")
+          "https://firebasestorage.googleapis.com/v0/b/sonagi-671d0.appspot.com/o/dlalwl?alt=media&token=5465d866-d493-4c1c-b57b-fff9432266f6",
+        foodUploadTime: "",
       };
 
       // 폼 데이터를 JSON 문자열로 변환하여 확인
@@ -48,18 +52,19 @@ const RegistGive = ({ navigation, route }) => {
 
       // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
       const response = await axios.post(
-        "http://172.16.106.73:8888/boot/admin/requestAdmin",
+        // "http://172.16.104.219:8888/boot/food/regist",
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/regist",
         formData
       );
       console.log(response.data);
       // 백엔드로부터 온 응답 처리
       if (response.status === 200) {
-        // 시설 정보 변경 요청 성공
-        console.log("시설 정보 변경 요청 성공");
+        // 음식 등록 성공
+        console.log("음식 등록 성공");
         // 여기에서 필요한 추가 작업 수행 가능
       } else {
-        // 시설 정보 변경 요청 실패
-        console.log("시설 정보 변경 요청 실패");
+        // 음식 등록 실패
+        console.log("음식 등록 실패");
         // 에러 처리 로직
       }
     } catch (error) {

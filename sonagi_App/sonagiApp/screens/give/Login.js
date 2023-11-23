@@ -49,6 +49,7 @@ const Login = ({ navigation }) => {
       // 백엔드 서버로 POST 요청 보내기
       const responseR = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/login",
+        // "http://172.16.104.219:8888/boot/restaurant/login",
         formData
       );
       const userInfoR = responseR.data[0];
@@ -56,6 +57,7 @@ const Login = ({ navigation }) => {
       // 백엔드 서버로 POST 요청 보내기
       const responseM = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/login",
+        // "http://172.16.104.219:8888/boot/member/login",
         formData
       );
       const userInfoM = responseM.data[0];
