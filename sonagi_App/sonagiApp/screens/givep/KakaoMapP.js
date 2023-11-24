@@ -3,10 +3,12 @@ import { WebView } from "react-native-webview";
 import axios from "axios";
 import { Linking, View, TouchableOpacity, Image, Text } from "react-native";
 import * as Location from "expo-location";
+
 import Registgive from "../give/Registgive";
 
 export default function App({ navigation, route }) {
   const { userInfo } = route.params;
+
 
   // testClick 클릭
   const testClick = () => {
@@ -77,6 +79,15 @@ export default function App({ navigation, route }) {
   const kakaoMap = (x, y) => {
     // 카카오 네비게이션 API를 이용해 길찾기 실행
     const url = `kakaomap://route?sp=${currentPosition.y},${currentPosition.x}&ep=${y},${x}&by=CAR`;
+
+    Linking.openURL(url).catch((err) =>
+      console.error("An error occurred", err)
+    );
+  };
+
+  const callPhone = (phoneNum) => {
+    // 카카오 네비게이션 API를 이용해 길찾기 실행
+    const url = `tel:${phoneNum}`;
 
     Linking.openURL(url).catch((err) =>
       console.error("An error occurred", err)
@@ -245,6 +256,7 @@ overlay${i}.setMap(map);
       </div>
       <div style="clear: both; text-align: center;">
       <button id="routeButton${i}" style="margin-top: -15px; width: 200px; height: 50px; font-size: 18px; padding: 10px;">길 찾기</button>
+      <button id="callButton${i}" style="margin-top: -15px; width: 200px; height: 50px; font-size: 18px; padding: 10px;">전화 걸기</button>
       </div>
   </div>
   \`;
@@ -254,9 +266,16 @@ overlay${i}.setMap(map);
   (function(marker, infowindow, overlayContent, location) {
     var commonClickHandler = function() {
       infowindow.open(map, marker);
+
       document.getElementById('routeButton${i}').addEventListener('click', function() {
         window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}, name: ${location.adName}');
       });
+
+      
+      document.getElementById('callButton${i}').addEventListener('click', function() {
+        window.ReactNativeWebView.postMessage('phoneNum: ${location.phoneNum}');
+      });
+
     };
 
     kakao.maps.event.addListener(marker, 'click', commonClickHandler);
@@ -265,6 +284,8 @@ overlay${i}.setMap(map);
 `;
     });
 
+
+    
     // Location markers
     resLocations.forEach((location, i) => {
       var phoneNum = location.phoneNum;
@@ -276,7 +297,7 @@ overlay${i}.setMap(map);
         phoneNum.slice(7);
 
       markersData += `
-  var imageSrc${i} = 'https://i.postimg.cc/d3LL1YD8/happy5.gif'; 
+  var imageSrc${i} = '${location.profileImage}'; 
   var imageSize${i} = new kakao.maps.Size(54, 54);
   var imageOption${i} = { offset: new kakao.maps.Point(33, 95) };
   var markerImage${i} = new kakao.maps.MarkerImage(imageSrc${i}, imageSize${i}, imageOption${i});
@@ -333,6 +354,9 @@ overlay${i}.setMap(map);
 `;
     });
 
+
+
+
     // Location markers
     foodLocations.forEach((location, i) => {
       var phoneNum = location.foodAddress;
@@ -364,21 +388,21 @@ overlay${i}.setMap(map);
     xAnchor: 0.58  
   });
 
-overlay${i}.setMap(map);
+  overlay${i}.setMap(map);
 
-var overlayImageSrc${i} = 'https://i.postimg.cc/fTbQVxRY/image.png';
+  var overlayImageSrc${i} = 'https://i.postimg.cc/4NyPt6Fg/image.png';
   var overlayContent${i} = document.createElement('div');
-  overlayContent${i}.innerHTML = '<img src="' + overlayImageSrc${i} + '" style="width: 200px; height: 60px;">';
+  overlayContent${i}.innerHTML = '<img src="' + overlayImageSrc${i} + '" style="width: 180px; height: 160px;">';
 
 
   var overlay${i} = new kakao.maps.CustomOverlay({
     position: markerPosition${i},
     content: overlayContent${i},
-    yAnchor: 2.7, 
-    xAnchor: 0.535  
+    yAnchor: 1.03, 
+    xAnchor: 0.54  
   });
 
-overlay${i}.setMap(map);
+  overlay${i}.setMap(map);
 
 
 
@@ -413,6 +437,7 @@ overlay${i}.setMap(map);
 
     kakao.maps.event.addListener(marker, 'click', commonClickHandler);
     overlayContent.addEventListener('click', commonClickHandler);
+    overlayContent2.addEventListener('click', commonClickHandler);
   })(marker${i}, infowindow${i}, overlayContent${i}, location);
 `;
     });
@@ -620,13 +645,14 @@ overlay${i}.setMap(map);
         onMessage={(event) => {
           const message = event.nativeEvent.data;
           console.log(message);
-          if (message === "endRoute") {
-            setMarkerCoordinates({ x: null, y: null });
-            setShowEndRoute(false);
+          if (message.startsWith("phoneNum:")) {
+            var phoneNum = message.split(": ")[1];
+            callPhone(phoneNum);
           } else {
             const coordinateStrings = message.split(", ");
             const x = parseFloat(coordinateStrings[0].split(": ")[1]);
             const y = parseFloat(coordinateStrings[1].split(": ")[1]);
+            
             kakaoMap(x, y); // 호출
           }
         }}
