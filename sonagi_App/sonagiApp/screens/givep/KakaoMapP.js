@@ -25,6 +25,7 @@ export default function App({ navigation, route }) {
 
   const [locations, setLocations] = useState([]);
   const [foodLocations, setFoodLocations] = useState([]);
+  const [resLocations, setResLocations] = useState([]);
   const [currentPosition, setCurrentPosition] = useState(null);
   const [permissionStatus, setPermissionStatus] = useState(null);
   const [locationSubscription, setLocationSubscription] = useState(null);
@@ -35,81 +36,6 @@ export default function App({ navigation, route }) {
   const [html, setHtml] = useState(""); // html 상태 변수 추가
   const [showEndRoute, setShowEndRoute] = useState(null);
 
-  const fetchDirections = async () => {
-    if (markerCoordinates.x !== null && markerCoordinates.y !== null) {
-      const REST_API_KEY = "db06c51425b99419a11f3881f8491642";
-      const url = "https://apis-navi.kakaomobility.com/v1/directions";
-
-      const origin = `${currentPosition.x},${currentPosition.y}`;
-      const destination = `${markerCoordinates.x},${markerCoordinates.y}`;
-
-      const headers = {
-        Authorization: `KakaoAK ${REST_API_KEY}`,
-        "Content-Type": "application/json",
-      };
-
-      const queryParams = new URLSearchParams({
-        origin: origin,
-        destination: destination,
-      });
-
-      const requestUrl = `${url}?${queryParams}`;
-
-      try {
-        const response = await fetch(requestUrl, {
-          method: "GET",
-          headers: headers,
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log(data);
-
-        const linePath = [];
-        const routes = data.routes;
-        routes.forEach((route) => {
-          const sections = route.sections;
-          sections.forEach((section) => {
-            console.log(section);
-
-            const roads = section.roads;
-            roads.forEach((road) => {
-              for (let i = 0; i < road.vertexes.length; i += 2) {
-                linePath.push({ x: road.vertexes[i], y: road.vertexes[i + 1] });
-              }
-            });
-          });
-          console.log(linePath.length);
-
-          console.log(linePath);
-
-          const summary = route.summary;
-          console.log(summary);
-        });
-
-        // linePath를 JSON 문자열로 변환
-        const showEndRoute = linePath.length > 0;
-        if (linePath.length > 0) {
-          setShowEndRoute(true);
-        } else {
-          setShowEndRoute(false);
-        }
-        const linePathString = JSON.stringify(linePath);
-
-        // 마커 데이터 생성
-        const markersData = makeMarkersData();
-        // WebView HTML에 linePath 추가
-        const html = generateHTML(markersData, linePathString, showEndRoute);
-        setHtml(html);
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
-  };
-
   useEffect(() => {
     if (currentPosition && locations.length > 0) {
       const markersData = makeMarkersData();
@@ -117,10 +43,6 @@ export default function App({ navigation, route }) {
       setHtml(html);
     }
   }, [currentPosition, locations]);
-
-  useEffect(() => {
-    fetchDirections();
-  }, [markerCoordinates]);
 
   //렌더링 될 때 실행
   useEffect(() => {
@@ -132,6 +54,7 @@ export default function App({ navigation, route }) {
     if (permissionStatus !== null) {
       fetchData();
       fetchData2();
+      fetchData3();
     }
   }, [permissionStatus]);
 
@@ -222,6 +145,34 @@ export default function App({ navigation, route }) {
 
     const locations = await Promise.all(fetchPromises);
     setFoodLocations(locations);
+  };
+
+  //데이터 가져오기
+  const fetchData3 = async () => {
+    const res = await axios.get(
+      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findAll"
+    ); //스프링 부트 : db에서 값 가져오기
+    //마커 찍을 좌표값 가져오기
+    console.log(res.data.list);
+    const fetchPromises = res.data.list.map(async (item) => {
+      const response = await fetch(
+        `https://dapi.kakao.com/v2/local/search/address.json?query=${item.address}`,
+        {
+          headers: {
+            Authorization: "KakaoAK db06c51425b99419a11f3881f8491642",
+          },
+        }
+      );
+      const data = await response.json();
+      console.log("789");
+      console.log(data);
+      const { x, y } =
+        data.documents[0].road_address || data.documents[0].address;
+      return { ...item, coordinates: { x, y } };
+    });
+
+    const locations = await Promise.all(fetchPromises);
+    setResLocations(locations);
   };
 
   // 마커 데이터 생성
@@ -315,6 +266,74 @@ overlay${i}.setMap(map);
     });
 
     // Location markers
+    resLocations.forEach((location, i) => {
+      var phoneNum = location.phoneNum;
+      phoneNum =
+        phoneNum.slice(0, 3) +
+        "-" +
+        phoneNum.slice(3, 7) +
+        "-" +
+        phoneNum.slice(7);
+
+      markersData += `
+  var imageSrc${i} = 'https://i.postimg.cc/d3LL1YD8/happy5.gif'; 
+  var imageSize${i} = new kakao.maps.Size(54, 54);
+  var imageOption${i} = { offset: new kakao.maps.Point(33, 95) };
+  var markerImage${i} = new kakao.maps.MarkerImage(imageSrc${i}, imageSize${i}, imageOption${i});
+  var markerPosition${i} = new kakao.maps.LatLng(${location.coordinates.y}, ${location.coordinates.x}); 
+  var marker${i} = new kakao.maps.Marker({ position: markerPosition${i}, image: markerImage${i} });
+  marker${i}.setMap(map);
+
+  var overlayImageSrc${i} = 'https://i.postimg.cc/3wgCh3tL/marker03.png';  // 음식 안올린 곳의 마커
+  var overlayContent${i} = document.createElement('div');
+  overlayContent${i}.innerHTML = '<img src="' + overlayImageSrc${i} + '" style="width: 100px; height: 110px;">';
+
+
+  var overlay${i} = new kakao.maps.CustomOverlay({
+    position: markerPosition${i},
+    content: overlayContent${i},
+    yAnchor: 0.95, 
+    xAnchor: 0.58  
+  });
+
+overlay${i}.setMap(map);
+
+  var iwContent${i} = \`
+
+  <div style="padding:10px; border: 2px solid #FF0000;">
+    <div style="display: flex; align-items: center; width: 500px; height:250px;">
+      <div style="float: left; width: 50%;">
+        <img src="https://i.postimg.cc/d3LL1YD8/happy5.gif" style="width: 230px; height: auto;">
+      </div>
+        <div style="float: right; width: 50%;">
+          <div class="info-title" style="font-size: 28px; text-align: center;">식당 이름: ${location.adName}</div>
+          <div style="font-size: 28px; text-align: center;">사장 이름: ${location.name}</div>
+          <div style="font-size: 28px; text-align: center;">${phoneNum}</div>
+        </div>
+      </div>
+      <div style="clear: both; text-align: center;">
+      <button id="routeButton${i}" style="margin-top: -15px; width: 200px; height: 50px; font-size: 18px; padding: 10px;">길 찾기</button>
+      </div>
+  </div>
+  \`;
+
+  var infowindow${i} = new kakao.maps.InfoWindow({ content: iwContent${i}, removable: true });
+
+  (function(marker, infowindow, overlayContent, location) {
+    var commonClickHandler = function() {
+      infowindow.open(map, marker);
+      document.getElementById('routeButton${i}').addEventListener('click', function() {
+        window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}, name: ${location.adName}');
+      });
+    };
+
+    kakao.maps.event.addListener(marker, 'click', commonClickHandler);
+    overlayContent.addEventListener('click', commonClickHandler);
+  })(marker${i}, infowindow${i}, overlayContent${i}, location);
+`;
+    });
+
+    // Location markers
     foodLocations.forEach((location, i) => {
       var phoneNum = location.foodAddress;
       phoneNum =
@@ -346,6 +365,22 @@ overlay${i}.setMap(map);
   });
 
 overlay${i}.setMap(map);
+
+var overlayImageSrc${i} = 'https://i.postimg.cc/fTbQVxRY/image.png';
+  var overlayContent${i} = document.createElement('div');
+  overlayContent${i}.innerHTML = '<img src="' + overlayImageSrc${i} + '" style="width: 200px; height: 60px;">';
+
+
+  var overlay${i} = new kakao.maps.CustomOverlay({
+    position: markerPosition${i},
+    content: overlayContent${i},
+    yAnchor: 2.7, 
+    xAnchor: 0.535  
+  });
+
+overlay${i}.setMap(map);
+
+
 
   var iwContent${i} = \`
 
@@ -381,6 +416,11 @@ overlay${i}.setMap(map);
   })(marker${i}, infowindow${i}, overlayContent${i}, location);
 `;
     });
+
+
+
+
+
 
     return markersData;
   };
@@ -429,9 +469,8 @@ overlay${i}.setMap(map);
   <script>
     var container = document.getElementById('map');
     var options = {
-      center: new kakao.maps.LatLng(${
-        currentPosition ? currentPosition.y : locations[0].coordinates.y
-      }, ${currentPosition ? currentPosition.x : locations[0].coordinates.x}),
+      center: new kakao.maps.LatLng(${currentPosition ? currentPosition.y : locations[0].coordinates.y
+    }, ${currentPosition ? currentPosition.x : locations[0].coordinates.x}),
       maxLevel:3,
       minLevel:1,
       level: 1
