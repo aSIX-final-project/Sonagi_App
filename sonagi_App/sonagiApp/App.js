@@ -19,6 +19,7 @@ import GiveReq from "./screens/give/GiveReq";
 import ManagePage from "./screens/give/ManagePage";
 import ManageNotice from "./screens/give/ManageNotice";
 import ManageReq from "./screens/give/ManageReq";
+// import BottomsheetModal from "./screens/give/BottomsheetModal";
 
 // 피기부자
 import Homep from "./screens/givep/Homep";
@@ -205,7 +206,6 @@ export default function App() {
             headerShown: false,
           }}
         />
-        mmmm
         <Stack.Screen
           name="Mapadd"
           component={Mapadd}
@@ -255,6 +255,13 @@ export default function App() {
             headerShown: false,
           }}
         />
+        {/* <Stack.Screen
+          name="BottomsheetModal"
+          component={BottomsheetModal}
+          options={{
+            headerShown: false,
+          }}
+        /> */}
       </Stack.Navigator>
     </NavigationContainer>
   );

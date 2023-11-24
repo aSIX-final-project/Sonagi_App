@@ -24,6 +24,7 @@ export default function App({ navigation, route }) {
   };
 
   const [locations, setLocations] = useState([]);
+  const [foodLocations, setFoodLocations] = useState([]);
   const [currentPosition, setCurrentPosition] = useState(null);
   const [permissionStatus, setPermissionStatus] = useState(null);
   const [locationSubscription, setLocationSubscription] = useState(null);
@@ -130,6 +131,7 @@ export default function App({ navigation, route }) {
   useEffect(() => {
     if (permissionStatus !== null) {
       fetchData();
+      fetchData2();
     }
   }, [permissionStatus]);
 
@@ -171,7 +173,7 @@ export default function App({ navigation, route }) {
     const res = await axios.get(
       "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/findAll"
     ); //스프링 부트 : db에서 값 가져오기
-    console.log(res);
+
     //마커 찍을 좌표값 가져오기
     const fetchPromises = res.data.list.map(async (item) => {
       const response = await fetch(
@@ -189,8 +191,37 @@ export default function App({ navigation, route }) {
         data.documents[0].road_address || data.documents[0].address;
       return { ...item, coordinates: { x, y } };
     });
+
     const locations = await Promise.all(fetchPromises);
     setLocations(locations);
+  };
+
+  //데이터 가져오기
+  const fetchData2 = async () => {
+    const res = await axios.get(
+      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/findAll"
+    ); //스프링 부트 : db에서 값 가져오기
+    //마커 찍을 좌표값 가져오기
+    console.log(res.data.list);
+    const fetchPromises = res.data.list.map(async (item) => {
+      const response = await fetch(
+        `https://dapi.kakao.com/v2/local/search/address.json?query=${item.foodAddress}`,
+        {
+          headers: {
+            Authorization: "KakaoAK db06c51425b99419a11f3881f8491642",
+          },
+        }
+      );
+      const data = await response.json();
+      console.log("456");
+      console.log(data);
+      const { x, y } =
+        data.documents[0].road_address || data.documents[0].address;
+      return { ...item, coordinates: { x, y } };
+    });
+
+    const locations = await Promise.all(fetchPromises);
+    setFoodLocations(locations);
   };
 
   // 마커 데이터 생성
@@ -200,19 +231,19 @@ export default function App({ navigation, route }) {
     // Current position marker
     if (currentPosition) {
       markersData += `
-      var imageSrcCurrent = 'https://i.postimg.cc/FsqzKNmz/sonagi-char.png';
-      var imageSizeCurrent = new kakao.maps.Size(64, 69);
-      var imageOptionCurrent = { offset: new kakao.maps.Point(27, 69) };
-      var markerImageCurrent = new kakao.maps.MarkerImage(imageSrcCurrent, imageSizeCurrent, imageOptionCurrent);
-      var currentMarkerPosition = new kakao.maps.LatLng(${currentPosition.y}, ${currentPosition.x}); 
-      var currentMarker = new kakao.maps.Marker({ position: currentMarkerPosition, image: markerImageCurrent });
-      currentMarker.setMap(map);
-  
-      var currentMarkerInfoWindow = new kakao.maps.InfoWindow({ content: '<div style="padding:5px;">현위치</div>' });
-      kakao.maps.event.addListener(currentMarker, 'click', function() {
-        currentMarkerInfoWindow.open(map, currentMarker);
-      });
-    `;
+  var imageSrcCurrent = 'https://i.postimg.cc/FsqzKNmz/sonagi-char.png';
+  var imageSizeCurrent = new kakao.maps.Size(64, 69);
+  var imageOptionCurrent = { offset: new kakao.maps.Point(27, 69) };
+  var markerImageCurrent = new kakao.maps.MarkerImage(imageSrcCurrent, imageSizeCurrent, imageOptionCurrent);
+  var currentMarkerPosition = new kakao.maps.LatLng(${currentPosition.y}, ${currentPosition.x}); 
+  var currentMarker = new kakao.maps.Marker({ position: currentMarkerPosition, image: markerImageCurrent });
+  currentMarker.setMap(map);
+
+  var currentMarkerInfoWindow = new kakao.maps.InfoWindow({ content: '<div style="padding:5px;">현위치</div>' });
+  kakao.maps.event.addListener(currentMarker, 'click', function() {
+    currentMarkerInfoWindow.open(map, currentMarker);
+  });
+`;
     }
 
     // Location markers
@@ -226,61 +257,129 @@ export default function App({ navigation, route }) {
         phoneNum.slice(7);
 
       markersData += `
-    var imageSrc${i} = 'https://i.postimg.cc/d3LL1YD8/happy5.gif'; 
-    var imageSize${i} = new kakao.maps.Size(55, 55);
-    var imageOption${i} = { offset: new kakao.maps.Point(33, 96) };
-    var markerImage${i} = new kakao.maps.MarkerImage(imageSrc${i}, imageSize${i}, imageOption${i});
-    var markerPosition${i} = new kakao.maps.LatLng(${location.coordinates.y}, ${location.coordinates.x}); 
-    var marker${i} = new kakao.maps.Marker({ position: markerPosition${i}, image: markerImage${i} });
-    marker${i}.setMap(map);
+  var imageSrc${i} = '${location.profileImage}'; 
+  var imageSize${i} = new kakao.maps.Size(54, 54);
+  var imageOption${i} = { offset: new kakao.maps.Point(33, 95) };
+  var markerImage${i} = new kakao.maps.MarkerImage(imageSrc${i}, imageSize${i}, imageOption${i});
+  var markerPosition${i} = new kakao.maps.LatLng(${location.coordinates.y}, ${location.coordinates.x}); 
+  var marker${i} = new kakao.maps.Marker({ position: markerPosition${i}, image: markerImage${i} });
+  marker${i}.setMap(map);
 
-    var overlayImageSrc${i} = 'https://i.postimg.cc/j2SG8ZJZ/pngegg.png';  // 추가하려는 이미지 URL
-    var overlayContent${i} = document.createElement('div');
-    overlayContent${i}.innerHTML = '<img src="' + overlayImageSrc${i} + '" style="width: 100px; height: 110px;">';
+  var overlayImageSrc${i} = 'https://i.postimg.cc/6QLKYDkd/marker01.png';  // 피기부자 마커 url
+  var overlayContent${i} = document.createElement('div');
+  overlayContent${i}.innerHTML = '<img src="' + overlayImageSrc${i} + '" style="width: 100px; height: 110px;">';
 
 
-    var overlay${i} = new kakao.maps.CustomOverlay({
-      position: markerPosition${i},
-      content: overlayContent${i},
-      yAnchor: 0.95, 
-      xAnchor: 0.58  
+  var overlay${i} = new kakao.maps.CustomOverlay({
+    position: markerPosition${i},
+    content: overlayContent${i},
+    yAnchor: 0.95, 
+    xAnchor: 0.58  
+  });
+
+overlay${i}.setMap(map);
+
+  var iwContent${i} = \`
+
+  <div style="padding:10px; border: 2px solid #FF0000;">
+    <div style="display: flex; align-items: center; width: 500px; height:250px;">
+      <div style="float: left; width: 50%;">
+        <img src="https://i.postimg.cc/d3LL1YD8/happy5.gif" style="width: 230px; height: auto;">
+      </div>
+        <div style="float: right; width: 50%;">
+          <div class="info-title" style="font-size: 28px; text-align: center;">시설 이름: ${location.adName}</div>
+          <div style="font-size: 28px; text-align: center;">시설장 이름: ${location.managerName}</div>
+          <div style="font-size: 28px; text-align: center;">${phoneNum}</div>
+        </div>
+      </div>
+      <div style="clear: both; text-align: center;">
+      <button id="routeButton${i}" style="margin-top: -15px; width: 200px; height: 50px; font-size: 18px; padding: 10px;">길 찾기</button>
+      </div>
+  </div>
+  \`;
+
+  var infowindow${i} = new kakao.maps.InfoWindow({ content: iwContent${i}, removable: true });
+
+  (function(marker, infowindow, overlayContent, location) {
+    var commonClickHandler = function() {
+      infowindow.open(map, marker);
+      document.getElementById('routeButton${i}').addEventListener('click', function() {
+        window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}, name: ${location.adName}');
+      });
+    };
+
+    kakao.maps.event.addListener(marker, 'click', commonClickHandler);
+    overlayContent.addEventListener('click', commonClickHandler);
+  })(marker${i}, infowindow${i}, overlayContent${i}, location);
+`;
     });
 
-  overlay${i}.setMap(map);
+    // Location markers
+    foodLocations.forEach((location, i) => {
+      var phoneNum = location.foodAddress;
+      phoneNum =
+        phoneNum.slice(0, 3) +
+        "-" +
+        phoneNum.slice(3, 7) +
+        "-" +
+        phoneNum.slice(7);
 
-    var iwContent${i} = \`
+      markersData += `
+  var imageSrc${i} = '${location.foodImage}'; 
+  var imageSize${i} = new kakao.maps.Size(54, 54);
+  var imageOption${i} = { offset: new kakao.maps.Point(33, 95) };
+  var markerImage${i} = new kakao.maps.MarkerImage(imageSrc${i}, imageSize${i}, imageOption${i});
+  var markerPosition${i} = new kakao.maps.LatLng(${location.coordinates.y}, ${location.coordinates.x}); 
+  var marker${i} = new kakao.maps.Marker({ position: markerPosition${i}, image: markerImage${i} });
+  marker${i}.setMap(map);
 
-    <div style="padding:10px; border: 2px solid #FF0000;">
-      <div style="display: flex; align-items: center; width: 500px; height:250px;">
-        <div style="float: left; width: 50%;">
-          <img src="https://i.postimg.cc/d3LL1YD8/happy5.gif" style="width: 230px; height: auto;">
+  var overlayImageSrc${i} = 'https://i.postimg.cc/k5d9NnpJ/marker02.png';  // 기부자 마커 url
+  var overlayContent${i} = document.createElement('div');
+  overlayContent${i}.innerHTML = '<img src="' + overlayImageSrc${i} + '" style="width: 100px; height: 110px;">';
+
+
+  var overlay${i} = new kakao.maps.CustomOverlay({
+    position: markerPosition${i},
+    content: overlayContent${i},
+    yAnchor: 0.95, 
+    xAnchor: 0.58  
+  });
+
+overlay${i}.setMap(map);
+
+  var iwContent${i} = \`
+
+  <div style="padding:10px; border: 2px solid #FF0000;">
+    <div style="display: flex; align-items: center; width: 500px; height:250px;">
+      <div style="float: left; width: 50%;">
+        <img src="https://i.postimg.cc/d3LL1YD8/happy5.gif" style="width: 230px; height: auto;">
+      </div>
+        <div style="float: right; width: 50%;">
+          <div class="info-title" style="font-size: 28px; text-align: center;">식당 이름: ${location.foodGiver}</div>
+          <div style="font-size: 28px; text-align: center;">사장 이름: ${location.name}</div>
+          <div style="font-size: 28px; text-align: center;">${phoneNum}</div>
         </div>
-          <div style="float: right; width: 50%;">
-            <div class="info-title" style="font-size: 28px; text-align: center;">시설 이름: ${location.adName}</div>
-            <div style="font-size: 28px; text-align: center;">시설장 이름: ${location.managerName}</div>
-            <div style="font-size: 28px; text-align: center;">${phoneNum}</div>
-          </div>
-        </div>
-        <div style="clear: both; text-align: center;">
-        <button id="routeButton${i}" style="margin-top: -15px; width: 200px; height: 50px; font-size: 18px; padding: 10px;">길 찾기</button>
-        </div>
-    </div>
-    \`;
+      </div>
+      <div style="clear: both; text-align: center;">
+      <button id="routeButton${i}" style="margin-top: -15px; width: 200px; height: 50px; font-size: 18px; padding: 10px;">길 찾기</button>
+      </div>
+  </div>
+  \`;
 
-    var infowindow${i} = new kakao.maps.InfoWindow({ content: iwContent${i}, removable: true });
+  var infowindow${i} = new kakao.maps.InfoWindow({ content: iwContent${i}, removable: true });
 
-    (function(marker, infowindow, overlayContent, location) {
-      var commonClickHandler = function() {
-        infowindow.open(map, marker);
-        document.getElementById('routeButton${i}').addEventListener('click', function() {
-          window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}, name: ${location.adName}');
-        });
-      };
-  
-      kakao.maps.event.addListener(marker, 'click', commonClickHandler);
-      overlayContent.addEventListener('click', commonClickHandler);
-    })(marker${i}, infowindow${i}, overlayContent${i}, location);
-  `;
+  (function(marker, infowindow, overlayContent, location) {
+    var commonClickHandler = function() {
+      infowindow.open(map, marker);
+      document.getElementById('routeButton${i}').addEventListener('click', function() {
+        window.ReactNativeWebView.postMessage('x: ${location.coordinates.x}, y: ${location.coordinates.y}, name: ${location.foodName}');
+      });
+    };
+
+    kakao.maps.event.addListener(marker, 'click', commonClickHandler);
+    overlayContent.addEventListener('click', commonClickHandler);
+  })(marker${i}, infowindow${i}, overlayContent${i}, location);
+`;
     });
 
     return markersData;
@@ -288,89 +387,87 @@ export default function App({ navigation, route }) {
 
   //HTML 생성
   const generateHTML = (markersData, linePathString, showEndRoute) => `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="utf-8"/>
-      <title>Kakao 지도 시작하기</title>
-      <style>
-      html, body {width:100%;height:100%;margin:0;padding:0;} 
-      .map_wrap {position:relative;overflow:hidden;width:100%;height:100%;}
-      .custom_typecontrol {position:absolute;top:90%;right:10px;overflow:hidden;width:auto;height:30px;margin:0;margin-right:70%;margin-left:30%;padding:0;z-index:1;font-size:30px;font-family:'Malgun Gothic', '맑은 고딕', sans-serif;}
-      .custom_typecontrol span {display:block;width:65px;height:30px;float:left;text-align:center;line-height:30px;cursor:pointer;}  
-      .radius_border{border:1px solid #919191;border-radius:10px;}
-      .custom_typecontrol .selected_btn {width:200px;color:#fff;background:#425470;background:linear-gradient(#425470, #5b6d8a);}
-      .custom_typecontrol .selected_btn:hover {color:#fff;} 
-      
-      .custom_zoomcontrol {position:absolute;top:150px;right:10px;width:36px;height:80px;overflow:hidden;z-index:1;margin-right:50px;background-color:#f5f5f5;} 
-      .custom_zoomcontrol span {display:block;width:36px;height:40px;text-align:center;cursor:pointer;}     
-      .custom_zoomcontrol span img {width:15px;height:15px;padding:12px 0;border:none;}             
-      .custom_zoomcontrol span:first-child{border-bottom:1px solid #bfbfbf;}            
-      
-      #endRoute {
-        display: ${showEndRoute ? "block" : "none"};
-      }
-      </style>
-    </head>
-    <body>
-    <div class="map_wrap">
-      <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div> 
-      <!-- 지도타입 컨트롤 div 입니다 -->
-      <div class="custom_typecontrol radius_border">
-        <span id="endRoute" class="selected_btn" onclick="endRoute()">길찾기 종료</span>
-      </div>
-      
-      <!-- 지도 확대, 축소 컨트롤 div 입니다 -->
-      <!-- <div class="custom_zoomcontrol radius_border"> 
-          <span onclick="zoomIn()"><img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
-          <span onclick="zoomOut()"><img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
-      </div> -->
-    </div>
-      <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=1d36d8e3148cff96991f68bd2f32c26a"></script>
-      <script>
-        var container = document.getElementById('map');
-        var options = {
-          center: new kakao.maps.LatLng(${
-            currentPosition ? currentPosition.y : locations[0].coordinates.y
-          }, ${
-            currentPosition ? currentPosition.x : locations[0].coordinates.x
-          }),
-          maxLevel:3,
-          minLevel:1,
-          level: 1
-        };
-        var map = new kakao.maps.Map(container, options); //맵 생성
-        ${markersData}
-        
-        // linePath에 저장된 좌표를 바탕으로 Polyline 그리기
-        var linePath = ${linePathString}.map(coord => new kakao.maps.LatLng(coord.y, coord.x));
-        var polyline = new kakao.maps.Polyline({
-          path: linePath,
-          strokeWeight: 10,
-          strokeColor: '#FF0000',
-          strokeOpacity: 0.7,
-          strokeStyle: 'solid'
-        });
-        polyline.setMap(map);
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Kakao 지도 시작하기</title>
+  <style>
+  html, body {width:100%;height:100%;margin:0;padding:0;} 
+  .map_wrap {position:relative;overflow:hidden;width:100%;height:100%;}
+  .custom_typecontrol {position:absolute;top:90%;right:10px;overflow:hidden;width:auto;height:30px;margin:0;margin-right:70%;margin-left:30%;padding:0;z-index:1;font-size:30px;font-family:'Malgun Gothic', '맑은 고딕', sans-serif;}
+  .custom_typecontrol span {display:block;width:65px;height:30px;float:left;text-align:center;line-height:30px;cursor:pointer;}  
+  .radius_border{border:1px solid #919191;border-radius:10px;}
+  .custom_typecontrol .selected_btn {width:200px;color:#fff;background:#425470;background:linear-gradient(#425470, #5b6d8a);}
+  .custom_typecontrol .selected_btn:hover {color:#fff;} 
+  
+  .custom_zoomcontrol {position:absolute;top:150px;right:10px;width:36px;height:80px;overflow:hidden;z-index:1;margin-right:50px;background-color:#f5f5f5;} 
+  .custom_zoomcontrol span {display:block;width:36px;height:40px;text-align:center;cursor:pointer;}     
+  .custom_zoomcontrol span img {width:15px;height:15px;padding:12px 0;border:none;}             
+  .custom_zoomcontrol span:first-child{border-bottom:1px solid #bfbfbf;}            
+  
+  #endRoute {
+    display: ${showEndRoute ? "block" : "none"};
+  }
+  </style>
+</head>
+<body>
+<div class="map_wrap">
+  <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div> 
+  <!-- 지도타입 컨트롤 div 입니다 -->
+  <div class="custom_typecontrol radius_border">
+    <span id="endRoute" class="selected_btn" onclick="endRoute()">길찾기 종료</span>
+  </div>
+  
+  <!-- 지도 확대, 축소 컨트롤 div 입니다 -->
+  <!-- <div class="custom_zoomcontrol radius_border"> 
+      <span onclick="zoomIn()"><img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
+      <span onclick="zoomOut()"><img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
+  </div> -->
+</div>
+  <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=1d36d8e3148cff96991f68bd2f32c26a"></script>
+  <script>
+    var container = document.getElementById('map');
+    var options = {
+      center: new kakao.maps.LatLng(${
+        currentPosition ? currentPosition.y : locations[0].coordinates.y
+      }, ${currentPosition ? currentPosition.x : locations[0].coordinates.x}),
+      maxLevel:3,
+      minLevel:1,
+      level: 1
+    };
+    var map = new kakao.maps.Map(container, options); //맵 생성
+    ${markersData}
+    
+    // linePath에 저장된 좌표를 바탕으로 Polyline 그리기
+    var linePath = ${linePathString}.map(coord => new kakao.maps.LatLng(coord.y, coord.x));
+    var polyline = new kakao.maps.Polyline({
+      path: linePath,
+      strokeWeight: 10,
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.7,
+      strokeStyle: 'solid'
+    });
+    polyline.setMap(map);
 
-        document.getElementById('endRoute').addEventListener('click', function() {
-          polyline.setMap(null);
-          document.getElementById('endRoute').style.display = 'none'; // 추가된 코드
-          window.ReactNativeWebView.postMessage('endRoute');
-        });
-        
-        function zoomIn() {
-          map.setLevel(map.getLevel() - 1);
-        }
-      
-        // 지도 확대, 축소 컨트롤에서 축소 버튼을 누르면 호출되어 지도를 확대하는 함수입니다
-        function zoomOut() {
-            map.setLevel(map.getLevel() + 1);
-        }
-      </script>
-    </body>
-    </html>
-  `;
+    document.getElementById('endRoute').addEventListener('click', function() {
+      polyline.setMap(null);
+      document.getElementById('endRoute').style.display = 'none'; // 추가된 코드
+      window.ReactNativeWebView.postMessage('endRoute');
+    });
+    
+    function zoomIn() {
+      map.setLevel(map.getLevel() - 1);
+    }
+  
+    // 지도 확대, 축소 컨트롤에서 축소 버튼을 누르면 호출되어 지도를 확대하는 함수입니다
+    function zoomOut() {
+        map.setLevel(map.getLevel() + 1);
+    }
+  </script>
+</body>
+</html>
+`;
 
   if (!locations.length || permissionStatus === null) {
     return null;

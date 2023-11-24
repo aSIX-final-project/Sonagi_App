@@ -13,7 +13,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import BottomsheetModDel from "./BottomsheetModDel";
+import BottomsheetModal from "./BottomsheetModal";
 
 const ManageReq = ({ navigation }) => {
   // 바텀시트 (삭제, 수정)
@@ -106,7 +106,7 @@ const ManageReq = ({ navigation }) => {
           >
             <Image
               style={{ width: 15, height: 15 }}
-              source={require("../../assets/motifydelete.png")}
+              source={require("../../assets/modifydelete.png")}
               resizeMode="contain"
             />
           </TouchableOpacity>
@@ -133,7 +133,7 @@ const ManageReq = ({ navigation }) => {
 
       {/* 바텀시트 view */}
       <View style={styles.rootContainer}>
-        <BottomsheetModDel
+        <BottomsheetModal
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           navigation={navigation}
