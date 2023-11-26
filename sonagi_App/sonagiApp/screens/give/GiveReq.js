@@ -124,14 +124,14 @@ const GiveReq = ({ navigation }) => {
             </View>
 
 
-            {/* 기부 요청목록 */}
-            <View style={{ flexDirection: 'row', height: '5%', width: '50%', marginBottom: '0%', marginTop: '20%', marginRight: '40%' }}>
+            {/* 기부 요청 목록 */}
+            <View style={{ flexDirection: 'row', height: '5%', width: '50%', marginBottom: '0%', marginTop: '25%', marginRight: '40%' }}>
                 <Image
                     style={{ width: 32, height: 32, marginBottom: '1%', marginRight: '1%' }}
                     source={require('../../assets/food.png')}
                     resizeMode="contain"
                 />
-                <Text style={{ fontSize: 35, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#383838' }}>기부 요청 목록</Text>
+                <Text style={{ marginLeft: '1%', marginTop: '1%', fontSize: 30, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#383838' }}>기부 요청 목록</Text>
             </View>
 
             {/* 선 긋기 */}
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
         height: 2, // 선의 두께
         backgroundColor: "#E4E4E4", // 선의 색상
         width: '90%', // 선의 길이
-        marginTop: '8%',
+        marginTop: '6%',
         marginBottom: '8%'
     },
     

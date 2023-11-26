@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Linking, Platform, Modal, ScrollView } from 'react-native';
-// 바텀시트
-import Bottomsheetfood from './Bottomsheetfood';
+
 
 
 const Mapadd = ({ navigation }) => {

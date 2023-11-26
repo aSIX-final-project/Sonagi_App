@@ -4,7 +4,7 @@ import {
     StyleSheet,
     Button
 } from 'react-native';
-import BottomSheet from './Bottomsheet';
+import BottomSheet from './BottomsheetSignup';
 
 const BottomSheetTestScreen = (props) => {
     const [ modalVisible, setModalVisible ] = useState(false);

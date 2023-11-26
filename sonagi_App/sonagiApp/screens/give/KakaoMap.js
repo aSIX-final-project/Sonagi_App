@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { WebView } from 'react-native-webview';
 import axios from 'axios';
-import { Linking, View, TouchableOpacity, Image, Text, handleLogoutButtonClick } from 'react-native';
+import { Linking, View, TouchableOpacity, Image, Text, handleLogoutButtonClick, StyleSheet } from 'react-native';
 import * as Location from 'expo-location';
 import RegistGive from './Registgive';
+// 바텀시트 (마커 클릭시 뜸)
+import BottomsheetMarker from './BottomsheetMarker';
 
 export default function App({ navigation }) {
-  // testClick 클릭
-  const testClick = () => {
-    navigation.navigate('Mapadd'); // 'Mapadd' 페이지로 이동합니다.
-  };
+
+  // 마커 클릭했을때 바텀시트
+  const [modalVisible, setModalVisible] = useState(false);
+  const pressButton = () => {
+    setModalVisible(true);
+  }
+
 
   // 등록 버튼 클릭
   const RegistGive = () => {
@@ -88,9 +93,9 @@ export default function App({ navigation }) {
 
         // linePath를 JSON 문자열로 변환
         const showEndRoute = linePath.length > 0;
-        if(linePath.length > 0){
+        if (linePath.length > 0) {
           setShowEndRoute(true);
-        }else{
+        } else {
           setShowEndRoute(false);
         }
         const linePathString = JSON.stringify(linePath);
@@ -314,8 +319,8 @@ export default function App({ navigation }) {
           </TouchableOpacity>
 
 
-          {/* 테스트 아이콘 */}
-          <TouchableOpacity style={{ marginTop: '2%', marginRight: '13%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { testClick }>
+          {/* (마커 클릭했을때) */}
+          <TouchableOpacity style={{ marginTop: '2%', marginRight: '13%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={pressButton}>
             <Image
               style={{ width: 40, height: 40 }}
               source={require('../../assets/deliver.png')}
@@ -324,7 +329,7 @@ export default function App({ navigation }) {
           </TouchableOpacity>
 
           {/* 기부요청 목록 */}
-          <TouchableOpacity style={{ marginTop: '2%', marginRight:'2%', backgroundColor: '#68B7FF', marginLeft: '0%', width: '11%', height: '200%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { GiveReq }>
+          <TouchableOpacity style={{ marginTop: '2%', marginRight: '2%', backgroundColor: '#68B7FF', marginLeft: '0%', width: '11%', height: '200%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={GiveReq}>
             <Image
               style={{ width: 35, height: 35 }}
               source={require('../../assets/star.png')}
@@ -333,19 +338,19 @@ export default function App({ navigation }) {
           </TouchableOpacity>
 
           {/* 등록 버튼 */}
-          <TouchableOpacity style={{ marginTop: '2%', marginLeft: '0%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { RegistGive }>
+          <TouchableOpacity style={{ marginTop: '2%', marginLeft: '0%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={RegistGive}>
             <Image
               style={{ width: 90, height: 70 }}
               source={require('../../assets/add.png')}
               resizeMode="contain"
             />
           </TouchableOpacity>
-          
-          
+
+
         </View>
-        
+
       </View>
-      
+
       <WebView
         originWhitelist={['*']}
         source={{ html }}
@@ -371,8 +376,28 @@ export default function App({ navigation }) {
           return true;
         }}
       />
-      
+
+      {/* 마커 클릭시 바텀시트 view */}
+      <View style={styles.rootContainer}>
+        <BottomsheetMarker
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          navigation={navigation}
+        />
+      </View>
     </View>
-    
+
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+      flex: 1,
+      alignItems: 'center',
+      backgroundColor: '#FFFFFF'
+  },
+  rootContainer: {
+      justifyContent: "center",
+      alignItems: "center",
+  }
+});

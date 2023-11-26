@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Button } from 'react-native';
 // 바텀시트
-import BottomSheet from './Bottomsheet';
+import BottomSheet from './BottomsheetSignup';
 import BottomSheetP from '../givep/./BottomsheetPi';
 
 const Signup = ({ navigation }) => {

@@ -15,7 +15,7 @@ import {
     Keyboard
 } from 'react-native';
 
-const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
+const BottomsheetSignup = ({ modalVisible, setModalVisible, navigation }) => {
     // 로그인 완료 모달 표시 여부를 관리하는 상태 변수
     const [isSignupSuccessModalVisible, setSignupSuccessModalVisible] = useState(false);
 
@@ -108,16 +108,16 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                             resizeMode="contain"
                         />
 
-                        <View style={{ flexDirection: 'row', height: '10%', width: '90%', marginBottom: '5%'}}>
+                        <View style={{ flexDirection: 'row', height: '10%', width: '90%', marginBottom: '5%' }}>
                             <Image
-                                style={{ width: 130, height: 100, top: '0%' , marginRight: '3%' }}
+                                style={{ width: 130, height: 100, top: '0%', marginRight: '3%' }}
                                 source={require('../../assets/signup3.png')}
                                 resizeMode="contain"
                             />
 
                             <Text style={{ fontFamily: 'Play-Bold', fontSize: 20, color: '#000000', marginTop: '13.5%', marginLeft: '47%' }}>(기부자)</Text>
                         </View>
-                        
+
 
 
 
@@ -189,25 +189,7 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
 
                             <TextInput
                                 style={styles.inputtext}
-                                placeholder="010-0000-0000"
-                                placeholderTextColor="#808080"
-                            ></TextInput>
-
-                            {/* 선 긋기 */}
-                            <View style={styles.lineStyle} />
-
-                            {/* ///////////////////////////////////////////////////////////// */}
-
-                            {/* 시설 전화번호 */}
-                            <Image
-                                style={{ width: 90, height: 60, top: '1.5%', right: '33.5%' }}
-                                source={require('../../assets/storephonenumber.png')}
-                                resizeMode="contain"
-                            />
-
-                            <TextInput
-                                style={styles.inputtext}
-                                placeholder="010-0000-0000"
+                                placeholder="Enter number"
                                 placeholderTextColor="#808080"
                             ></TextInput>
 
@@ -226,6 +208,25 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                             <TextInput
                                 style={styles.inputtext}
                                 placeholder="Enter name"
+                                placeholderTextColor="#808080"
+                            ></TextInput>
+
+                            {/* 선 긋기 */}
+                            <View style={styles.lineStyle} />
+
+
+                            {/* ///////////////////////////////////////////////////////////// */}
+
+                            {/* 시설 전화번호 */}
+                            <Image
+                                style={{ width: 90, height: 60, top: '1.5%', right: '33.5%' }}
+                                source={require('../../assets/storephonenumber.png')}
+                                resizeMode="contain"
+                            />
+
+                            <TextInput
+                                style={styles.inputtext}
+                                placeholder="Enter number"
                                 placeholderTextColor="#808080"
                             ></TextInput>
 
@@ -392,4 +393,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default BottomSheet;
+export default BottomsheetSignup;

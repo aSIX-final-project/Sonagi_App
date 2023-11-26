@@ -19,6 +19,7 @@ import GiveReq from './screens/give/GiveReq';
 import ManagePage from './screens/give/ManagePage';
 import ManageNotice from './screens/give/ManageNotice';
 import ManageReq from './screens/give/ManageReq';
+import SetupFood from './screens/give/SetupFood';
 
 // 피기부자 
 import Homep from './screens/givep/Homep';
@@ -223,6 +224,12 @@ export default function App() {
         <Stack.Screen
           name="ManageReq"
           component={ManageReq}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name="SetupFood"
+          component={SetupFood}
           options={{
             headerShown: false,
           }} />
