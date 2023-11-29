@@ -61,6 +61,11 @@ const RegistGive = ({ navigation, route }) => {
       if (response.status === 200) {
         // 음식 등록 성공
         console.log("음식 등록 성공");
+
+        const notificationResponse = await axios.post(
+          "https://your-server-url/sendNotification",
+          { address: userInfo.address }
+        );
         // 여기에서 필요한 추가 작업 수행 가능
       } else {
         // 음식 등록 실패

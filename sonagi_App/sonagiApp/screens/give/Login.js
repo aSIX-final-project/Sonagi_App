@@ -13,6 +13,8 @@ import {
   Keyboard,
 } from "react-native";
 import axios from "axios";
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 
 const Login = ({ navigation }) => {
   // react-hook-form으로부터 필요한 메서드와 폼 상태를 가져옵니다.
@@ -33,6 +35,42 @@ const Login = ({ navigation }) => {
   // 로그인 성공 시 모달 표시 여부 상태
   const [isLoginSuccessModalVisible, setLoginSuccessModalVisible] =
     useState(false);
+
+
+  async function registerForPushNotificationsAsyncExpo() {
+    let token;
+    if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync({
+        experienceId: '@nahollo/sonagiApp',
+        projectId: '8912d4db-0e0b-4d3c-b650-4f40bce2e116',
+      })).data;
+
+      console.log(token);
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+
+    return token;
+  }
 
   const handleLoginButtonClick = async () => {
     try {
@@ -70,6 +108,27 @@ const Login = ({ navigation }) => {
         // 로그인 성공
         console.log("로그인 성공", userInfoR);
 
+        var expoToken = await registerForPushNotificationsAsyncExpo();
+
+        console.log("tokenFcm : ", fcmToken);
+        console.log("tokenExpo : ", expoToken);
+
+
+        const formData = {
+          id: userInfoR.id,
+          fcmToken: fcmToken,
+          expoToken: expoToken,
+        };
+
+        // 폼 데이터를 JSON 문자열로 변환하여 확인
+        const jsonData = JSON.stringify(formData);
+        console.log(jsonData);
+
+        // 백엔드 서버로 POST 요청 보내기
+        const responseR = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/token",
+          formData
+        );
         // 모달 표시
         setLoginSuccessModalVisible(true);
 
@@ -79,8 +138,30 @@ const Login = ({ navigation }) => {
           navigation.navigate("Home", { userInfo: userInfoR });
         }, 2000);
       } else if (userInfoM && userInfoM.id === watch("username")) {
+
         // 로그인 성공
         console.log("로그인 성공", userInfoM);
+        var expoToken = await registerForPushNotificationsAsyncExpo();
+
+        console.log("tokenFcm : ", fcmToken);
+        console.log("tokenExpo : ", expoToken);
+
+
+        const formData = {
+          id: userInfoM.id,
+          fcmtoken: fcmToken,
+          expotoken: expoToken,
+        };
+
+        // 폼 데이터를 JSON 문자열로 변환하여 확인
+        const jsonData = JSON.stringify(formData);
+        console.log(jsonData);
+
+        // 백엔드 서버로 POST 요청 보내기
+        const responseR = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/token",
+          formData
+        );
 
         // 모달 표시
         setLoginSuccessModalVisible(true);

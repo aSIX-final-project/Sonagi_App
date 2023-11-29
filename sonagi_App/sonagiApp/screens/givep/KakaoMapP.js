@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
 import { WebView } from "react-native-webview";
 import axios from "axios";
-import { Linking, View, TouchableOpacity, Image, Text } from "react-native";
+import { Linking, View, TouchableOpacity, Image, Text, StyleSheet } from "react-native";
 import * as Location from "expo-location";
-
+import BottomsheetMarker from './BottomsheetMarker';
 import Registgive from "../give/Registgive";
 
 export default function App({ navigation, route }) {
   const { userInfo } = route.params;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedMarkerId, setSelectedMarkerId] = useState(null);
 
 
   // testClick 클릭
@@ -84,6 +86,11 @@ export default function App({ navigation, route }) {
       console.error("An error occurred", err)
     );
   };
+
+  const pressButton = () => {
+    setModalVisible(true);
+  }
+
 
   const callPhone = (phoneNum) => {
     // 카카오 네비게이션 API를 이용해 길찾기 실행
@@ -203,7 +210,7 @@ export default function App({ navigation, route }) {
 
   var currentMarkerInfoWindow = new kakao.maps.InfoWindow({ content: '<div style="padding:5px;">현위치</div>' });
   kakao.maps.event.addListener(currentMarker, 'click', function() {
-    currentMarkerInfoWindow.open(map, currentMarker);
+    window.ReactNativeWebView.postMessage('bottomSheet');
   });
 `;
     }
@@ -278,14 +285,22 @@ overlay${i}.setMap(map);
 
     };
 
-    kakao.maps.event.addListener(marker, 'click', commonClickHandler);
-    overlayContent.addEventListener('click', commonClickHandler);
+    kakao.maps.event.addListener(marker, 'click', function() {
+      window.ReactNativeWebView.postMessage('id: ${location.id}');
+    setSelectedMarkerId(location.id);
+  });
+  
+  overlayContent.addEventListener('click', function() {
+    window.ReactNativeWebView.postMessage('id: ${location.id}');
+    setSelectedMarkerId(location.id);
+  });
+  
   })(marker${i}, infowindow${i}, overlayContent${i}, location);
 `;
     });
 
 
-    
+
     // Location markers
     resLocations.forEach((location, i) => {
       var phoneNum = location.phoneNum;
@@ -348,8 +363,16 @@ overlay${i}.setMap(map);
       });
     };
 
-    kakao.maps.event.addListener(marker, 'click', commonClickHandler);
-    overlayContent.addEventListener('click', commonClickHandler);
+    kakao.maps.event.addListener(marker, 'click', function() {
+      window.ReactNativeWebView.postMessage('id: ${location.id}');
+    setSelectedMarkerId(location.id);
+  });
+  
+  overlayContent.addEventListener('click', function() {
+    window.ReactNativeWebView.postMessage('id: ${location.id}');
+    setSelectedMarkerId(location.id);
+  });
+  
   })(marker${i}, infowindow${i}, overlayContent${i}, location);
 `;
     });
@@ -435,9 +458,16 @@ overlay${i}.setMap(map);
       });
     };
 
-    kakao.maps.event.addListener(marker, 'click', commonClickHandler);
-    overlayContent.addEventListener('click', commonClickHandler);
-    overlayContent2.addEventListener('click', commonClickHandler);
+    kakao.maps.event.addListener(marker, 'click', function() {
+      window.ReactNativeWebView.postMessage('foodid: ${location.id}');
+    setSelectedMarkerId(location.id);
+  });
+  
+  overlayContent.addEventListener('click', function() {
+    window.ReactNativeWebView.postMessage('foodid: ${location.id}');
+    setSelectedMarkerId(location.id);
+  });
+  
   })(marker${i}, infowindow${i}, overlayContent${i}, location);
 `;
     });
@@ -561,7 +591,7 @@ overlay${i}.setMap(map);
         >
           <TouchableOpacity
             style={{ marginLeft: "6%", marginRight: "2%" }}
-            onPress={() => navigation.navigate("Homep", { userInfo: userInfo })}
+            onPress={() => navigation.navigate("Home", { userInfo: userInfo })}
           >
             <Image
               style={{ width: 50, height: 50 }}
@@ -648,11 +678,25 @@ overlay${i}.setMap(map);
           if (message.startsWith("phoneNum:")) {
             var phoneNum = message.split(": ")[1];
             callPhone(phoneNum);
+          } else if (message.startsWith("foodid")) {
+
+
+            const id = message.split(": ")[1];
+            console.log("Selected Marker ID:", id);
+            setSelectedMarkerId(id);
+
+
+          } else if (message.startsWith("id:")) {
+            // 마커에서 전달된 id를 사용
+            const id = message.split(": ")[1];
+            console.log("Selected Marker ID:", id);
+            setSelectedMarkerId(id);
+            setModalVisible(true);
           } else {
             const coordinateStrings = message.split(", ");
             const x = parseFloat(coordinateStrings[0].split(": ")[1]);
             const y = parseFloat(coordinateStrings[1].split(": ")[1]);
-            
+
             kakaoMap(x, y); // 호출
           }
         }}
@@ -664,6 +708,25 @@ overlay${i}.setMap(map);
           return true;
         }}
       />
+      <View style={styles.rootContainer}>
+        <BottomsheetMarker
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          navigation={navigation}
+          id={selectedMarkerId}
+        />
+      </View>
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF'
+  },
+  rootContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  }
+});
