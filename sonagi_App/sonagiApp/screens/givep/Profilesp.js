@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,10 +11,111 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import axios from "axios";
 
 const Profilesp = ({ navigation, route }) => {
-  const { userInfo } = route.params;
+  const [profileImage, setProfileImage] = useState(null);
+  const [userInfo, setUserInfo] = useState(route.params.userInfo);
+  const [imageKey, setImageKey] = useState(Date.now());
+
   console.log(userInfo);
+
+  // 이미지 업데이트
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      setUserInfo(route.params.userInfo);
+      // userInfo 안의 profileImage 값이 변경되면 profileImage 상태 업데이트
+      if (userInfo && userInfo.profileImage) {
+        setProfileImage(userInfo.profileImage);
+      }
+    });
+
+    return unsubscribe;
+  }, [route.params, userInfo.profileImage]);
+
+  // 갤러리 이미지 선택
+  const openImagePicker = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("갤러리 접근 권한이 허용되지 않았습니다.");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    // console.log(result);
+    if (!result.canceled) {
+      try {
+        const formData = new FormData();
+        formData.append("file", {
+          uri: result.assets[0].uri,
+          type: "image/jpeg",
+          name: `profile_${userInfo.id}.jpg`,
+        });
+
+        // 'nameFile' 파라미터 추가
+        formData.append("nameFile", userInfo.id);
+        // console.log(formData);
+
+        const response = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/files",
+          // "http://172.16.104.97:8888/boot/member/files",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.data) {
+          setProfileImage(result.assets[0].uri);
+          setImageKey(Date.now()); // 이미지 키 업데이트
+
+          const formData = {
+            id: userInfo.id,
+            profileImage: response.data,
+          };
+
+          // 폼 데이터를 JSON 문자열로 변환하여 확인
+          const jsonData = JSON.stringify(formData);
+          console.log(jsonData);
+
+          console.log(response.data);
+
+          // 백엔드 서버로 POST 요청 보내기
+          const data = await axios.post(
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/updateImageUrl",
+            // "http://172.16.104.219:8888/boot/member/updateImageUrl",
+            formData
+          );
+
+          const newProfileImage = response.data; // 새로운 이미지 URL
+          userInfo.profileImage = newProfileImage; // userInfo 객체의 프로필 이미지 업데이트
+
+          if (data.data === 1) {
+            console.log(userInfo);
+
+            // 이미지 url 업데이트 성공
+            console.log("이미지 Url 업데이트 성공");
+          }
+          // console.log(response);
+          console.log("이미지 업로드 성공");
+        } else {
+          console.error("이미지 업로드 실패");
+        }
+      } catch (error) {
+        console.error("이미지 업로드 오류:", error);
+      }
+    }
+  };
+
   // 고객센터 연결하기 기능
   const CenterPhone = () => {};
 
@@ -125,15 +226,37 @@ const Profilesp = ({ navigation, route }) => {
               marginTop: "10%",
             }}
           >
-            <TouchableOpacity
-              style={{}}
-              onPress={() => navigation.navigate("")}
-            >
-              <Image
-                style={{ width: 90, height: 90 }}
-                source={require("../../assets/profileedit.png")}
-                resizeMode="contain"
-              />
+            <TouchableOpacity onPress={openImagePicker}>
+              <View style={{ position: "relative" }}>
+                {profileImage ? (
+                  <Image
+                    source={{ uri: profileImage }}
+                    style={styles.profileImage}
+                  />
+                ) : (
+                  <Image
+                    source={{ uri: userInfo.profileImage }}
+                    style={styles.profileImage}
+                  />
+                )}
+                {/* Plus 이미지 */}
+                <View
+                  style={{
+                    position: "absolute",
+                    bottom: 5,
+                    right: 5,
+                    zIndex: 1,
+                  }}
+                >
+                  <TouchableOpacity onPress={openImagePicker}>
+                    <Image
+                      source={require("../../assets/plus.png")}
+                      style={{ width: 20, height: 20 }}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
             </TouchableOpacity>
             <Text
               style={{
@@ -341,6 +464,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "#FAFAFC",
+  },
+  profileImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 75,
+    borderWidth: 1,
+    borderColor: "#000",
   },
   modalView: {
     marginBottom: 20,

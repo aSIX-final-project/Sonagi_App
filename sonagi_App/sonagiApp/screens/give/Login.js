@@ -13,8 +13,8 @@ import {
   Keyboard,
 } from "react-native";
 import axios from "axios";
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 
 const Login = ({ navigation }) => {
   // react-hook-form으로부터 필요한 메서드와 폼 상태를 가져옵니다.
@@ -36,42 +36,47 @@ const Login = ({ navigation }) => {
   const [isLoginSuccessModalVisible, setLoginSuccessModalVisible] =
     useState(false);
 
+  // 로그인 실패
+  const [isLoginFailedModalVisible, setLoginFailedModalVisible] =
+    useState(false); // 모달 알림창의 상태
 
   async function registerForPushNotificationsAsyncExpo() {
     let token;
     if (Device.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
+      if (existingStatus !== "granted") {
         const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
       }
-      if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
+      if (finalStatus !== "granted") {
+        alert("Failed to get push token for push notification!");
         return;
       }
-      token = (await Notifications.getExpoPushTokenAsync({
-        experienceId: '@nahollo/sonagiApp',
-        projectId: '8912d4db-0e0b-4d3c-b650-4f40bce2e116',
-      })).data;
+      token = (
+        await Notifications.getExpoPushTokenAsync({
+          experienceId: "@nahollo/sonagiApp",
+          projectId: "8912d4db-0e0b-4d3c-b650-4f40bce2e116",
+        })
+      ).data;
 
       console.log(token);
     } else {
-      alert('Must use physical device for Push Notifications');
+      alert("Must use physical device for Push Notifications");
     }
 
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
+    if (Platform.OS === "android") {
+      Notifications.setNotificationChannelAsync("default", {
+        name: "default",
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
+        lightColor: "#FF231F7C",
       });
     }
 
     return token;
   }
-
   const handleLoginButtonClick = async () => {
     try {
       // 사용자 이름과 비밀번호 폼 데이터 가져오기
@@ -81,8 +86,8 @@ const Login = ({ navigation }) => {
       };
 
       // 폼 데이터를 JSON 문자열로 변환하여 확인
-      const jsonData = JSON.stringify(formData);
-      console.log(jsonData);
+      // const jsonData = JSON.stringify(formData);
+      // console.log(jsonData);
 
       // 백엔드 서버로 POST 요청 보내기
       const responseR = await axios.post(
@@ -100,8 +105,8 @@ const Login = ({ navigation }) => {
       );
       const userInfoM = responseM.data[0];
 
-      console.log(userInfoR);
-      console.log(userInfoM);
+      // console.log(userInfoR);
+      // console.log(userInfoM);
 
       // 이름이 일치할 경우
       if (userInfoR && userInfoR.id === watch("username")) {
@@ -110,46 +115,11 @@ const Login = ({ navigation }) => {
 
         var expoToken = await registerForPushNotificationsAsyncExpo();
 
-        console.log("tokenFcm : ", fcmToken);
         console.log("tokenExpo : ", expoToken);
-
 
         const formData = {
           id: userInfoR.id,
-          fcmToken: fcmToken,
-          expoToken: expoToken,
-        };
-
-        // 폼 데이터를 JSON 문자열로 변환하여 확인
-        const jsonData = JSON.stringify(formData);
-        console.log(jsonData);
-
-        // 백엔드 서버로 POST 요청 보내기
-        const responseR = await axios.post(
-          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/token",
-          formData
-        );
-        // 모달 표시
-        setLoginSuccessModalVisible(true);
-
-        // 2초 후에 홈 화면으로 이동
-        setTimeout(() => {
-          setLoginSuccessModalVisible(false);
-          navigation.navigate("Home", { userInfo: userInfoR });
-        }, 2000);
-      } else if (userInfoM && userInfoM.id === watch("username")) {
-
-        // 로그인 성공
-        console.log("로그인 성공", userInfoM);
-        var expoToken = await registerForPushNotificationsAsyncExpo();
-
-        console.log("tokenFcm : ", fcmToken);
-        console.log("tokenExpo : ", expoToken);
-
-
-        const formData = {
-          id: userInfoM.id,
-          fcmtoken: fcmToken,
+          fcmToken: "fcmtoken",
           expotoken: expoToken,
         };
 
@@ -159,6 +129,38 @@ const Login = ({ navigation }) => {
 
         // 백엔드 서버로 POST 요청 보내기
         const responseR = await axios.post(
+          "http://172.16.104.97:8888/boot/restaurant/token",
+          formData
+        );
+
+        // 모달 표시
+        setLoginSuccessModalVisible(true);
+
+        // 2초 후에 홈 화면으로 이동
+        setTimeout(() => {
+          setLoginSuccessModalVisible(false);
+          navigation.navigate("Home", { userInfo: userInfoR });
+        }, 2000);
+      } else if (userInfoM && userInfoM.id === watch("username")) {
+        // 로그인 성공
+        // console.log("로그인 성공", userInfoM);
+
+        var expoToken = await registerForPushNotificationsAsyncExpo();
+
+        console.log("tokenExpo : ", expoToken);
+
+        const formData = {
+          id: userInfoM.id,
+          fcmtoken: "fcmtoken",
+          expotoken: expoToken,
+        };
+
+        // 폼 데이터를 JSON 문자열로 변환하여 확인
+        const jsonData = JSON.stringify(formData);
+        console.log(jsonData);
+
+        // 백엔드 서버로 POST 요청 보내기
+        const responseM = await axios.post(
           "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/token",
           formData
         );
@@ -174,6 +176,14 @@ const Login = ({ navigation }) => {
       } else {
         // 사용자 정보가 없는 경우
         console.log("로그인 실패: 사용자 정보 없음");
+
+        // 모달 표시
+        setLoginFailedModalVisible(true);
+
+        // 2초 후에 홈 화면으로 이동
+        setTimeout(() => {
+          setLoginFailedModalVisible(false);
+        }, 2000);
       }
     } catch (error) {
       // 에러 발생 시 처리
@@ -212,6 +222,26 @@ const Login = ({ navigation }) => {
               />
               <TouchableOpacity
                 onPress={() => setLoginSuccessModalVisible(false)} // 모달 내부의 버튼 클릭 시 모달 숨김
+              ></TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        {/* 로그인 실패 모달 */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={isLoginFailedModalVisible}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Image
+                style={{ width: 130, height: 130, bottom: "0.5%", right: "0%" }}
+                source={require("../../assets/loginfailed.png")}
+                resizeMode="contain"
+              />
+              <TouchableOpacity
+                onPress={() => setLoginFailedModalVisible(false)} // 모달 내부의 버튼 클릭 시 모달 숨김
               ></TouchableOpacity>
             </View>
           </View>

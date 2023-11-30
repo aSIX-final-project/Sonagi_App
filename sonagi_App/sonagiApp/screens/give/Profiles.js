@@ -8,13 +8,70 @@ import {
   Linking,
   Platform,
   Modal,
-  TouchableWithoutFeedback,
-  Keyboard,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 
 const Profiles = ({ navigation, route }) => {
   const { userInfo } = route.params;
   console.log(userInfo);
+
+  // 갤러리 이미지 선택
+  const openImagePicker = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("갤러리 접근 권한이 허용되지 않았습니다.");
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync();
+    if (!result.cancelled) {
+      console.log(result.uri);
+      // updateProfileImage(result.uri); // 선택된 이미지 URL을 전달하여 업데이트
+    }
+  };
+
+  // 프로필 이미지 업데이트 요청
+  // const updateProfileImage = async (selectedImageUrl) => {
+  //   try {
+  //     // 서버에 프로필 이미지 업데이트 요청 (fetch나 axios를 사용하여 서버에 요청)
+  //     // 예시: fetch('/updateProfileImage', { method: 'POST', body: JSON.stringify({ userId: userInfo.id, profileImage: selectedImageUrl }) });
+  //     const formData = new FormData();
+  //     formData.append("file", {
+  //       uri: selectedImageUrl,
+  //       nameFile: userInfo.id,
+  //       type: "image/jpg",
+  //     });
+
+  //     // 폼 데이터를 JSON 문자열로 변환하여 확인
+  //     const jsonData = JSON.stringify(formData);
+  //     console.log(jsonData);
+
+  //     // 백엔드 서버로 POST 요청 보내기
+  //     const response = await axios.post(
+  //       // "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/files",
+  //       "http://172.16.104.79:8888/boot/member/files",
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       }
+  //     );
+
+  //     // 서버 요청 후에 프로필 이미지 업데이트가 성공하면, 프로필 이미지 상태 업데이트
+  //     if (response.data && response.data.imageUrl) {
+  //       setProfileImage(response.data.imageUrl); // 받아온 이미지 URL로 프로필 이미지 업데이트
+  //     }
+  //   } catch (error) {
+  //     console.error("프로필 이미지 업데이트 실패:", error);
+  //   }
+  // };
+
+  // // 이미지가 변경될 때마다 업데이트된 이미지 보여주기
+  // useEffect(() => {
+  //   // profileImage 값이 변경될 때마다 화면을 갱신할 수 있도록 처리
+  //   // 예를 들어, 화면을 새로 고치거나, 상태를 업데이트하는 등의 로직 추가
+  // }, [profileImage]);
+
   // 고객센터 연결하기 기능
   const CenterPhone = () => {};
 
@@ -118,7 +175,7 @@ const Profiles = ({ navigation, route }) => {
             marginTop: "10%",
           }}
         >
-          <TouchableOpacity style={{}} onPress={() => navigation.navigate("")}>
+          <TouchableOpacity style={{}} onPress={openImagePicker}>
             <Image
               style={{ width: 90, height: 90 }}
               source={require("../../assets/profileedit.png")}

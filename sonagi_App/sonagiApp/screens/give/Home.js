@@ -141,7 +141,9 @@ const Home = ({ navigation, route }) => {
         </TouchableOpacity>
 
         {/* 세번째 라인(기부 내역) */}
-        <TouchableOpacity onPress={() => navigation.navigate("Donate")}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Donate", { userInfo: userInfo })}
+        >
           <View style={styles.fifthTwoContainer}>
             <View
               style={{
@@ -253,7 +255,11 @@ const Home = ({ navigation, route }) => {
         </TouchableOpacity>
 
         {/* 네번째 라인 (고마운 분들) */}
-        <TouchableOpacity onPress={() => navigation.navigate("Thankyou")}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("Thankyou", { userInfo: userInfo })
+          }
+        >
           <View style={styles.fourthTwoContainer}>
             <View
               style={{

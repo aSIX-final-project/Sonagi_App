@@ -19,7 +19,7 @@ import GiveReq from "./screens/give/GiveReq";
 import ManagePage from "./screens/give/ManagePage";
 import ManageNotice from "./screens/give/ManageNotice";
 import ManageReq from "./screens/give/ManageReq";
-// import BottomsheetModal from "./screens/give/BottomsheetModal";
+import BottomsheetModDel from "./screens/give/BottomsheetModDel";
 
 // 피기부자
 import Homep from "./screens/givep/Homep";
@@ -255,13 +255,13 @@ export default function App() {
             headerShown: false,
           }}
         />
-        {/* <Stack.Screen
-          name="BottomsheetModal"
-          component={BottomsheetModal}
+        <Stack.Screen
+          name="BottomsheetModDel"
+          component={BottomsheetModDel}
           options={{
             headerShown: false,
           }}
-        /> */}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

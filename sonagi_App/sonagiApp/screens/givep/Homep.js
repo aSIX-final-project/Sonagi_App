@@ -1,8 +1,7 @@
-//홈화면
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
 
-const Home = ({ navigation, route }) => {
+const Homep = ({ navigation, route }) => {
   const { userInfo } = route.params;
   const [image, setImage] = useState(require("../../assets/policy.png"));
   useEffect(() => {
@@ -485,4 +484,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default Homep;

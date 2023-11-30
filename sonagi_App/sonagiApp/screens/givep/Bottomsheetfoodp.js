@@ -15,15 +15,25 @@ import {
   Keyboard,
 } from "react-native";
 import { KeyboardAvoidingView } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-const Bottomsheetfoodp = ({ modalVisible, setModalVisible, navigation }) => {
+const Bottomsheetfoodp = ({
+  modalVisible,
+  setModalVisible,
+  navigation,
+  adName,
+  profileImage,
+  foodGiver,
+  foodName,
+  foodId,
+}) => {
+  const [inputValue, setInputValue] = useState("");
   const screenHeight = Dimensions.get("screen").height;
   const panY = useRef(new Animated.Value(screenHeight)).current;
   const translateY = panY.interpolate({
     inputRange: [-1, 0, 1],
     outputRange: [0, 0, 1],
   });
-
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
     duration: 300,
@@ -35,7 +45,17 @@ const Bottomsheetfoodp = ({ modalVisible, setModalVisible, navigation }) => {
     duration: 300,
     useNativeDriver: true,
   });
-
+  useEffect(() => {
+    if (modalVisible) {
+      resetBottomSheet.start();
+    }
+    // 값이 잘 받아왔는지 확인하기 위한 console.log
+    console.log("adName:", adName);
+    console.log("profileImage:", profileImage);
+    console.log("foodGiver:", foodGiver);
+    console.log("foodName:", foodName);
+    console.log("foodId:", foodId);
+  }, [modalVisible, adName, profileImage, foodGiver, foodName, foodId]);
   const panResponders = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => {
@@ -67,6 +87,50 @@ const Bottomsheetfoodp = ({ modalVisible, setModalVisible, navigation }) => {
     closeBottomSheet.start(() => {
       setModalVisible(false);
     });
+  };
+
+  const sendData = async () => {
+    const data = {
+      sender: adName,
+      senderImage: profileImage,
+      receiver: foodGiver,
+      foodName: foodName,
+      serving: inputValue,
+    };
+
+    try {
+      const response = await fetch(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      const jsonResponse = await response.json();
+      console.log("Response:", jsonResponse);
+
+      const responseNo = await fetch(
+        `https://port-0-sonagi-notification-server-32updzt2alpjtaqfk.sel5.cloudtype.app/sendResNotification?adName=${adName}&resId=${foodId}&serving=${inputValue}&foodName=${foodName}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!responseNo.ok) {
+        // 추가된 코드
+        throw new Error(`HTTP error! status: ${responseNo.status}`);
+      }
+      console.log("123444");
+      navigation.navigate("KakaoMapP", { userInfo: userInfo });
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -152,6 +216,8 @@ const Bottomsheetfoodp = ({ modalVisible, setModalVisible, navigation }) => {
                   textAlign="center" // 가운데 정렬
                   keyboardType="numeric" // 숫자만 입력
                   maxLength={3} // 3자리수 까지 입력가능
+                  onChangeText={(text) => setInputValue(text)}
+                  value={inputValue}
                 />
                 <Text
                   style={{
@@ -192,6 +258,7 @@ const Bottomsheetfoodp = ({ modalVisible, setModalVisible, navigation }) => {
                   alignItems: "center",
                   justifyContent: "center",
                 }}
+                onPress={sendData}
               >
                 <Text
                   style={{

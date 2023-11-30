@@ -13,7 +13,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import BottomsheetModal from "./BottomsheetModal";
+import BottomsheetModal from "./BottomsheetModDel";
 
 const ManageReq = ({ navigation }) => {
   // 바텀시트 (삭제, 수정)
