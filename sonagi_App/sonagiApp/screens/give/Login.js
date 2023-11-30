@@ -25,6 +25,11 @@ const Login = ({ navigation }) => {
     setValue, // 입력 값 설정
     formState: { errors }, // 폼 상태와 에러
   } = useForm();
+  const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+
+  const handlePasswordVisibility = () => {
+    setIsPasswordHidden(!isPasswordHidden);
+  };
 
   // 비밀번호 입력 필드에 대한 참조 생성
   const passwordRef = useRef(null);
@@ -129,7 +134,7 @@ const Login = ({ navigation }) => {
 
         // 백엔드 서버로 POST 요청 보내기
         const responseR = await axios.post(
-          "http://172.16.104.97:8888/boot/restaurant/token",
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/token",
           formData
         );
 
@@ -256,7 +261,7 @@ const Login = ({ navigation }) => {
 
         {/* id */}
         <Image
-          style={{ width: 20, height: 20, bottom: "0%", right: "40.5%" }}
+          style={{ width: 65, height: 65,bottom: "0%",top:'3%', right: "36%" }}
           source={require("../../assets/id.png")}
           resizeMode="contain"
         />
@@ -273,7 +278,7 @@ const Login = ({ navigation }) => {
 
         {/* password */}
         <Image
-          style={{ width: 100, height: 40, bottom: "0%", right: "30.3%" }}
+          style={{ width: 80, height: 40, bottom: "0%", right: "33.3%" }}
           source={require("../../assets/password.png")}
           resizeMode="contain"
         />
@@ -281,17 +286,18 @@ const Login = ({ navigation }) => {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TextInput
             style={styles.inputpw}
-            secureTextEntry
             ref={passwordRef}
             onChangeText={(text) => setValue("password", text)}
+            secureTextEntry={isPasswordHidden}
             name="password"
           />
-          {/* 비밀번호 가리기 */}
-          <Image
-            style={{ width: 30, height: 30, bottom: "0%", right: "60%" }}
-            source={require("../../assets/lookpwd.png")}
-            resizeMode="contain"
-          />
+          <TouchableOpacity onPress={handlePasswordVisibility}>
+            <Image
+              style={{ width: 30, height: 30, bottom: "0%", right: "60%" }}
+              source={require("../../assets/lookpwd.png")}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
         </View>
 
         {/* 아이디 비밀번호 유효성 검사 */}

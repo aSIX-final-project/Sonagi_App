@@ -14,7 +14,6 @@ import {
   TouchableOpacity,
   Keyboard,
 } from "react-native";
-import { KeyboardAvoidingView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useForm } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
@@ -22,7 +21,8 @@ import axios from "axios";
 
 const RegistGive = ({ navigation, route }) => {
   const [profileImage, setProfileImage] = useState(null);
-  const { userInfo } = route.params;
+  const [userInfo, setUserInfo] = useState(route.params.userInfo);
+  console.log(userInfo);
 
   const {
     watch, // 입력 값 감시
@@ -42,6 +42,7 @@ const RegistGive = ({ navigation, route }) => {
         foodTel: userInfo.adTel,
         foodAddress: userInfo.address,
         foodGiver: userInfo.adName,
+        foodImage: profileImage,
         foodUploadTime: "",
         context: watch("context"),
         cookingTime: selectedPeriod + " " + selectedHour + ":" + selectedMinute,
@@ -129,42 +130,8 @@ const RegistGive = ({ navigation, route }) => {
             },
           }
         );
-
-        if (response.data) {
-          setProfileImage(result.assets[0].uri);
-
-          const formData = {
-            id: foodGiver,
-            foodImage: response.data,
-          };
-
-          // 폼 데이터를 JSON 문자열로 변환하여 확인
-          const jsonData = JSON.stringify(formData);
-          console.log(jsonData);
-
-          console.log(response.data);
-
-          // 백엔드 서버로 POST 요청 보내기
-          const data = await axios.post(
-            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/updateImageUrl",
-            // "http://172.16.104.219:8888/boot/member/updateImageUrl",
-            formData
-          );
-
-          // const newProfileImage = response.data; // 새로운 이미지 URL
-          // userInfo.profileImage = newProfileImage; // userInfo 객체의 프로필 이미지 업데이트
-
-          if (data.data === 1) {
-            console.log(userInfo);
-
-            // 이미지 url 업데이트 성공
-            console.log("이미지 Url 업데이트 성공");
-          }
-          // console.log(response);
-          console.log("이미지 업로드 성공");
-        } else {
-          console.error("이미지 업로드 실패");
-        }
+        setProfileImage(response.data);
+        console.log("이미지 업로드 성공");
       } catch (error) {
         console.error("이미지 업로드 오류:", error);
       }
@@ -703,6 +670,7 @@ const RegistGive = ({ navigation, route }) => {
               fontWeight="bold"
               fontFamily="Play-Bold"
               multiline
+              onChangeText={(text) => setValue("context", text)}
             />
           </View>
           <View style={styles.lineStyle} />

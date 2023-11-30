@@ -25,7 +25,6 @@ const Profilesp = ({ navigation, route }) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       setUserInfo(route.params.userInfo);
-      // userInfo 안의 profileImage 값이 변경되면 profileImage 상태 업데이트
       if (userInfo && userInfo.profileImage) {
         setProfileImage(userInfo.profileImage);
       }
@@ -62,6 +61,7 @@ const Profilesp = ({ navigation, route }) => {
         // 'nameFile' 파라미터 추가
         formData.append("nameFile", userInfo.id);
         // console.log(formData);
+        formData.append("folderName", "member");
 
         const response = await axios.post(
           "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/files",

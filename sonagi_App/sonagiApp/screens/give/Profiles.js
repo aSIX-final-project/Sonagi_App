@@ -12,6 +12,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 
 const Profiles = ({ navigation, route }) => {
+  const [profileImage, setProfileImage] = useState(null);
   const { userInfo } = route.params;
   console.log(userInfo);
 
@@ -23,7 +24,7 @@ const Profiles = ({ navigation, route }) => {
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync();
-    if (!result.cancelled) {
+    if (!result.canceled) {
       console.log(result.uri);
       // updateProfileImage(result.uri); // 선택된 이미지 URL을 전달하여 업데이트
     }
@@ -73,7 +74,7 @@ const Profiles = ({ navigation, route }) => {
   // }, [profileImage]);
 
   // 고객센터 연결하기 기능
-  const CenterPhone = () => {};
+  const CenterPhone = () => { };
 
   // 로그아웃 버튼을 눌렀을때 값을 서버에 보냄
   const [isLogoutSuccessModalVisible, setLogoutSuccessModalVisible] =
@@ -177,169 +178,169 @@ const Profiles = ({ navigation, route }) => {
         >
           <TouchableOpacity style={{}} onPress={openImagePicker}>
             <Image
-              style={{ width: 90, height: 90 }}
-              source={require("../../assets/profileedit.png")}
+              style={{ width: 90, height: 90, borderRadius:100 }}
+              source={userInfo.profileImage ? { uri: userInfo.profileImage } : require("../../assets/profileedit.png")}
               resizeMode="contain"
             />
           </TouchableOpacity>
-          <Text
-            style={{
-              fontFamily: "Play-Bold",
-              fontSize: 25,
-              color: "white",
-              marginTop: "2%",
-            }}
-          >
-            {userInfo.name} 님
-          </Text>
-          <Text
-            style={{
-              fontFamily: "Play-Regular",
-              fontSize: 20,
-              color: "white",
-              marginTop: "1%",
-            }}
-          >
-            {userInfo.adName}
-          </Text>
-        </View>
-      </View>
-
-      {/* 중앙 부분 */}
-
-      {/* 고객센터 */}
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: "10%",
-          width: "88%",
-          height: "10%",
-          backgroundColor: "#E1F1FF",
-          borderRadius: 16,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Image
-          style={{ width: 65, height: 65, marginRight: "7%", marginLeft: "0%" }}
-          source={require("../../assets/call.png")}
-          resizeMode="contain"
-        />
-
         <Text
           style={{
             fontFamily: "Play-Bold",
-            fontSize: 23,
-            color: "#8B8E90",
-            marginRight: "25%",
+            fontSize: 25,
+            color: "white",
+            marginTop: "2%",
           }}
         >
-          고객센터 연결
+          {userInfo.name} 님
         </Text>
-
-        <TouchableOpacity style={{}} onPress={CenterPhone}>
-          <Image
-            style={{ width: 35, height: 35 }}
-            source={require("../../assets/next.png")}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-      </View>
-
-      {/* 비밀번호 변경 */}
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: "5%",
-          width: "88%",
-          height: "10%",
-          backgroundColor: "#E1F1FF",
-          borderRadius: 16,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Image
-          style={{ width: 65, height: 65, marginRight: "7%", marginLeft: "0%" }}
-          source={require("../../assets/pwchange.png")}
-          resizeMode="contain"
-        />
-
         <Text
           style={{
-            fontFamily: "Play-Bold",
-            fontSize: 23,
-            color: "#8B8E90",
-            marginRight: "25%",
+            fontFamily: "Play-Regular",
+            fontSize: 20,
+            color: "white",
+            marginTop: "1%",
           }}
         >
-          비밀번호 변경
+          {userInfo.adName}
         </Text>
-
-        <TouchableOpacity
-          style={{}}
-          onPress={() =>
-            navigation.navigate("ChangePw", { userInfo: userInfo })
-          }
-        >
-          <Image
-            style={{ width: 35, height: 35 }}
-            source={require("../../assets/next.png")}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
       </View>
+    </View>
 
-      {/* 시설 소개 */}
-      <View
-        style={{
-          flexDirection: "row",
-          marginTop: "5%",
-          width: "88%",
-          height: "10%",
-          backgroundColor: "#E1F1FF",
-          borderRadius: 16,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Image
-          style={{ width: 65, height: 65, marginRight: "7%", marginLeft: "0%" }}
-          source={require("../../assets/introduce2.png")}
-          resizeMode="contain"
-        />
+      {/* 중앙 부분 */ }
 
-        <Text
-          style={{
-            fontFamily: "Play-Bold",
-            fontSize: 23,
-            color: "#8B8E90",
-            marginRight: "23%",
-          }}
-        >
-          시설 정보 변경
-        </Text>
+  {/* 고객센터 */ }
+  <View
+    style={{
+      flexDirection: "row",
+      marginTop: "10%",
+      width: "88%",
+      height: "10%",
+      backgroundColor: "#E1F1FF",
+      borderRadius: 16,
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <Image
+      style={{ width: 65, height: 65, marginRight: "7%", marginLeft: "0%" }}
+      source={require("../../assets/call.png")}
+      resizeMode="contain"
+    />
 
-        <TouchableOpacity
-          style={{}}
-          onPress={() =>
-            navigation.navigate("ChangeInfo", { userInfo: userInfo })
-          }
-        >
-          <Image
-            style={{ width: 35, height: 35 }}
-            source={require("../../assets/next.png")}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-      </View>
-      {/* 마지막 라인(광고) */}
+    <Text
+      style={{
+        fontFamily: "Play-Bold",
+        fontSize: 23,
+        color: "#8B8E90",
+        marginRight: "25%",
+      }}
+    >
+      고객센터 연결
+    </Text>
+
+    <TouchableOpacity style={{}} onPress={CenterPhone}>
       <Image
-        style={{ width: "100%", height: "15%", marginTop: "22%" }}
-        source={require("../../assets/ad.png")}
+        style={{ width: 35, height: 35 }}
+        source={require("../../assets/next.png")}
         resizeMode="contain"
       />
-    </View>
+    </TouchableOpacity>
+  </View>
+
+  {/* 비밀번호 변경 */ }
+  <View
+    style={{
+      flexDirection: "row",
+      marginTop: "5%",
+      width: "88%",
+      height: "10%",
+      backgroundColor: "#E1F1FF",
+      borderRadius: 16,
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <Image
+      style={{ width: 65, height: 65, marginRight: "7%", marginLeft: "0%" }}
+      source={require("../../assets/pwchange.png")}
+      resizeMode="contain"
+    />
+
+    <Text
+      style={{
+        fontFamily: "Play-Bold",
+        fontSize: 23,
+        color: "#8B8E90",
+        marginRight: "25%",
+      }}
+    >
+      비밀번호 변경
+    </Text>
+
+    <TouchableOpacity
+      style={{}}
+      onPress={() =>
+        navigation.navigate("ChangePw", { userInfo: userInfo })
+      }
+    >
+      <Image
+        style={{ width: 35, height: 35 }}
+        source={require("../../assets/next.png")}
+        resizeMode="contain"
+      />
+    </TouchableOpacity>
+  </View>
+
+  {/* 시설 소개 */ }
+  <View
+    style={{
+      flexDirection: "row",
+      marginTop: "5%",
+      width: "88%",
+      height: "10%",
+      backgroundColor: "#E1F1FF",
+      borderRadius: 16,
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <Image
+      style={{ width: 65, height: 65, marginRight: "7%", marginLeft: "0%" }}
+      source={require("../../assets/introduce2.png")}
+      resizeMode="contain"
+    />
+
+    <Text
+      style={{
+        fontFamily: "Play-Bold",
+        fontSize: 23,
+        color: "#8B8E90",
+        marginRight: "23%",
+      }}
+    >
+      시설 정보 변경
+    </Text>
+
+    <TouchableOpacity
+      style={{}}
+      onPress={() =>
+        navigation.navigate("ChangeInfo", { userInfo: userInfo })
+      }
+    >
+      <Image
+        style={{ width: 35, height: 35 }}
+        source={require("../../assets/next.png")}
+        resizeMode="contain"
+      />
+    </TouchableOpacity>
+  </View>
+  {/* 마지막 라인(광고) */ }
+  <Image
+    style={{ width: "100%", height: "15%", marginTop: "22%" }}
+    source={require("../../assets/ad.png")}
+    resizeMode="contain"
+  />
+    </View >
   );
 };
 const styles = StyleSheet.create({

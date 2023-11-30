@@ -33,10 +33,16 @@ const BottomsheetMarker = ({
           const formData = {
             id: id,
           };
-          const res = await axios.post(
+          let res = await axios.post(
             "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/findById",
             formData
           );
+          if (res.data.length === 0) {
+            res = await axios.post(
+              "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
+              formData
+            );
+          }
           if (isMounted) {
             console.log("Response:", res.data);
             setUserData(res.data);
@@ -53,6 +59,8 @@ const BottomsheetMarker = ({
       isMounted = false;
     };
   }, [id]);
+
+
 
   const [isCameraModalVisible, setCameraModalVisible] = useState(false);
 
@@ -111,8 +119,7 @@ const BottomsheetMarker = ({
 
   const kakaoMap = async () => {
     const response = await fetch(
-      `https://dapi.kakao.com/v2/local/search/address.json?query=${
-        userData && userData[0]?.address
+      `https://dapi.kakao.com/v2/local/search/address.json?query=${userData && userData[0]?.address
       }`,
       {
         headers: {

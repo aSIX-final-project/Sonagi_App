@@ -17,8 +17,9 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 
 const ChangePwp = ({ navigation, route }) => {
-  const { userInfo } = route.params;
 
+  const { userInfo } = route.params;
+  console.log(userInfo.profileImage);
   const {
     watch, // 입력 값 감시
     setValue, // 입력 값 설정
@@ -47,6 +48,7 @@ const ChangePwp = ({ navigation, route }) => {
           address: userInfo.address,
           totalHc: userInfo.totalHc,
           introduction: userInfo.introduction,
+          profileImage : userInfo.profileImage
         };
 
         // 폼 데이터를 JSON 문자열로 변환하여 확인
@@ -55,13 +57,14 @@ const ChangePwp = ({ navigation, route }) => {
 
         // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
         const response = await axios.post(
-          "http://172.16.106.73:8888/boot/member/modify",
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/modify",
           formData
         );
         // 백엔드로부터 온 응답 처리
         if (response.status === 200) {
           // 비밀번호 변경 성공
           console.log("비밀번호 변경 성공");
+          alert("비밀번호 변경 성공")
           // 여기에서 필요한 추가 작업 수행 가능
         } else {
           // 비밀번호 변경 실패
@@ -193,14 +196,21 @@ const ChangePwp = ({ navigation, route }) => {
               }}
             >
               <TouchableOpacity
-                style={{}}
                 onPress={() => navigation.navigate("")}
               >
-                <Image
-                  style={{ width: 90, height: 90 }}
-                  source={require("../../assets/profileedit.png")}
-                  resizeMode="contain"
-                />
+                {userInfo.profileImage ? (
+
+                  <Image
+                    source={{ uri: userInfo.profileImage }}
+                    style={styles.profileImage}
+                  />
+                ) : (
+                  <Image
+                    style={{ width: 90, height: 90 }}
+                    source={require("../../assets/profileedit.png")}
+                    resizeMode="contain"
+                  />
+                )}
               </TouchableOpacity>
               <Text
                 style={{
@@ -363,6 +373,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FAFAFC",
+  }, profileImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 75,
+    borderWidth: 1,
+    borderColor: "#000",
   },
 
   input: {
