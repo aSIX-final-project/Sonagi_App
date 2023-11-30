@@ -5,6 +5,9 @@ import axios from 'axios';
 
 
 const Login = ({ navigation }) => {
+
+    
+
     const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm();
     const passwordRef = useRef(null);
 
@@ -12,8 +15,11 @@ const Login = ({ navigation }) => {
 
 
 
-    // 로그인 버튼을 눌렀을때 값을 서버에 보냄
+    // 로그인 버튼을 눌렀을때 값을 서버에 보냄 (로그인 성공)
     const [isLoginSuccessModalVisible, setLoginSuccessModalVisible] = useState(false); // 모달 알림창의 상태
+
+    // 로그인 실패
+    const [isLoginFailedModalVisible, setLoginFailedModalVisible] = useState(false); // 모달 알림창의 상태
 
     {/* 기부자 페이지 */}
     const handleLoginButtonClick = () => {
@@ -80,6 +86,26 @@ const Login = ({ navigation }) => {
                     </View>
                 </Modal>
 
+                {/* 로그인 실패 모달 */}
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={isLoginFailedModalVisible}
+                >
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <Image
+                                style={{ width: 130, height: 130, bottom: '0.5%', right: '0%' }}
+                                source={require('../../assets/loginfailed.png')}
+                                resizeMode="contain"
+                            />
+                            <TouchableOpacity
+                                onPress={() => setLoginFailedModalVisible(false)} // 모달 내부의 버튼 클릭 시 모달 숨김
+                            ></TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+
                 {/* 로그인 글씨 */}
                 <Image
                     style={{ width: 100, height: 100, bottom: '0.5%', right: '32%' }}
@@ -89,7 +115,7 @@ const Login = ({ navigation }) => {
 
                 {/* id */}
                 <Image
-                    style={{ width: 20, height: 20, bottom: '0%', right: '40.5%' }}
+                    style={{ width: 65, height: 65, bottom: '0%', right: '36%' }}
                     source={require('../../assets/id.png')}
                     resizeMode="contain"
                 />
@@ -106,7 +132,7 @@ const Login = ({ navigation }) => {
 
                 {/* password */}
                 <Image
-                    style={{ width: 100, height: 40, bottom: '0%', right: '30.3%' }}
+                    style={{ width: 80, height: 40, bottom: '0%', right: '33.3%' }}
                     source={require('../../assets/password.png')}
                     resizeMode="contain"
                 />

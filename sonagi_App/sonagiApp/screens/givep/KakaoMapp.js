@@ -1,22 +1,26 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { WebView } from 'react-native-webview';
 import axios from 'axios';
-import { Linking, View, TouchableOpacity, Image, Text, handleLogoutButtonClick } from 'react-native';
+import { Linking, View, TouchableOpacity, Image, Text, handleLogoutButtonClick, StyleSheet } from 'react-native';
 import * as Location from 'expo-location';
-import Registgivep from './Registgivep';
+
+// 바텀시트 (마커 클릭시 뜸)
+import BottomsheetMarker from './Bottomsheetfoodp';
 
 export default function App({ navigation }) {
-  // testClick 클릭
-  const testClick = () => {
-    navigation.navigate('Mapaddp'); // 'Mapadd' 페이지로 이동합니다.
-  };
 
-
-  // 기부 받은목록 버튼 클릭
-  const GiveReq = () => {
-    navigation.navigate('GiveReqp');
+  
+  // 마커 클릭했을때 바텀시트 (피기부자)
+  const [modalVisible, setModalVisible] = useState(false);
+  const pressButton = () => {
+    setModalVisible(true);
   }
 
+  // 마커 클릭했을때 바텀시트 (기부자)
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const pressButton2 = () => {
+    setModalVisible2(true);
+  }
 
   const [locations, setLocations] = useState([]);
   const [currentPosition, setCurrentPosition] = useState(null);
@@ -85,9 +89,9 @@ export default function App({ navigation }) {
 
         // linePath를 JSON 문자열로 변환
         const showEndRoute = linePath.length > 0;
-        if(linePath.length > 0){
+        if (linePath.length > 0) {
           setShowEndRoute(true);
-        }else{
+        } else {
           setShowEndRoute(false);
         }
         const linePathString = JSON.stringify(linePath);
@@ -302,7 +306,7 @@ export default function App({ navigation }) {
       <View style={{ backgroundColor: '#44A5FF', width: '100%', height: '12%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
         {/* 상단부분 */}
         <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#44A5FF', width: '100%', height: '20%', marginTop: '13%' }}>
-          <TouchableOpacity style={{ marginLeft: '6%', marginRight: '2%' }} onPress={() => navigation.navigate('Home')}>
+          <TouchableOpacity style={{ marginLeft: '6%', marginRight: '2%' }} onPress={() => navigation.navigate('Homep')}>
             <Image
               style={{ width: 50, height: 50 }}
               source={require('../../assets/backkey.png')}
@@ -311,8 +315,8 @@ export default function App({ navigation }) {
           </TouchableOpacity>
 
 
-          {/* 테스트 아이콘 */}
-          <TouchableOpacity style={{ marginTop: '2%', marginRight: '38%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { testClick }>
+          {/* (피기부자 마커 클릭했을때) */}
+          <TouchableOpacity style={{ marginTop: '2%', marginRight: '0%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={pressButton}>
             <Image
               style={{ width: 40, height: 40 }}
               source={require('../../assets/deliver.png')}
@@ -320,19 +324,10 @@ export default function App({ navigation }) {
             />
           </TouchableOpacity>
 
-          {/* 기부요청 목록 */}
-          <TouchableOpacity style={{ marginTop: '2%', backgroundColor: '#68B7FF', width: '11%', height: '200%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress = { GiveReq }>
-            <Image
-              style={{ width: 35, height: 35 }}
-              source={require('../../assets/star.png')}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-
         </View>
-        
+
       </View>
-      
+
       <WebView
         originWhitelist={['*']}
         source={{ html }}
@@ -358,8 +353,28 @@ export default function App({ navigation }) {
           return true;
         }}
       />
-      
+
+      {/* 마커 클릭시 바텀시트 view */}
+      <View style={styles.rootContainer}>
+        <BottomsheetMarker
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          navigation={navigation}
+        />
+      </View>
     </View>
-    
+
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+      flex: 1,
+      alignItems: 'center',
+      backgroundColor: '#FFFFFF'
+  },
+  rootContainer: {
+      justifyContent: "center",
+      alignItems: "center",
+  }
+});

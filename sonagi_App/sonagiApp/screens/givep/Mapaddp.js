@@ -17,7 +17,7 @@ const Mapaddp = ({ navigation }) => {
             {/* 상단부분 */}
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#44A5FF', width: '100%', height: '12%', paddingTop: '6%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: '4%' }}>
-                    <TouchableOpacity style={{ marginLeft: '6%', marginRight: '2%' }} onPress={() => navigation.navigate('KakaoMap')}>
+                    <TouchableOpacity style={{ marginLeft: '6%', marginRight: '2%' }} onPress={() => navigation.navigate('KakaoMapp')}>
                         <Image
                             style={{ width: 50, height: 50 }}
                             source={require('../../assets/backkey.png')}
@@ -25,36 +25,47 @@ const Mapaddp = ({ navigation }) => {
                         />
                     </TouchableOpacity>
                 </View>
-                <View style={{ position: 'relative', marginRight: '6%',  alignItems: 'center', justifyContent: 'center' }}>
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={require('../../assets/heart.png')}
-                        resizeMode="contain"
-                    />
-                    {/* 하트 부분 */}
-                    <Text style={{ position: 'absolute', color: '#44A5FF', fontWeight: 'bold', fontSize: 25 }}>{heartCount}</Text>
-                </View>
             </View>
             
             {/* 기부자가 올린 이미지 */}
             <Image
-                style={{ width: '100%', height: '50%'}}
+                style={{ width: '100%', height: '30%'}}
                 source={require('../../assets/food3.png')}
-                resizeMode="contain"
+                resizeMode="fill"
             />
             
             <View style={{ flexDirection: 'row', width: '90%', height: '10%', alignItems: 'center', backgroundColor: '#FFFFFF', paddingRight: '50%' }}>
                 <View>
                     <Image
-                        style={{ width: 60, height: 60, bottom: '0%', marginLeft: '10%', borderRadius: 60 }}
-                        source={require('../../assets/yanoljalogo.png')}
+                        style={{ width: 50, height: 50, bottom: '0%', marginLeft: '10%', borderRadius: 60 }}
+                        source={require('../../assets/doologo.png')}
                         resizeMode="contain"
                     />
                 </View>
 
-                <View style={{ marginTop: '1%' }}>
-                    <Text style={{ fontSize: 25, fontWeight: 'bold', fontFamily: 'Play-Bold' }}>상호명: 야놀자</Text>
+                <View style={{ marginTop: '1%', marginLeft: '5%', width: '110%', height: '50%'}}>
+                    <Text style={{ fontSize: 23, fontWeight: 'bold', fontFamily: 'Play-Bold' }}>상호명: 두꺼비 식당</Text>
                     <Text style={{ fontSize: 20, fontWeight: 'bold', fontFamily: 'Play-Regular' }}>서울시 강남구</Text>
+                </View>
+
+                <View style={{ flexDirection: 'column', backgroundColor: 'red', width: '65%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                    <TouchableOpacity style={{ flexDirection: 'row', width: '100%', height: '50%', backgroundColor: '#E1F1FF', borderRadius: 26, alignItems: 'center', justifyContent: 'center' }} onPress={() => navigation.navigate('Login')}>
+                        <Image
+                            style={{ width: 30, height: 30, marginBottom: '1%', marginRight: '5%' }}
+                            source={require('../../assets/findroute.png')}
+                            resizeMode="contain"
+                        />
+                        <Text style={{ fontSize: 32, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#44A5FF' }}>길찾기</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={{ flexDirection: 'row', width: '100%', height: '50%', backgroundColor: '#44A5FF', borderRadius: 26, alignItems: 'center', justifyContent: 'center', marginLeft: '4%' }} onPress={() => navigation.navigate('Login')}>
+                        <Image
+                            style={{ width: 28, height: 28, marginBottom: '1%', marginRight: '5%' }}
+                            source={require('../../assets/phone2.png')}
+                            resizeMode="contain"
+                        />
+                        <Text style={{ fontSize: 32, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#FFFFFF' }}>통화</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
             {/* 밑줄 */}
@@ -87,13 +98,7 @@ const Mapaddp = ({ navigation }) => {
             </View>
             
             <View style={{ width: '90%', height: '10%', flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFFFFF' }}>
-                <TouchableOpacity style={{ width: '48%', height: '70%', backgroundColor: '#E1F1FF', borderRadius: 26, alignItems: 'center', justifyContent: 'center' }} onPress={() => navigation.navigate('Login')}>
-                    <Text style={{ fontSize: 32, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#44A5FF' }}>도착</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={{ width: '48%', height: '70%', backgroundColor: '#44A5FF', borderRadius: 26, alignItems: 'center', justifyContent: 'center', marginLeft: '4%' }} onPress={() => navigation.navigate('Login')}>
-                    <Text style={{ fontSize: 32, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#FFFFFF' }}>받기</Text>
-                </TouchableOpacity>
+                
             </View>
 
             {/* 바텀시트 view */}

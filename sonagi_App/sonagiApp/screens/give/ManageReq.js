@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Linking, Platform, Modal, ScrollView, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import BottomsheetModDel from './BottomsheetModDel';
+import BottomsheetAC from './BottomsheetAC';
 
 const ManageReq = ({ navigation }) => {
 
@@ -12,9 +12,66 @@ const ManageReq = ({ navigation }) => {
         setModalVisible(true);
     }
 
+    // 게시판 모달 상태
+    const [isNotionModalVisible, setNotionModalVisible] = useState(false);
+    // 게시판 버튼 클릭 핸들러
+    const handleNotionButtonClick = () => {
+        console.log('sucess');
+        setNotionModalVisible(true);
+    };
+
     return (
         
         <View style={styles.container}>
+
+            {/* 글쓰기 버튼 눌렀을때 모달 디자인 */}
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={isNotionModalVisible}
+            >
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.centeredView2}>
+                    <View style={styles.modalView2}>
+                        {/* 게시판 모달 관련 코드 */}
+                        <TouchableOpacity style={{ width: '10%', height: '%', left: '48%' }} onPress={() => setNotionModalVisible(false)}>
+                            <View style={{ marginBottom: '10%' }}>
+                                <Image
+                                    style={{ width: 20, height: 20,  }}
+                                    source={require('../../assets/cancle.png')}
+                                    resizeMode="contain"
+                                />
+                            </View>
+                        </TouchableOpacity>
+
+                        {/* 제목 입력칸 */}
+                        <TextInput
+                            style={styles.inputtext}
+                            placeholder="제목을 입력하세요."
+                            placeholderTextColor="#808080"
+                        ></TextInput>
+
+                        {/* 선 긋기 */}
+                        <View style={styles.lineStyle} />
+
+                        {/* 내용을 입력칸 */}
+                        <TextInput
+                            style={styles.inputtext2}
+                            placeholder="내용을 입력하세요."
+                            placeholderTextColor="#808080"
+                            multiline={true}
+                            numberOfLines={10}
+                        ></TextInput>
+
+                        {/* 등록 버튼 */}
+                        <TouchableOpacity style={{ width: '95%', height: '10%', borderRadius: 18, marginTop: '8%', marginBottom: '15%', backgroundColor: '#44A5FF', alignItems: 'center', justifyContent: 'center' }} >
+                            <Text style={{ fontSize: 26, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#FFFFFF' }}>등록</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                </TouchableWithoutFeedback>
+            </Modal>
+
             <View style={{ backgroundColor: '#44A5FF', width: '100%', height: '40%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
                 {/* 상단부분 */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#44A5FF', width: '100%', height: '17%', marginTop: '10%' }}>
@@ -54,7 +111,7 @@ const ManageReq = ({ navigation }) => {
 
             {/* 바텀시트 view */}
             <View style={styles.rootContainer}>
-                <BottomsheetModDel
+                <BottomsheetAC
                     modalVisible={modalVisible}
                     setModalVisible={setModalVisible}
                     navigation={navigation}

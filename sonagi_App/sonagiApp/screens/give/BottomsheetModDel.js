@@ -68,28 +68,30 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
     }, [modalVisible]);
 
     const closeModal = () => {
-        console.log('first');
-        closeBottomSheet.start(() => {
-            console.log('second');
-            setModalVisible(false);
-        })
-    }
+        return new Promise((resolve) => {
+            closeBottomSheet.start(() => {
+                setModalVisible(false);
+                resolve();
+            });
+        });
+    };
 
-    // 게시판 모달 상태(게시글 수정하기)
+
+    // 수정 모달 상태(게시글 수정하기)
     const [isNotionModalVisible3, setNotionModalVisible3] = useState(false);
     // 게시판 버튼 클릭 핸들러
     const handleNotionButtonClick3 = () => {
-        console.log('Click3');
-        closeModal(); // 추가
-        setNotionModalVisible3(true);
+        closeModal().then(() => {
+            setNotionModalVisible3(true);
+        });
     };
 
     return (
         <View style={styles.container}>
 
 
-            {/* 공지 게시글 수정하기 모달 디자인 (아직 구현안됨<---)*/}
-            <Modal
+             {/* 공지 게시글 수정하기 모달 디자인 */}
+             <Modal
                 animationType="fade"
                 transparent={true}
                 visible={isNotionModalVisible3}
@@ -98,8 +100,8 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
                 <View style={styles.centeredView2}>
                     <View style={styles.modalView2}>
                         {/* 게시판 모달 관련 코드 */}
-                        <TouchableOpacity style={{ width: '10%', left: '48%' }} onPress={() => setNotionModalVisible3(false)}>
-                            <View style={{ marginBottom: '10%' }}>
+                        <TouchableOpacity style={{ marginTop: '5%', marginBottom: '8%', width: '10%', height: '10%', left: '45%' }} onPress={() => setNotionModalVisible3(false)}>
+                            <View style={{ marginBottom: '0%' }}>
                                 <Image
                                     style={{ width: 20, height: 20,  }}
                                     source={require('../../assets/cancle.png')}
@@ -109,25 +111,34 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
                         </TouchableOpacity>
 
                         {/* 제목 입력칸 */}
-                        <View style={{ flexDirection: 'row' }}>
-                        <Text style={{ fontFamily: 'Play-Bold', fontSize: 20, color: '#656565', marginTop: '10%' }}>[공지]23시-03시 정기 점검 예정</Text>
-                    </View>
-                        <Text style={{ fontFamily: 'Play-Regular', fontSize: 15, color: '#8B8E90', marginTop: '1%' }}>2023.11.06</Text>
-                        <View style={{ borderBottomColor: '#DBDBDB', width: '100%', marginTop: '5%' }} />
+                        <TextInput
+                            style={styles.inputtext}
+                            placeholder="제목을 입력하세요."
+                            placeholderTextColor="#808080"
+                        ></TextInput>
 
                         {/* 선 긋기 */}
                         <View style={styles.lineStyle} />
 
                         {/* 내용을 입력칸 */}
-                        <Text style= {{ width: '90%', height: '60%', fontSize: 20, marginTop:'5%' }}>
-                            전체 앱 점검을 23시 ~ 03시까지 진행 할 예정이니 이용에 참고 부탁드립니다.
-                        </Text>
-                        
+                        <TextInput
+                            style={styles.inputtext2}
+                            placeholder="내용을 입력하세요."
+                            placeholderTextColor="#808080"
+                            multiline={true}
+                            numberOfLines={10}
+                        ></TextInput>
+
+                        {/* 수정 버튼 */}
+                        <TouchableOpacity style={{ width: '80%', height: '30%', borderRadius: 16, marginTop: '0%', backgroundColor: '#44A5FF', alignItems: 'center', justifyContent: 'center' }} >
+                            <Text style={{ fontSize: 23, fontWeight: 'bold', fontFamily: 'Play-Regular', color: '#FFFFFF' }}>수정</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 </TouchableWithoutFeedback>
             </Modal>
-            {/* 수락하기, 거절하기 모달디자인 */}
+
+            {/* 삭제하기, 수정하기 모달디자인 */}
             <Modal
                 visible={modalVisible}
                 animationType={"fade"}
@@ -158,17 +169,17 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
                                     </TouchableOpacity>
                                 </View>
 
-                                { /* 수락 하기 */}
+                                { /* 삭제 하기 */}
                                 <View style={{ width: '100%', height: '28%' }}>
                                     <TouchableOpacity style={{ width: '100%', height: '100%' }}>
-                                        <Text style={{ fontFamily: 'Play-Regular', fontSize: 23, color: '#6F6A6A', paddingLeft: '10%', paddingTop: '2.5%' }}>수락 하기</Text>
+                                        <Text style={{ fontFamily: 'Play-Regular', fontSize: 23, color: '#6F6A6A', paddingLeft: '10%', paddingTop: '2.5%' }}>삭제 하기</Text>
                                     </TouchableOpacity>
                                 </View>
 
-                                { /* 거절 하기 */}
+                                { /* 수정 하기 */}
                                 <View style={{ width: '100%', height: '28%' }}>
                                     <TouchableOpacity style={{ width: '100%', height: '100%' }} onPress={handleNotionButtonClick3}>
-                                        <Text style={{ fontFamily: 'Play-Regular', fontSize: 23, color: '#6F6A6A', paddingLeft: '10%', paddingTop: '2.5%' }}>거절 하기</Text>
+                                        <Text style={{ fontFamily: 'Play-Regular', fontSize: 23, color: '#6F6A6A', paddingLeft: '10%', paddingTop: '2.5%' }}>수정 하기</Text>
                                     </TouchableOpacity>
                                 </View>
                             </Animated.View>
@@ -223,12 +234,11 @@ const styles = StyleSheet.create({
 
 
     modalView2: {
-        width: '50%',
-        height: '25%',
-        marginBottom: 20,
+        width: '80%',
+        height: '56%',
         backgroundColor: "white",
         borderRadius: 20,
-        padding: 20,
+        padding: 0,
         alignItems: "center",
         shadowColor: "#000",
         shadowOffset: {
@@ -238,17 +248,46 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
+        paddingBottom: '80%',
+        justifyContent: 'flex-start',
     },
     centeredView2: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 22
+        marginTop: 22,
     },
     container: {
         flex: 1,
         alignItems: 'center',
         backgroundColor: '#FAFAFC'
+    },
+    lineStyle: {
+        height: 2, // 선의 두께
+        backgroundColor: "#E4E4E4", // 선의 색상
+        width: '90%', // 선의 길이
+        marginBottom: '3%'
+    },
+    inputtext: {
+        width: '80%',
+        paddingBottom: 10,
+        borderColor: '#828282',
+        left: '0%',
+        fontSize: 20,
+        marginBottom: 10,
+        color: '#6F6A6A',
+    },
+    
+    inputtext2: {
+        width: '80%',
+        height: '170%',
+        paddingBottom: 25,
+        borderColor: '#828282',
+        marginTop: '4%',
+        left: '0%',
+        fontSize: 20,
+        marginBottom: '7%',
+        color: '#6F6A6A',
     },
 })
 

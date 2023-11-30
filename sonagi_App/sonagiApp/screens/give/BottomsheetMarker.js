@@ -135,13 +135,13 @@ const BottomsheetMarker = ({ modalVisible, setModalVisible, navigation }) => {
                                 <View>
                                     <Image
                                         style={{ width: 43, height: 43, bottom: '0%', marginLeft: '10%', borderRadius: 60 }}
-                                        source={require('../../assets/profilep.png')}
+                                        source={require('../../assets/chlogo.png')}
                                         resizeMode="contain"
                                     />
                                 </View>
 
-                                <View style={{ marginTop: '1%' }}>
-                                    <Text style={{ fontSize: 20, fontWeight: 'bold', fontFamily: 'Play-Bold' }}>상호명:명륜 보육원</Text>
+                                <View style={{ marginTop: '1%',  }}>
+                                    <Text style={{ fontSize: 20, fontWeight: 'bold', fontFamily: 'Play-Bold' }}>상호명:춘천 닭갈비</Text>
                                     <Text style={{ fontSize: 18, fontWeight: 'bold', fontFamily: 'Play-Regular' }}>서울시 강남구</Text>
                                 </View>
                             </View>
@@ -150,8 +150,7 @@ const BottomsheetMarker = ({ modalVisible, setModalVisible, navigation }) => {
                             <View style={{ borderBottomColor: '#7D7D7D', borderBottomWidth: 1, width: '90%', marginTop: '1%' }} />
 
                             {/* 총 인원, 연락처 */}
-                            <View style={{ flexDirection: 'row', marginRight: '35%', marginTop: '2%' }}>
-                                <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'Play-Regular', marginRight: '10%' }}>총 인원 : 50</Text>
+                            <View style={{ flexDirection: 'row', marginLeft: '50%', marginTop: '2%',  alignItems: 'flex-end', justifyContent: 'flex-end', }}>
                                 <Text style={{ fontSize: 15, fontWeight: 'bold', fontFamily: 'Play-Regular' }}>연락처 : 010-0000-0000</Text>
                             </View>
 
@@ -159,7 +158,7 @@ const BottomsheetMarker = ({ modalVisible, setModalVisible, navigation }) => {
                             <View style={{ flexDirection: 'row', width: '90%', height: '17%', alignItems: 'center', marginTop: '10%', paddingRight: '40%' }}>
                                 <View>
                                     <Text style={{ fontSize: 25, color: '#393939', fontWeight: 'bold', fontFamily: 'Play-Bold', marginBottom: '1%' }}>시설소개</Text>
-                                    <Text style={{ fontSize: 18, color: '#6F6A6A', fontWeight: 'bold', fontFamily: 'Play-Regular', width: '55%' }}>우리 OO 시설은 50명의 아동을 수용중이며 서울시에서 가장 큰 규모로 운영중입니다.</Text>
+                                    <Text style={{ fontSize: 18, color: '#6F6A6A', fontWeight: 'bold', fontFamily: 'Play-Regular', width: '55%' }}>우리 OO 식당은 서울시에서 가장 큰 규모로 운영중입니다.</Text>
                                 </View>
                             </View>
 
@@ -171,13 +170,23 @@ const BottomsheetMarker = ({ modalVisible, setModalVisible, navigation }) => {
 
                                 
                             </View>
-                            <View style={{ marginBottom: '25%', width: '90%', height: '20%', flexDirection: 'row', alignItems: 'center' }}>
-                                <TouchableOpacity style={{ width: '48%', height: '70%', backgroundColor: '#E1F1FF', borderRadius: 26, alignItems: 'center', justifyContent: 'center' }} onPress={() => navigation.navigate('Login')}>
-                                    <Text style={{ fontSize: 32, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#44A5FF' }}>길찾기</Text>
+                            <View style={{ marginBottom: '25%', width: '90%', height: '20%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                                <TouchableOpacity style={{ flexDirection: 'row', width: '48%', height: '70%', backgroundColor: '#E1F1FF', borderRadius: 26, alignItems: 'center', justifyContent: 'center' }} onPress={() => navigation.navigate('Login')}>
+                                    <Image
+                                        style={{ width: 30, height: 30, bottom: '0%', marginRight: '5%', borderRadius: 60 }}
+                                        source={require('../../assets/findroute.png')}
+                                        resizeMode="contain"
+                                    />
+                                    <Text style={{ fontSize: 25, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#44A5FF', marginTop: '1%' }}>길찾기</Text>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity style={{ width: '48%', height: '70%', backgroundColor: '#44A5FF', borderRadius: 26, alignItems: 'center', justifyContent: 'center', marginLeft: '4%' }} onPress={() => navigation.navigate('Login')}>
-                                    <Text style={{ fontSize: 32, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#FFFFFF' }}>통화</Text>
+                                <TouchableOpacity style={{ flexDirection: 'row', width: '48%', height: '70%', backgroundColor: '#44A5FF', borderRadius: 26, alignItems: 'center', justifyContent: 'center', marginLeft: '4%' }} onPress={() => navigation.navigate('Login')}>
+                                    <Image
+                                        style={{ width: 30, height: 30, bottom: '0%', marginRight: '5%', borderRadius: 60 }}
+                                        source={require('../../assets/phonelogo.png')}
+                                        resizeMode="contain"
+                                    />
+                                    <Text style={{ fontSize: 25, fontWeight: 'bold', fontFamily: 'Play-Bold', color: '#FFFFFF', marginTop: '1%' }}>통화</Text>
                                 </TouchableOpacity>
                             </View>
 

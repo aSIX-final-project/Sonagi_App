@@ -40,7 +40,7 @@ const Noticep = ({ navigation }) => {
       <Text style={{ fontFamily: 'Play-Regular', fontSize: 18, color: '#8B8E90', marginTop: '5%', marginRight: '45%' }}>총 30건의 공지사항이 있습니다.</Text>
       <View style={{ borderBottomWidth: 1, borderBottomColor: '#7D7D7D', width: '89.5%', marginTop: '1.5%' }} />
 
-      <ScrollView style={{ backgroundColor: '#FFFFFF', width: '89.5%', height: '80%' }}>
+      <ScrollView style={{ backgroundColor: '#FAFAFC', width: '89.5%', height: '80%' }}>
         <Text style={{ fontFamily: 'Play-Bold', fontSize: 20, color: '#656565', marginTop: '2%' }}>[공지]23시-03시 정기 점검 예정</Text>
         <Text style={{ fontFamily: 'Play-Regular', fontSize: 15, color: '#8B8E90', marginTop: '1%' }}>2023.11.06</Text>
         <View style={{ borderBottomWidth: 1, borderBottomColor: '#DBDBDB', width: '100%', marginTop: '5%' }} />
@@ -48,7 +48,7 @@ const Noticep = ({ navigation }) => {
 
       {/* 마지막 라인(광고) */}
       <Image
-        style={{ width: '100%', height: '7%', marginTop: '9%' }}
+        style={{ width: '100%', height: '6.4%', marginTop: '6%' }}
         source={require('../../assets/ad.png')}
         resizeMode="contain"
       />

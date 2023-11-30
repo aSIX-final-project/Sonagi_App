@@ -20,7 +20,11 @@ import ManagePage from './screens/give/ManagePage';
 import ManageNotice from './screens/give/ManageNotice';
 import ManageReq from './screens/give/ManageReq';
 import SetupFood from './screens/give/SetupFood';
-
+import Route1 from './screens/give/Notice';
+import Route2 from './screens/give/Donate';
+import Route3 from './screens/give/Home';
+import Route4 from './screens/give/KakaoMap';
+import Route5 from './screens/give/GiveReq';
 // 피기부자 
 import Homep from './screens/givep/Homep';
 import Profilesp from './screens/givep/Profilesp';
@@ -32,7 +36,12 @@ import Donatep from './screens/givep/Donatep';
 import KakaoMapp from './screens/givep/KakaoMapp';
 import GiveReqp from './screens/givep/GiveReqp';
 import Mapaddp from './screens/givep/Mapaddp';
-
+import Route1_1 from './screens/givep/Noticep';
+import Route2_1 from './screens/givep/Donatep';
+import Route3_1 from './screens/givep/Homep';
+import Route4_1 from './screens/givep/KakaoMapp';
+import Route5_1 from './screens/givep/GiveReqp';
+import SendReqp from './screens/givep/SendReqp';
 
 import { useState } from 'react';
 // 폰트 관련 코드
@@ -233,7 +242,23 @@ export default function App() {
           options={{
             headerShown: false,
           }} />
-        
+        <Stack.Screen
+          name="SendReqp"
+          component={SendReqp}
+          options={{
+            headerShown: false,
+          }} />
+        <Stack.Screen name="Route1" component={Route1} options={{ headerShown: false }}/>
+        <Stack.Screen name="Route2" component={Route2} options={{ headerShown: false }}/>
+        <Stack.Screen name="Route3" component={Route3} options={{ headerShown: false }}/>
+        <Stack.Screen name="Route4" component={Route4} options={{ headerShown: false }}/>
+        <Stack.Screen name="Route5" component={Route5} options={{ headerShown: false }}/>
+
+        <Stack.Screen name="Route1_1" component={Route1_1} options={{ headerShown: false }}/>
+        <Stack.Screen name="Route2_1" component={Route2_1} options={{ headerShown: false }}/>
+        <Stack.Screen name="Route3_1" component={Route3_1} options={{ headerShown: false }}/>
+        <Stack.Screen name="Route4_1" component={Route4_1} options={{ headerShown: false }}/>
+        <Stack.Screen name="Route5_1" component={Route5_1} options={{ headerShown: false }}/>
           
       </Stack.Navigator>
     </NavigationContainer>

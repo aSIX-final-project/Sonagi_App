@@ -29,7 +29,7 @@ const ManageNotice = ({ navigation }) => {
     const [isNotionModalVisible2, setNotionModalVisible2] = useState(false);
     // 게시판 버튼 클릭 핸들러
     const handleNotionButtonClick2 = () => {
-        console.log('sucess');
+        console.log('sucess2');
         setNotionModalVisible2(true);
     };
 
@@ -126,8 +126,10 @@ const ManageNotice = ({ navigation }) => {
                 </TouchableWithoutFeedback>
             </Modal>
 
+           
             
-            
+
+
             <View style={{ backgroundColor: '#44A5FF', width: '100%', height: '40%', borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
                 {/* 상단부분 */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#44A5FF', width: '100%', height: '17%', marginTop: '10%' }}>

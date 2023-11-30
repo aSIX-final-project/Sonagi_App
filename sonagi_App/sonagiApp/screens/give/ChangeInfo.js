@@ -62,12 +62,12 @@ const ChangeInfo = ({ navigation }) => {
                             <TouchableOpacity style={{}} onPress={() => navigation.navigate('')}>
                                 <Image
                                     style={{ width: 90, height: 90 }}
-                                    source={require('../../assets/profileedit.png')}
+                                    source={require('../../assets/profile2.png')}
                                     resizeMode="contain"
                                 />
                             </TouchableOpacity>
                             <Text style={{ fontFamily: 'Play-Bold', fontSize: 25, color: 'white', marginTop: '2%' }}>최광혁 님</Text>
-                            <Text style={{ fontFamily: 'Play-Regular', fontSize: 20, color: 'white', marginTop: '1%' }}>주식회사 야놀자</Text>
+                            <Text style={{ fontFamily: 'Play-Regular', fontSize: 20, color: 'white', marginTop: '1%' }}>이모네밥 사장님</Text>
 
                         </View>
                     </View>
@@ -89,7 +89,7 @@ const ChangeInfo = ({ navigation }) => {
                             autoCapitalize="none"
                             returnKeyType="next"
                             clearButtonMode="while-editing"
-                            placeholder="Enter address"
+                            placeholder="시설 주소를 입력하세요."
                             name="Changeadd"
                         />
                         <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#393939', marginRight: '46%', marginTop: '2%' }}>시설 전화번호 수정</Text>
@@ -98,7 +98,7 @@ const ChangeInfo = ({ navigation }) => {
                             autoCapitalize="none"
                             returnKeyType="next"
                             clearButtonMode="while-editing"
-                            placeholder="Enter number"
+                            placeholder="시설 전화번호를 입력하세요."
                             name="Changenum"
                         />
                         <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#393939', marginRight: '55%', marginTop: '2%' }}>시설 이름 수정</Text>
@@ -107,7 +107,7 @@ const ChangeInfo = ({ navigation }) => {
                             autoCapitalize="none"
                             returnKeyType="next"
                             clearButtonMode="while-editing"
-                            placeholder="Enter name"
+                            placeholder="시설 이름을 입력하세요."
                             name="Changename"
                         />
                         <TouchableOpacity style={{ marginTop: '2%', width: '88%', height: '10%', backgroundColor: '#E1F1FF', borderColor: '#62B4FF', borderWidth: 1, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('Login')}>

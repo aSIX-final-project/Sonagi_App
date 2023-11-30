@@ -62,7 +62,7 @@ const ChangeInfop = ({ navigation }) => {
                             <TouchableOpacity style={{}} onPress={() => navigation.navigate('')}>
                                 <Image
                                     style={{ width: 90, height: 90 }}
-                                    source={require('../../assets/profileedit.png')}
+                                    source={require('../../assets/profile2.png')}
                                     resizeMode="contain"
                                 />
                             </TouchableOpacity>
@@ -99,7 +99,7 @@ const ChangeInfop = ({ navigation }) => {
                                 autoCapitalize="none"
                                 returnKeyType="next"
                                 clearButtonMode="while-editing"
-                                placeholder="Enter number"
+                                placeholder="시설 전화번호를 입력하세요."
                                 name="Changenum"
                             />
                             <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#393939', marginRight: '55%', marginTop: '2%', marginLeft: '2%' }}>시설 이름 수정</Text>
@@ -108,7 +108,7 @@ const ChangeInfop = ({ navigation }) => {
                                 autoCapitalize="none"
                                 returnKeyType="next"
                                 clearButtonMode="while-editing"
-                                placeholder="Enter name"
+                                placeholder="시설 이름을 입력하세요."
                                 name="Changename"
                             />
 
@@ -118,7 +118,7 @@ const ChangeInfop = ({ navigation }) => {
                                 autoCapitalize="none"
                                 returnKeyType="next"
                                 clearButtonMode="while-editing"
-                                placeholder="Enter address"
+                                placeholder="시설 주소를 입력하세요."
                                 name="Changeadd"
                             />
 
@@ -128,7 +128,7 @@ const ChangeInfop = ({ navigation }) => {
                                 autoCapitalize="none"
                                 returnKeyType="next"
                                 clearButtonMode="while-editing"
-                                placeholder="Enter member"
+                                placeholder="시설 인원 수를 입력하세요."
                                 name="Changemem"
                             />
                         </ScrollView>

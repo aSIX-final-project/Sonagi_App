@@ -5,14 +5,20 @@ import { Linking, View, TouchableOpacity, Image, Text, handleLogoutButtonClick, 
 import * as Location from 'expo-location';
 import RegistGive from './Registgive';
 // 바텀시트 (마커 클릭시 뜸)
-import BottomsheetMarker from './BottomsheetMarker';
-
+import BottomsheetMarker from './BottomsheetMarkerp';
+import BottomsheetMarker2 from './BottomsheetMarker';
 export default function App({ navigation }) {
 
-  // 마커 클릭했을때 바텀시트
+  // 마커 클릭했을때 바텀시트 (피기부자)
   const [modalVisible, setModalVisible] = useState(false);
   const pressButton = () => {
     setModalVisible(true);
+  }
+
+  // 마커 클릭했을때 바텀시트 (기부자)
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const pressButton2 = () => {
+    setModalVisible2(true);
   }
 
 
@@ -319,8 +325,8 @@ export default function App({ navigation }) {
           </TouchableOpacity>
 
 
-          {/* (마커 클릭했을때) */}
-          <TouchableOpacity style={{ marginTop: '2%', marginRight: '13%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={pressButton}>
+          {/* (피기부자 마커 클릭했을때) */}
+          <TouchableOpacity style={{ marginTop: '2%', marginRight: '0%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={pressButton}>
             <Image
               style={{ width: 40, height: 40 }}
               source={require('../../assets/deliver.png')}
@@ -328,14 +334,15 @@ export default function App({ navigation }) {
             />
           </TouchableOpacity>
 
-          {/* 기부요청 목록 */}
-          <TouchableOpacity style={{ marginTop: '2%', marginRight: '2%', backgroundColor: '#68B7FF', marginLeft: '0%', width: '11%', height: '200%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={GiveReq}>
+          {/* (기부자 마커 클릭했을때) */}
+          <TouchableOpacity style={{ marginTop: '2%', marginRight: '0%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={pressButton2}>
             <Image
-              style={{ width: 35, height: 35 }}
-              source={require('../../assets/star.png')}
+              style={{ width: 40, height: 40 }}
+              source={require('../../assets/user2.png')}
               resizeMode="contain"
             />
           </TouchableOpacity>
+
 
           {/* 등록 버튼 */}
           <TouchableOpacity style={{ marginTop: '2%', marginLeft: '0%', width: '25%', height: '100%', borderRadius: 15, justifyContent: 'center', alignItems: 'center' }} onPress={RegistGive}>
@@ -382,6 +389,15 @@ export default function App({ navigation }) {
         <BottomsheetMarker
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
+          navigation={navigation}
+        />
+      </View>
+
+      {/* 마커 클릭시 바텀시트2 view */}
+      <View style={styles.rootContainer}>
+        <BottomsheetMarker2
+          modalVisible={modalVisible2}
+          setModalVisible={setModalVisible2}
           navigation={navigation}
         />
       </View>
