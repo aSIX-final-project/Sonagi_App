@@ -120,7 +120,7 @@ export default function App({ navigation, route }) {
     ); //스프링 부트 : db에서 값 가져오기
 
     //마커 찍을 좌표값 가져오기
-    const fetchPromises = res.data.list.map(async (item) => {
+    const fetchPromises = res.data.map(async (item) => {
       const response = await fetch(
         `https://dapi.kakao.com/v2/local/search/address.json?query=${item.address}`,
         {
