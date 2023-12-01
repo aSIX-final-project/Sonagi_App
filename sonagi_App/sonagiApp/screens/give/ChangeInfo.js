@@ -48,7 +48,7 @@ const ChangeInfo = ({ navigation, route }) => {
 
       // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
       const response = await axios.post(
-        "http://172.16.106.73:8888/boot/admin/requestAdmin",
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/admin/requestAdmin",
         formData
       );
       console.log(response.data);
@@ -185,15 +185,19 @@ const ChangeInfo = ({ navigation, route }) => {
                 marginTop: "10%",
               }}
             >
-              <TouchableOpacity
-                style={{}}
-                onPress={() => navigation.navigate("")}
-              >
-                <Image
-                  style={{ width: 90, height: 90 }}
-                  source={require("../../assets/profileedit.png")}
-                  resizeMode="contain"
-                />
+              <TouchableOpacity>
+                {userInfo.profileImage ? (
+                  <Image
+                    source={{ uri: userInfo.profileImage }}
+                    style={styles.profileImage}
+                  />
+                ) : (
+                  <Image
+                    style={{ width: 90, height: 90 }}
+                    source={require("../../assets/profileedit.png")}
+                    resizeMode="contain"
+                  />
+                )}
               </TouchableOpacity>
               <Text
                 style={{
@@ -356,6 +360,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FAFAFC",
+  },
+  profileImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 75,
+    borderWidth: 1,
+    borderColor: "#000",
   },
 
   input: {

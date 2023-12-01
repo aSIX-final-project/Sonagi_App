@@ -235,8 +235,9 @@ const Profilesp = ({ navigation, route }) => {
                   />
                 ) : (
                   <Image
-                    source={{ uri: userInfo.profileImage }}
-                    style={styles.profileImage}
+                    style={{ width: 90, height: 90 }}
+                    source={require("../../assets/profileedit.png")}
+                    resizeMode="contain"
                   />
                 )}
                 {/* Plus 이미지 */}

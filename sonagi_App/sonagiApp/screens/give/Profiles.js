@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,13 +8,30 @@ import {
   Linking,
   Platform,
   Modal,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import axios from "axios";
 
 const Profiles = ({ navigation, route }) => {
   const [profileImage, setProfileImage] = useState(null);
-  const { userInfo } = route.params;
+  const [userInfo, setUserInfo] = useState(route.params.userInfo);
+  const [imageKey, setImageKey] = useState(Date.now());
+
   console.log(userInfo);
+
+  // 이미지 업데이트
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      setUserInfo(route.params.userInfo);
+      if (userInfo && userInfo.profileImage) {
+        setProfileImage(userInfo.profileImage);
+      }
+    });
+
+    return unsubscribe;
+  }, [route.params, userInfo.profileImage]);
 
   // 갤러리 이미지 선택
   const openImagePicker = async () => {
@@ -23,58 +40,84 @@ const Profiles = ({ navigation, route }) => {
       alert("갤러리 접근 권한이 허용되지 않았습니다.");
       return;
     }
-    const result = await ImagePicker.launchImageLibraryAsync();
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    // console.log(result);
     if (!result.canceled) {
-      console.log(result.uri);
-      // updateProfileImage(result.uri); // 선택된 이미지 URL을 전달하여 업데이트
+      try {
+        const formData = new FormData();
+        formData.append("file", {
+          uri: result.assets[0].uri,
+          type: "image/jpeg",
+          name: `profile_${userInfo.id}.jpg`,
+        });
+
+        // 'nameFile' 파라미터 추가
+        formData.append("nameFile", userInfo.id);
+        // console.log(formData);
+        formData.append("folderName", "restaurant");
+
+        const response = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/files",
+          // "http://172.16.104.97:8888/boot/restaurant/files",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.data) {
+          setProfileImage(result.assets[0].uri);
+          setImageKey(Date.now()); // 이미지 키 업데이트
+
+          const formData = {
+            id: userInfo.id,
+            profileImage: response.data,
+          };
+
+          // 폼 데이터를 JSON 문자열로 변환하여 확인
+          const jsonData = JSON.stringify(formData);
+          console.log(jsonData);
+
+          console.log(response.data);
+
+          // 백엔드 서버로 POST 요청 보내기
+          const data = await axios.post(
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/updateImageUrl",
+            // "http://172.16.104.219:8888/boot/member/updateImageUrl",
+            formData
+          );
+
+          const newProfileImage = response.data; // 새로운 이미지 URL
+          userInfo.profileImage = newProfileImage; // userInfo 객체의 프로필 이미지 업데이트
+
+          if (data.data === 1) {
+            console.log(userInfo);
+
+            // 이미지 url 업데이트 성공
+            console.log("이미지 Url 업데이트 성공");
+          }
+          // console.log(response);
+          console.log("이미지 업로드 성공");
+        } else {
+          console.error("이미지 업로드 실패");
+        }
+      } catch (error) {
+        console.error("이미지 업로드 오류:", error);
+      }
     }
   };
 
-  // 프로필 이미지 업데이트 요청
-  // const updateProfileImage = async (selectedImageUrl) => {
-  //   try {
-  //     // 서버에 프로필 이미지 업데이트 요청 (fetch나 axios를 사용하여 서버에 요청)
-  //     // 예시: fetch('/updateProfileImage', { method: 'POST', body: JSON.stringify({ userId: userInfo.id, profileImage: selectedImageUrl }) });
-  //     const formData = new FormData();
-  //     formData.append("file", {
-  //       uri: selectedImageUrl,
-  //       nameFile: userInfo.id,
-  //       type: "image/jpg",
-  //     });
-
-  //     // 폼 데이터를 JSON 문자열로 변환하여 확인
-  //     const jsonData = JSON.stringify(formData);
-  //     console.log(jsonData);
-
-  //     // 백엔드 서버로 POST 요청 보내기
-  //     const response = await axios.post(
-  //       // "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/files",
-  //       "http://172.16.104.79:8888/boot/member/files",
-  //       formData,
-  //       {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       }
-  //     );
-
-  //     // 서버 요청 후에 프로필 이미지 업데이트가 성공하면, 프로필 이미지 상태 업데이트
-  //     if (response.data && response.data.imageUrl) {
-  //       setProfileImage(response.data.imageUrl); // 받아온 이미지 URL로 프로필 이미지 업데이트
-  //     }
-  //   } catch (error) {
-  //     console.error("프로필 이미지 업데이트 실패:", error);
-  //   }
-  // };
-
-  // // 이미지가 변경될 때마다 업데이트된 이미지 보여주기
-  // useEffect(() => {
-  //   // profileImage 값이 변경될 때마다 화면을 갱신할 수 있도록 처리
-  //   // 예를 들어, 화면을 새로 고치거나, 상태를 업데이트하는 등의 로직 추가
-  // }, [profileImage]);
-
   // 고객센터 연결하기 기능
-  const CenterPhone = () => { };
+  const CenterPhone = () => {};
 
   // 로그아웃 버튼을 눌렀을때 값을 서버에 보냄
   const [isLogoutSuccessModalVisible, setLogoutSuccessModalVisible] =
@@ -91,256 +134,304 @@ const Profiles = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      {/* 로그인 완료 모달 */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isLogoutSuccessModalVisible}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Image
-              style={{ width: 130, height: 130, bottom: "0.5%", right: "0%" }}
-              source={require("../../assets/logoutsuccess.png")}
-              resizeMode="contain"
-            />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        {/* 로그인 완료 모달 */}
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={isLogoutSuccessModalVisible}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Image
+                style={{ width: 130, height: 130, bottom: "0.5%", right: "0%" }}
+                source={require("../../assets/logoutsuccess.png")}
+                resizeMode="contain"
+              />
+              <TouchableOpacity
+                onPress={() => setLogoutSuccessModalVisible(false)} // 모달 내부의 버튼 클릭 시 모달 숨김
+              ></TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+        <View
+          style={{
+            backgroundColor: "#44A5FF",
+            width: "100%",
+            height: "40%",
+            borderBottomLeftRadius: 20,
+            borderBottomRightRadius: 20,
+          }}
+        >
+          {/* 상단부분 */}
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              backgroundColor: "#44A5FF",
+              width: "100%",
+              height: "17%",
+              marginTop: "10%",
+            }}
+          >
             <TouchableOpacity
-              onPress={() => setLogoutSuccessModalVisible(false)} // 모달 내부의 버튼 클릭 시 모달 숨김
-            ></TouchableOpacity>
+              style={{ marginLeft: "6%", marginRight: "2%" }}
+              onPress={() =>
+                navigation.navigate("Home", { userInfo: userInfo })
+              }
+            >
+              <Image
+                style={{ width: 50, height: 50 }}
+                source={require("../../assets/backkey.png")}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <Text
+              style={{ fontFamily: "Play-Bold", fontSize: 25, color: "white" }}
+            >
+              프로필
+            </Text>
+            <TouchableOpacity
+              style={{
+                marginTop: "2%",
+                marginLeft: "36%",
+                width: "25%",
+                height: "70%",
+                backgroundColor: "#6DB9FF",
+                borderRadius: 15,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              onPress={handleLogoutButtonClick}
+            >
+              <Text
+                style={{
+                  fontFamily: "Play-Bold",
+                  fontSize: 20,
+                  color: "white",
+                }}
+              >
+                로그아웃
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* 프로필 부분 */}
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "10%",
+            }}
+          >
+            <TouchableOpacity onPress={openImagePicker}>
+              <View style={{ position: "relative" }}>
+                {profileImage ? (
+                  <Image
+                    source={{ uri: profileImage }}
+                    style={styles.profileImage}
+                  />
+                ) : (
+                  <Image
+                    source={{ uri: userInfo.profileImage }}
+                    style={styles.profileImage}
+                  />
+                )}
+                {/* Plus 이미지 */}
+                <View
+                  style={{
+                    position: "absolute",
+                    bottom: 5,
+                    right: 5,
+                    zIndex: 1,
+                  }}
+                >
+                  <TouchableOpacity onPress={openImagePicker}>
+                    <Image
+                      source={require("../../assets/plus.png")}
+                      style={{ width: 20, height: 20 }}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableOpacity>
+            <Text
+              style={{
+                fontFamily: "Play-Bold",
+                fontSize: 25,
+                color: "white",
+                marginTop: "2%",
+              }}
+            >
+              {userInfo.name} 님
+            </Text>
+            <Text
+              style={{
+                fontFamily: "Play-Regular",
+                fontSize: 20,
+                color: "white",
+                marginTop: "1%",
+              }}
+            >
+              {userInfo.adName}
+            </Text>
           </View>
         </View>
-      </Modal>
-      <View
-        style={{
-          backgroundColor: "#44A5FF",
-          width: "100%",
-          height: "40%",
-          borderBottomLeftRadius: 20,
-          borderBottomRightRadius: 20,
-        }}
-      >
-        {/* 상단부분 */}
+
+        {/* 중앙 부분 */}
+
+        {/* 고객센터 */}
         <View
           style={{
             flexDirection: "row",
+            marginTop: "5%",
+            width: "88%",
+            height: "10%",
+            backgroundColor: "#E1F1FF",
+            borderRadius: 16,
+            justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "#44A5FF",
-            width: "100%",
-            height: "17%",
-            marginTop: "10%",
           }}
         >
-          <TouchableOpacity
-            style={{ marginLeft: "6%", marginRight: "2%" }}
-            onPress={() => navigation.navigate("Home", { userInfo: userInfo })}
+          <Image
+            style={{
+              width: 65,
+              height: 65,
+              marginRight: "7%",
+              marginLeft: "0%",
+            }}
+            source={require("../../assets/call.png")}
+            resizeMode="contain"
+          />
+
+          <Text
+            style={{
+              fontFamily: "Play-Bold",
+              fontSize: 23,
+              color: "#8B8E90",
+              marginRight: "25%",
+            }}
           >
+            고객센터 연결
+          </Text>
+
+          <TouchableOpacity style={{}} onPress={CenterPhone}>
             <Image
-              style={{ width: 50, height: 50 }}
-              source={require("../../assets/backkey.png")}
+              style={{ width: 35, height: 35 }}
+              source={require("../../assets/next.png")}
               resizeMode="contain"
             />
-          </TouchableOpacity>
-          <Text
-            style={{ fontFamily: "Play-Bold", fontSize: 25, color: "white" }}
-          >
-            프로필
-          </Text>
-          <TouchableOpacity
-            style={{
-              marginTop: "2%",
-              marginLeft: "36%",
-              width: "25%",
-              height: "70%",
-              backgroundColor: "#6DB9FF",
-              borderRadius: 15,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={handleLogoutButtonClick}
-          >
-            <Text
-              style={{ fontFamily: "Play-Bold", fontSize: 20, color: "white" }}
-            >
-              로그아웃
-            </Text>
           </TouchableOpacity>
         </View>
 
-        {/* 프로필 부분 */}
+        {/* 비밀번호 변경 */}
         <View
           style={{
-            flexDirection: "column",
+            flexDirection: "row",
+            marginTop: "5%",
+            width: "88%",
+            height: "10%",
+            backgroundColor: "#E1F1FF",
+            borderRadius: 16,
             justifyContent: "center",
             alignItems: "center",
-            marginTop: "10%",
           }}
         >
-          <TouchableOpacity style={{}} onPress={openImagePicker}>
+          <Image
+            style={{
+              width: 65,
+              height: 65,
+              marginRight: "7%",
+              marginLeft: "0%",
+            }}
+            source={require("../../assets/pwchange.png")}
+            resizeMode="contain"
+          />
+
+          <Text
+            style={{
+              fontFamily: "Play-Bold",
+              fontSize: 23,
+              color: "#8B8E90",
+              marginRight: "25%",
+            }}
+          >
+            비밀번호 변경
+          </Text>
+
+          <TouchableOpacity
+            style={{}}
+            onPress={() =>
+              navigation.navigate("ChangePw", { userInfo: userInfo })
+            }
+          >
             <Image
-              style={{ width: 90, height: 90, borderRadius:100 }}
-              source={userInfo.profileImage ? { uri: userInfo.profileImage } : require("../../assets/profileedit.png")}
+              style={{ width: 35, height: 35 }}
+              source={require("../../assets/next.png")}
               resizeMode="contain"
             />
           </TouchableOpacity>
-        <Text
+        </View>
+
+        {/* 시설 소개 */}
+        <View
           style={{
-            fontFamily: "Play-Bold",
-            fontSize: 25,
-            color: "white",
-            marginTop: "2%",
+            flexDirection: "row",
+            marginTop: "5%",
+            width: "88%",
+            height: "10%",
+            backgroundColor: "#E1F1FF",
+            borderRadius: 16,
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          {userInfo.name} 님
-        </Text>
-        <Text
-          style={{
-            fontFamily: "Play-Regular",
-            fontSize: 20,
-            color: "white",
-            marginTop: "1%",
-          }}
-        >
-          {userInfo.adName}
-        </Text>
+          <Image
+            style={{
+              width: 65,
+              height: 65,
+              marginRight: "7%",
+              marginLeft: "0%",
+            }}
+            source={require("../../assets/introduce2.png")}
+            resizeMode="contain"
+          />
+
+          <Text
+            style={{
+              fontFamily: "Play-Bold",
+              fontSize: 23,
+              color: "#8B8E90",
+              marginRight: "34%",
+            }}
+          >
+            시설 소개
+          </Text>
+
+          <TouchableOpacity
+            style={{}}
+            onPress={() =>
+              navigation.navigate("ChangeInfo", { userInfo: userInfo })
+            }
+          >
+            <Image
+              style={{ width: 35, height: 35 }}
+              source={require("../../assets/next.png")}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </View>
+        {/* 마지막 라인(광고) */}
+        <Image
+          style={{ width: "100%", height: "13  %", marginTop: "0%" }}
+          source={require("../../assets/ad.png")}
+          resizeMode="contain"
+        />
       </View>
-    </View>
-
-      {/* 중앙 부분 */ }
-
-  {/* 고객센터 */ }
-  <View
-    style={{
-      flexDirection: "row",
-      marginTop: "10%",
-      width: "88%",
-      height: "10%",
-      backgroundColor: "#E1F1FF",
-      borderRadius: 16,
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    <Image
-      style={{ width: 65, height: 65, marginRight: "7%", marginLeft: "0%" }}
-      source={require("../../assets/call.png")}
-      resizeMode="contain"
-    />
-
-    <Text
-      style={{
-        fontFamily: "Play-Bold",
-        fontSize: 23,
-        color: "#8B8E90",
-        marginRight: "25%",
-      }}
-    >
-      고객센터 연결
-    </Text>
-
-    <TouchableOpacity style={{}} onPress={CenterPhone}>
-      <Image
-        style={{ width: 35, height: 35 }}
-        source={require("../../assets/next.png")}
-        resizeMode="contain"
-      />
-    </TouchableOpacity>
-  </View>
-
-  {/* 비밀번호 변경 */ }
-  <View
-    style={{
-      flexDirection: "row",
-      marginTop: "5%",
-      width: "88%",
-      height: "10%",
-      backgroundColor: "#E1F1FF",
-      borderRadius: 16,
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    <Image
-      style={{ width: 65, height: 65, marginRight: "7%", marginLeft: "0%" }}
-      source={require("../../assets/pwchange.png")}
-      resizeMode="contain"
-    />
-
-    <Text
-      style={{
-        fontFamily: "Play-Bold",
-        fontSize: 23,
-        color: "#8B8E90",
-        marginRight: "25%",
-      }}
-    >
-      비밀번호 변경
-    </Text>
-
-    <TouchableOpacity
-      style={{}}
-      onPress={() =>
-        navigation.navigate("ChangePw", { userInfo: userInfo })
-      }
-    >
-      <Image
-        style={{ width: 35, height: 35 }}
-        source={require("../../assets/next.png")}
-        resizeMode="contain"
-      />
-    </TouchableOpacity>
-  </View>
-
-  {/* 시설 소개 */ }
-  <View
-    style={{
-      flexDirection: "row",
-      marginTop: "5%",
-      width: "88%",
-      height: "10%",
-      backgroundColor: "#E1F1FF",
-      borderRadius: 16,
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    <Image
-      style={{ width: 65, height: 65, marginRight: "7%", marginLeft: "0%" }}
-      source={require("../../assets/introduce2.png")}
-      resizeMode="contain"
-    />
-
-    <Text
-      style={{
-        fontFamily: "Play-Bold",
-        fontSize: 23,
-        color: "#8B8E90",
-        marginRight: "23%",
-      }}
-    >
-      시설 정보 변경
-    </Text>
-
-    <TouchableOpacity
-      style={{}}
-      onPress={() =>
-        navigation.navigate("ChangeInfo", { userInfo: userInfo })
-      }
-    >
-      <Image
-        style={{ width: 35, height: 35 }}
-        source={require("../../assets/next.png")}
-        resizeMode="contain"
-      />
-    </TouchableOpacity>
-  </View>
-  {/* 마지막 라인(광고) */ }
-  <Image
-    style={{ width: "100%", height: "15%", marginTop: "22%" }}
-    source={require("../../assets/ad.png")}
-    resizeMode="contain"
-  />
-    </View >
+    </TouchableWithoutFeedback>
   );
 };
 const styles = StyleSheet.create({
@@ -348,6 +439,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "#FAFAFC",
+  },
+  profileImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 75,
+    borderWidth: 1,
+    borderColor: "#000",
   },
   modalView: {
     marginBottom: 20,

@@ -285,7 +285,9 @@ const Homep = ({ navigation, route }) => {
 
               {/* 다섯번째 라인 (기부 요청) */}
               <TouchableOpacity
-                onPress={() => navigation.navigate("SendReqp",{userInfo:userInfo})}
+                onPress={() =>
+                  navigation.navigate("SendReqp", { userInfo: userInfo })
+                }
               >
                 <View style={styles.fourthTwoContainer}>
                   <View
@@ -401,7 +403,9 @@ const Homep = ({ navigation, route }) => {
         {components.map((component, index) => (
           <TouchableOpacity
             key={index}
-            onPress={() => navigation.navigate(component.route, {userInfo : userInfo})}
+            onPress={() =>
+              navigation.navigate(component.route, { userInfo: userInfo })
+            }
             onPressIn={() => setActiveIndex(index)}
             onPressOut={() => setActiveIndex(null)}
             style={{

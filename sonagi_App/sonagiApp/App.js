@@ -32,13 +32,13 @@ import Donatep from "./screens/givep/Donatep";
 import KakaoMapP from "./screens/givep/KakaoMapP";
 import GiveReqp from "./screens/givep/GiveReqp";
 import Mapaddp from "./screens/givep/Mapaddp";
-import SendReqp from './screens/givep/SendReqp'
+import SendReqp from "./screens/givep/SendReqp";
 
 import { useState, useRef, useEffect } from "react";
 // 폰트 관련 코드
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
-import * as Notifications from 'expo-notifications';
+import * as Notifications from "expo-notifications";
 
 //stacknavigation 사용
 export default function App() {
@@ -48,7 +48,6 @@ export default function App() {
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
-
 
   // ✅ 알림 권한 설정
   Notifications.setNotificationHandler({
@@ -60,19 +59,22 @@ export default function App() {
   });
 
   useEffect(() => {
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-    });
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
 
     return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
-
 
   const loadFont = async () => {
     await Font.loadAsync({

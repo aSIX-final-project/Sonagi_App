@@ -60,8 +60,6 @@ const BottomsheetMarker = ({
     };
   }, [id]);
 
-
-
   const [isCameraModalVisible, setCameraModalVisible] = useState(false);
 
   const screenHeight = Dimensions.get("screen").height;
@@ -119,7 +117,8 @@ const BottomsheetMarker = ({
 
   const kakaoMap = async () => {
     const response = await fetch(
-      `https://dapi.kakao.com/v2/local/search/address.json?query=${userData && userData[0]?.address
+      `https://dapi.kakao.com/v2/local/search/address.json?query=${
+        userData && userData[0]?.address
       }`,
       {
         headers: {
