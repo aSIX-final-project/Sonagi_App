@@ -9,6 +9,8 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
 
 const components = [
   {
@@ -42,6 +44,10 @@ const Home = ({ navigation, route }) => {
   const { userInfo } = route.params;
   const [image, setImage] = useState(require("../../assets/policy.png"));
   const [activeIndex, setActiveIndex] = useState(null);
+  const [noticeList, setNoticeList] = useState({});
+  const [latestNotice, setLatestNotice] = useState(null);
+  const [requestList, setRequestList] = useState([]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setImage((prevImage) =>
@@ -52,6 +58,50 @@ const Home = ({ navigation, route }) => {
     }, 5000);
     return () => clearInterval(timer);
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/notice/findAll"
+          );
+          const receivedList = response.data;
+          console.log(receivedList);
+          if (Array.isArray(receivedList)) {
+            setNoticeList(receivedList);
+
+            const sortedList = receivedList.sort(
+              (a, b) => new Date(b.noticeDate) - new Date(a.noticeDate)
+            );
+            setLatestNotice(sortedList[0]);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+
+      fetchData();
+
+      const fetchData2 = async () => {
+        try {
+          const response = await axios.post(
+            "http://172.16.102.43:8888/boot/foodReq/findById",
+            {
+              receiverId: userInfo.id,
+            }
+          );
+          console.log("123", response.data);
+          setRequestList(response.data);
+          console.log(requestList.length);
+        } catch (error) {
+          console.error("데이터를 가져오는데 실패했습니다:", error);
+        }
+      };
+
+      fetchData2();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
@@ -223,7 +273,10 @@ const Home = ({ navigation, route }) => {
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate("Notice", { userInfo: userInfo })
+                  navigation.navigate("Notice", {
+                    userInfo: userInfo,
+                    noticeListParam: noticeList,
+                  })
                 }
               >
                 <View style={styles.fourthOneContainer}>
@@ -252,34 +305,37 @@ const Home = ({ navigation, route }) => {
                       resizeMode="contain"
                     />
                   </View>
-
                   <View
                     style={{
                       flexDirection: "column",
                       justifyContent: "center",
-                      marginRight: "10%",
+                      marginRight: "30%",
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        fontWeight: "bold",
-                        fontFamily: "Play-Bold",
-                        color: "white",
-                      }}
-                    >
-                      11월 첫째주 기부왕
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        fontFamily: "Play-Regular",
-                        color: "white",
-                      }}
-                    >
-                      2023.11.10
-                    </Text>
+                    {latestNotice && (
+                      <>
+                        <Text
+                          style={{
+                            fontSize: 18,
+                            fontWeight: "bold",
+                            fontFamily: "Play-Bold",
+                            color: "white",
+                          }}
+                        >
+                          {latestNotice.title}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontWeight: "bold",
+                            fontFamily: "Play-Regular",
+                            color: "white",
+                          }}
+                        >
+                          {latestNotice.noticeDate.substring(0, 10)}
+                        </Text>
+                      </>
+                    )}
                   </View>
                 </View>
               </TouchableOpacity>
@@ -315,12 +371,34 @@ const Home = ({ navigation, route }) => {
                     source={require("../../assets/givereq.png")}
                     resizeMode="contain"
                   />
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: 69,
+                      right: 50,
+                      width: 30,
+                      height: 30,
+                      borderRadius: 15,
+                      backgroundColor: "#FF7070",
+                      justifyContent: "center", // 자식 요소를 주 축을 따라 가운데에 위치시킵니다.
+                      alignItems: "center", // 자식 요소를 수직 축을 따라 가운데에 위치시킵니다.
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        color: "white",
+                        fontSize: "19",
+                      }}
+                    >
+                      {requestList.length}
+                    </Text>
+                  </View>
                 </View>
               </TouchableOpacity>
             </View>
           </View>
 
-          {/* 여섯 번째 라인 광고*/}
           <View
             style={{
               justifyContent: "center",
@@ -373,9 +451,16 @@ const Home = ({ navigation, route }) => {
         {components.map((component, index) => (
           <TouchableOpacity
             key={index}
-            onPress={() =>
-              navigation.navigate(component.route, { userInfo: userInfo })
-            }
+            onPress={() => {
+              if (component.route === "Notice") {
+                navigation.navigate(component.route, {
+                  userInfo: userInfo,
+                  noticeListParam: noticeList,
+                });
+              } else {
+                navigation.navigate(component.route, { userInfo: userInfo });
+              }
+            }}
             onPressIn={() => setActiveIndex(index)}
             onPressOut={() => setActiveIndex(null)}
             style={{

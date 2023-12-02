@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
 
 const components = [
   {
@@ -41,6 +42,8 @@ const Homep = ({ navigation, route }) => {
   const { userInfo } = route.params;
   const [image, setImage] = useState(require("../../assets/policy.png"));
   const [activeIndex, setActiveIndex] = useState(null);
+  const [noticeList, setNoticeList] = useState({});
+  const [latestNotice, setLatestNotice] = useState(null);
   useEffect(() => {
     const timer = setInterval(() => {
       setImage((prevImage) =>
@@ -50,6 +53,30 @@ const Homep = ({ navigation, route }) => {
       );
     }, 5000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/notice/findAll"
+        );
+        const receivedList = response.data;
+        console.log(receivedList);
+        if (Array.isArray(receivedList)) {
+          setNoticeList(receivedList);
+
+          const sortedList = receivedList.sort(
+            (a, b) => new Date(b.noticeDate) - new Date(a.noticeDate)
+          );
+          setLatestNotice(sortedList[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
@@ -105,7 +132,7 @@ const Homep = ({ navigation, route }) => {
             {userInfo.managerName}님
           </Text>
           <Text style={{ fontSize: 23, fontFamily: "Play-Regular" }}>
-            기부 받고 복 받아가세요!
+            따뜻한 연말 보내세요!
           </Text>
         </View>
       </View>
@@ -222,7 +249,10 @@ const Homep = ({ navigation, route }) => {
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate("Noticep", { userInfo: userInfo })
+                  navigation.navigate("Noticep", {
+                    userInfo: userInfo,
+                    noticeListParam: noticeList,
+                  })
                 }
               >
                 <View style={styles.fourthOneContainer}>
@@ -251,34 +281,37 @@ const Homep = ({ navigation, route }) => {
                       resizeMode="contain"
                     />
                   </View>
-
                   <View
                     style={{
                       flexDirection: "column",
                       justifyContent: "center",
-                      marginRight: "10%",
+                      marginRight: "30%",
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        fontWeight: "bold",
-                        fontFamily: "Play-Bold",
-                        color: "white",
-                      }}
-                    >
-                      11월 첫째주 기부왕
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        fontFamily: "Play-Regular",
-                        color: "white",
-                      }}
-                    >
-                      2023.11.10
-                    </Text>
+                    {latestNotice && (
+                      <>
+                        <Text
+                          style={{
+                            fontSize: 18,
+                            fontWeight: "bold",
+                            fontFamily: "Play-Bold",
+                            color: "white",
+                          }}
+                        >
+                          {latestNotice.title}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            fontWeight: "bold",
+                            fontFamily: "Play-Regular",
+                            color: "white",
+                          }}
+                        >
+                          {latestNotice.noticeDate.substring(0, 10)}
+                        </Text>
+                      </>
+                    )}
                   </View>
                 </View>
               </TouchableOpacity>
@@ -403,9 +436,16 @@ const Homep = ({ navigation, route }) => {
         {components.map((component, index) => (
           <TouchableOpacity
             key={index}
-            onPress={() =>
-              navigation.navigate(component.route, { userInfo: userInfo })
-            }
+            onPress={() => {
+              if (component.route === "Noticep") {
+                navigation.navigate(component.route, {
+                  userInfo: userInfo,
+                  noticeListParam: noticeList,
+                });
+              } else {
+                navigation.navigate(component.route, { userInfo: userInfo });
+              }
+            }}
             onPressIn={() => setActiveIndex(index)}
             onPressOut={() => setActiveIndex(null)}
             style={{

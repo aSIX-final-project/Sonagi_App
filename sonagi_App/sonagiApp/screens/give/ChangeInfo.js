@@ -344,13 +344,6 @@ const ChangeInfo = ({ navigation, route }) => {
               </Text>
             </TouchableOpacity>
           </View>
-
-          {/* 마지막 라인(광고) */}
-          <Image
-            style={{ width: "100%", height: "15%" }}
-            source={require("../../assets/ad.png")}
-            resizeMode="contain"
-          />
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>

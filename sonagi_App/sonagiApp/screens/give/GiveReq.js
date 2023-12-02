@@ -13,98 +13,48 @@ import {
   ScrollView,
   TouchableOpacity,
   Keyboard,
+  Linking,
 } from "react-native";
-import { KeyboardAvoidingView } from "react-native";
-import * as ImagePicker from "expo-image-picker";
+import axios from "axios";
+import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 
 const GiveReq = ({ navigation, route }) => {
   const { userInfo } = route.params;
-  {
-    /* 카메라, 갤러리 모달 관리 */
-  }
-  const openCamera = async () => {
-    const { status } = await ImagePicker.requestCameraPermissionsAsync();
-    if (status !== "granted") {
-      alert("카메라 접근 권한이 허용되지 않았습니다.");
-      return;
-    }
-    const result = await ImagePicker.launchCameraAsync();
-    if (!result.cancelled) {
-      // 이곳에서 카메라의 url을 컨트롤 하면됨
-    }
-  };
+  console.log(userInfo.id);
 
-  const openImagePicker = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      alert("갤러리 접근 권한이 허용되지 않았습니다.");
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync();
-    if (!result.cancelled) {
-      // 이곳에서 사진의 url을 컨트롤 하면됨
+  const [requestList, setRequestList] = useState([]);
+  const fetchData = async () => {
+    try {
+      const response = await axios.post(
+        "http://172.16.102.43:8888/boot/foodReq/findById",
+        {
+          receiverId: userInfo.id,
+        }
+      );
+      console.log("123", response.data);
+      setRequestList(response.data);
+    } catch (error) {
+      console.error("데이터를 가져오는데 실패했습니다:", error);
     }
   };
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [])
+  );
 
-  // 카메라 모달 상태
-  const [isCameraModalVisible, setCameraModalVisible] = useState(false);
+  const callPhone = (phoneNum) => {
+    // 카카오 네비게이션 API를 이용해 길찾기 실행
+    const url = `tel:${phoneNum}`;
 
-  // 카메라 버튼 클릭 핸들러
-  const handleCameraButtonClick = () => {
-    console.log("sucess");
-    setCameraModalVisible(true);
+    Linking.openURL(url).catch((err) =>
+      console.error("An error occurred", err)
+    );
   };
-
-  const heartCount = 3; // 원하는 숫자를 넣으세요.
 
   return (
     <View style={styles.container}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isCameraModalVisible}
-      >
-        <View style={styles.centeredView2}>
-          <View style={styles.modalView2}>
-            {/* 카메라 모달 관련 코드 */}
-            <TouchableOpacity
-              style={{ width: "10%", height: "10%", left: "40%" }}
-              onPress={() => setCameraModalVisible(false)}
-            >
-              <View style={{ marginBottom: "10%" }}>
-                <Image
-                  style={{ width: 20, height: 20 }}
-                  source={require("../../assets/cancle.png")}
-                  resizeMode="contain"
-                />
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={openCamera}>
-              <View style={{ marginBottom: "10%" }}>
-                <Image
-                  style={{ width: 60, height: 60 }}
-                  source={require("../../assets/camara.png")}
-                  resizeMode="contain"
-                />
-              </View>
-            </TouchableOpacity>
-
-            {/* 선 긋기 */}
-            <View style={styles.lineStyle} />
-
-            <TouchableOpacity onPress={openImagePicker}>
-              <View style={{ marginBottom: "10%", marginTop: "8%" }}>
-                <Image
-                  style={{ width: 60, height: 60 }}
-                  source={require("../../assets/galally.png")}
-                  resizeMode="contain"
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
       {/* 상단부분 */}
       <View
         style={{
@@ -174,23 +124,25 @@ const GiveReq = ({ navigation, route }) => {
 
       {/* 선 긋기 */}
       <View style={styles.lineStyle} />
-      <View style={{ width: "90%", height: "50%", marginBottom: "10%" }}>
-        {/* 목록 */}
-        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        {requestList.map((item, index) => (
           <View
+            key={index}
             style={{
               width: "100%",
-              height: "100%",
+              height: 101,
               backgroundColor: "#E1F1FF",
               flexDirection: "row",
               borderRadius: 30,
               flexDirection: "column",
+              marginBottom: "10%",
             }}
           >
             <View style={{ flexDirection: "row" }}>
               <Image
                 style={{ width: 80, height: 80, borderTopLeftRadius: 30 }}
-                source={require("../../assets/profilep.png")}
+                source={{ uri: item.senderImage }}
                 resizeMode="contain"
               />
               <View
@@ -208,7 +160,7 @@ const GiveReq = ({ navigation, route }) => {
                   style={{
                     flexDirection: "column",
                     width: "80%",
-                    height: "40%",
+                    height: "60%",
                     backgroundColor: "#E1F1FF",
                     flexDirection: "row",
                   }}
@@ -220,7 +172,7 @@ const GiveReq = ({ navigation, route }) => {
                       color: "#383838",
                     }}
                   >
-                    상호명
+                    시설명
                   </Text>
                   <Text
                     style={{
@@ -229,14 +181,14 @@ const GiveReq = ({ navigation, route }) => {
                       color: "#383838",
                     }}
                   >
-                    : 명륜 보육원
+                    : {item.sender}
                   </Text>
                 </View>
                 <View
                   style={{
                     flexDirection: "column",
                     width: "80%",
-                    height: "40%",
+                    height: "55%",
                     backgroundColor: "#E1F1FF",
                     flexDirection: "row",
                   }}
@@ -248,7 +200,7 @@ const GiveReq = ({ navigation, route }) => {
                       color: "#383838",
                     }}
                   >
-                    후원
+                    요청
                   </Text>
                   <Text
                     style={{
@@ -257,11 +209,31 @@ const GiveReq = ({ navigation, route }) => {
                       color: "#383838",
                     }}
                   >
-                    : 잡채 50인분
+                    : {item.foodName} {item.serving}인분
                   </Text>
                 </View>
               </View>
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  top: 20,
+                  right: 25,
+                  width: 30,
+                  height: 30,
+                  backgroundColor: "white",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 10,
+                  padding: 5,
+                  borderColor: "#65C8FF",
+                  borderWidth: 3,
+                }}
+                onPress={() => callPhone(item.senderTel)}
+              >
+                <Ionicons name="call" size={14} color="#8BD5FF" />
+              </TouchableOpacity>
             </View>
+
             <View
               style={{
                 flexDirection: "row",
@@ -272,9 +244,44 @@ const GiveReq = ({ navigation, route }) => {
               <TouchableOpacity
                 style={{
                   backgroundColor: "#44A5FF",
-                  width: "50%",
+                  width: "49%",
                   height: "100%",
                   borderBottomLeftRadius: 30,
+                }}
+                onPress={async () => {
+                  try {
+                    const response1 = await axios.post(
+                      "http://172.16.102.43:8888/boot/food/minus",
+                      {
+                        foodAmount: item.serving,
+                        id: item.receiverId,
+                      }
+                    );
+                    console.log("res", response1.data);
+
+                    const response2 = await axios.post(
+                      "http://172.16.102.43:8888/boot/donation/regist",
+                      {
+                        donatedProvider: item.receiverId,
+                        donatedReceiver: item.senderId,
+                        donatedAmount: item.serving,
+                        donatedPrice: item.foodPrice,
+                        foodTitle: item.foodName,
+                      }
+                    );
+                    console.log(response2.data);
+
+                    const response3 = await axios.post(
+                      "http://172.16.102.43:8888/boot/foodReq/delete",
+                      {
+                        senderId: item.senderId,
+                      }
+                    );
+                    console.log(response3.data);
+                    fetchData();
+                  } catch (error) {
+                    console.error("데이터를 처리하는데 실패했습니다:", error);
+                  }
                 }}
               >
                 <View
@@ -307,12 +314,28 @@ const GiveReq = ({ navigation, route }) => {
                   </Text>
                 </View>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={{
                   backgroundColor: "#E1F1FF",
                   width: "50%",
                   height: "100%",
                   borderBottomRightRadius: 30,
+                }}
+                onPress={async () => {
+                  try {
+                    const response = await axios.post(
+                      "http://172.16.102.43:8888/boot/foodReq/delete",
+                      {
+                        senderId: item.senderId,
+                      }
+                    );
+
+                    console.log(response.data);
+                    fetchData();
+                  } catch (error) {
+                    console.error("데이터를 삭제하는데 실패했습니다:", error);
+                  }
                 }}
               >
                 <View
@@ -342,30 +365,8 @@ const GiveReq = ({ navigation, route }) => {
               </TouchableOpacity>
             </View>
           </View>
-        </ScrollView>
-      </View>
-      {/* 확인 버튼 */}
-      <TouchableOpacity
-        style={{
-          width: 360,
-          height: 55,
-          borderRadius: 22,
-          backgroundColor: "#44A5FF",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 32,
-            fontWeight: "bold",
-            fontFamily: "Play-Bold",
-            color: "#FFFFFF",
-          }}
-        >
-          확인
-        </Text>
-      </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 };

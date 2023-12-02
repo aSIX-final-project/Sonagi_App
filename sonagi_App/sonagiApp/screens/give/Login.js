@@ -261,7 +261,13 @@ const Login = ({ navigation }) => {
 
         {/* id */}
         <Image
-          style={{ width: 65, height: 65,bottom: "0%",top:'3%', right: "36%" }}
+          style={{
+            width: 65,
+            height: 65,
+            bottom: "0%",
+            top: "3%",
+            right: "36%",
+          }}
           source={require("../../assets/id.png")}
           resizeMode="contain"
         />

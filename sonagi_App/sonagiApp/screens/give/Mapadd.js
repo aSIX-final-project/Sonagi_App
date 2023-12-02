@@ -47,7 +47,9 @@ const Mapadd = ({ navigation, route }) => {
         >
           <TouchableOpacity
             style={{ marginLeft: "6%", marginRight: "2%" }}
-            onPress={() => navigation.navigate("KakaoMap",{userInfo : userInfo})}
+            onPress={() =>
+              navigation.navigate("KakaoMap", { userInfo: userInfo })
+            }
           >
             <Image
               style={{ width: 50, height: 50 }}

@@ -592,7 +592,7 @@ overlay${i}.setMap(map);
               resizeMode="contain"
             />
           </TouchableOpacity>
-          <Text
+          {/* <Text
             style={{
               fontFamily: "Play-Bold",
               fontSize: 25,
@@ -601,7 +601,7 @@ overlay${i}.setMap(map);
             }}
           >
             프로필
-          </Text>
+          </Text> */}
 
           {/* 테스트 아이콘 */}
           {/* <TouchableOpacity
