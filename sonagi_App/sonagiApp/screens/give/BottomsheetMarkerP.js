@@ -16,7 +16,7 @@ import {
 
 import axios from "axios";
 
-const BottomsheetMarker = ({
+const BottomsheetMarkerP = ({
   modalVisible,
   setModalVisible,
   navigation,
@@ -59,8 +59,6 @@ const BottomsheetMarker = ({
       isMounted = false;
     };
   }, [id]);
-
-  const [isCameraModalVisible, setCameraModalVisible] = useState(false);
 
   const screenHeight = Dimensions.get("screen").height;
   const panY = useRef(new Animated.Value(screenHeight)).current;
@@ -165,8 +163,6 @@ const BottomsheetMarker = ({
               }}
               {...panResponders.panHandlers}
             >
-              {/* Content of the bottom sheet */}
-
               {/* 상호명, 주소 */}
               <View
                 style={{
@@ -209,7 +205,9 @@ const BottomsheetMarker = ({
                       fontSize: 18,
                       fontWeight: "bold",
                       fontFamily: "Play-Regular",
-                      width: "auto",
+                      width: "100%",
+                      overflow: "visible",
+                      whiteSpace: "normal",
                     }}
                   >
                     {userData && userData[0]?.address}
@@ -452,4 +450,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BottomsheetMarker;
+export default BottomsheetMarkerP;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,14 +11,111 @@ import {
   ScrollView,
   TextInput,
 } from "react-native";
+import axios from "axios";
 
 import * as ImagePicker from "expo-image-picker";
 
-const Donate = ({ navigation }) => {
+const Donate = ({ navigation, route }) => {
+  const { userInfo } = route.params;
+  const [data, setData] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [receiver, setReceiver] = useState("");
+  const [donator, setDonator] = useState("");
+  const [donatedDate, setDonatedDate] = useState("");
+  const [reviewTitle, setReviewTitle] = useState("");
+  const [reviewContext, setReviewContext] = useState("");
+  const [ReviewImage, setReviewImage] = useState("");
+
   const [isReviewModalVisible, setReviewModalVisible] = useState(false);
 
   // 모달 상태
   const [isModalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const formData = {
+          donatedProvider: userInfo.id,
+        };
+        let response = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/donation/findByIdP",
+          formData
+        );
+
+        const temp = response.data;
+
+        // 각 donatedReceiver에 대한 adName을 가져와서 temp에 추가
+        for (let i = 0; i < temp.length; i++) {
+          const formData2 = {
+            id: temp[i].donatedReceiver,
+          };
+          let response2 = await axios.post(
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/findById",
+            formData2
+          );
+          temp[i].adName = response2.data[0].adName;
+        }
+
+        setData(temp);
+      } catch (error) {
+        console.error("Cannot fetch data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleClick = async (item) => {
+    console.log(
+      `리시버 아이디: ${item.donatedReceiver}, 도네이트 아이디: ${item.donatedProvider}, 도네이트 데이트 : ${item.donatedDate}`
+    );
+    setSelectedItem(item);
+
+    const formData1 = {
+      id: item.donatedReceiver,
+    };
+    const response1 = await axios.post(
+      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/findById",
+      formData1
+    );
+
+    const formData2 = {
+      id: item.donatedProvider,
+    };
+    const response2 = await axios.post(
+      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
+      formData2
+    );
+
+    const donatedReceiver = response1.data[0].adName;
+    const donatedProvider = response2.data[0].adName;
+
+    console.log(donatedReceiver);
+    console.log(donatedProvider);
+
+    let response3 = await axios.get(
+      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findAll"
+    );
+    const matchedReviews = response3.data.filter(
+      (review) =>
+        review.receiver === donatedReceiver &&
+        review.donator === donatedProvider &&
+        review.reviewDate === item.donatedDate
+    );
+
+    console.log(matchedReviews);
+
+    if (matchedReviews.length > 0) {
+      setReceiver(matchedReviews[0].receiver);
+      setDonator(matchedReviews[0].donator);
+      setDonatedDate(matchedReviews[0].reviewDate);
+      setReviewContext(matchedReviews[0].reviewContext);
+      setReviewTitle(matchedReviews[0].reviewTitle);
+      setReviewImage(matchedReviews[0].reviewImage);
+
+      setModalVisible(true);
+    }
+  };
 
   // 카메라 버튼 클릭 핸들러
   const handleButtonClick = () => {
@@ -28,78 +125,6 @@ const Donate = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* 리뷰 보기 모달 관련 코드 */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isReviewModalVisible}
-      >
-        <View style={styles.centeredView2}>
-          <View style={styles.modalView2}>
-            <TouchableOpacity
-              style={{ width: "10%", height: "10%", left: "48%" }}
-              onPress={() => setReviewModalVisible(false)}
-            >
-              <View style={{ marginBottom: "10%" }}>
-                <Image
-                  style={{ width: 20, height: 20 }}
-                  source={require("../../assets/cancle.png")}
-                  resizeMode="contain"
-                />
-              </View>
-            </TouchableOpacity>
-
-            <View
-              style={{
-                marginBottom: "10%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: "Play-Bold",
-                  fontSize: 25,
-                  color: "#656565",
-                }}
-              >
-                두꺼비 식당 대표님 감사합니다.
-              </Text>
-              <Text
-                style={{
-                  fontFamily: "Play-Bold",
-                  fontSize: 20,
-                  color: "#656565",
-                }}
-              >
-                2023.11.06
-              </Text>
-            </View>
-
-            {/* 선 긋기 */}
-            <View style={styles.lineStyle} />
-
-            <View style={{ width: "98%", height: "35%", marginTop: "5%" }}>
-              <Image
-                style={{ width: "100%", height: "100%" }}
-                source={require("../../assets/donateimage.png")}
-                resizeMode="contain"
-              />
-              <Text
-                style={{
-                  fontFamily: "Play-Regular",
-                  fontSize: 20,
-                  color: "#A9A9A9",
-                  marginTop: "10%",
-                }}
-              >
-                정말 맛있게 먹었어요.
-              </Text>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
       {/* 기부내역 보기 모달 관련 코드 */}
       <Modal animationType="fade" transparent={true} visible={isModalVisible}>
         <View style={styles.centeredView2}>
@@ -131,7 +156,7 @@ const Donate = ({ navigation }) => {
                   color: "#656565",
                 }}
               >
-                명륜 보육원 기부
+                {reviewTitle}
               </Text>
               <Text
                 style={{
@@ -140,7 +165,7 @@ const Donate = ({ navigation }) => {
                   color: "#656565",
                 }}
               >
-                2023.11.06
+                {donatedDate}
               </Text>
             </View>
 
@@ -150,7 +175,7 @@ const Donate = ({ navigation }) => {
             <View style={{ width: "98%", height: "35%", marginTop: "5%" }}>
               <Image
                 style={{ width: "100%", height: "100%" }}
-                source={require("../../assets/donateimage.png")}
+                source={{ uri: ReviewImage }}
                 resizeMode="contain"
               />
               <Text
@@ -161,7 +186,7 @@ const Donate = ({ navigation }) => {
                   marginTop: "10%",
                 }}
               >
-                기부 내역 : 시금치 30인분
+                {reviewContext}
               </Text>
 
               <TouchableOpacity
@@ -218,7 +243,7 @@ const Donate = ({ navigation }) => {
         >
           <TouchableOpacity
             style={{ marginLeft: "6%", marginRight: "2%" }}
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.navigate("Home", { userInfo: userInfo })}
           >
             <Image
               style={{ width: 50, height: 50 }}
@@ -242,13 +267,30 @@ const Donate = ({ navigation }) => {
             marginTop: "10%",
           }}
         >
-          <TouchableOpacity style={{}} onPress={() => navigation.navigate("")}>
+          {userInfo.profileImage ? (
             <Image
-              style={{ width: 90, height: 90 }}
+              source={{ uri: userInfo.profileImage }}
+              style={{
+                width: 90,
+                height: 90,
+                borderRadius: 100,
+                borderWidth: 1,
+                borderColor: "#000",
+              }}
+            />
+          ) : (
+            <Image
+              style={{
+                width: 90,
+                height: 90,
+                borderRadius: 100,
+                borderWidth: 1,
+                borderColor: "#000",
+              }}
               source={require("../../assets/profileremove.png")}
               resizeMode="contain"
             />
-          </TouchableOpacity>
+          )}
           <Text
             style={{
               fontFamily: "Play-Bold",
@@ -257,7 +299,8 @@ const Donate = ({ navigation }) => {
               marginTop: "2%",
             }}
           >
-            최광혁 님
+            {/* {" "} */}
+            {userInfo.name}님
           </Text>
           <Text
             style={{
@@ -267,7 +310,7 @@ const Donate = ({ navigation }) => {
               marginTop: "1%",
             }}
           >
-            이모네밥 사장님
+            {userInfo.adName}
           </Text>
         </View>
       </View>
@@ -282,7 +325,7 @@ const Donate = ({ navigation }) => {
           marginRight: "40%",
         }}
       >
-        총 30건의 기부한 내역이 있습니다.
+        총 {data.length}건의 기부한 내역이 있습니다.
       </Text>
       <View
         style={{
@@ -296,35 +339,40 @@ const Donate = ({ navigation }) => {
       <ScrollView
         style={{ backgroundColor: "#FFFFFF", width: "89.5%", height: "80%" }}
       >
-        <Text
-          onPress={handleButtonClick}
-          style={{
-            fontFamily: "Play-Bold",
-            fontSize: 20,
-            color: "#656565",
-            marginTop: "2%",
-          }}
-        >
-          [명륜 보육원]100,000,000원
-        </Text>
-        <Text
-          style={{
-            fontFamily: "Play-Regular",
-            fontSize: 15,
-            color: "#8B8E90",
-            marginTop: "1%",
-          }}
-        >
-          2023.11.06
-        </Text>
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderBottomColor: "#DBDBDB",
-            width: "100%",
-            marginTop: "5%",
-          }}
-        />
+        {data.map((item, index) => (
+          <TouchableOpacity key={index} onPress={() => handleClick(item)}>
+            <View>
+              <Text
+                style={{
+                  fontFamily: "Play-Bold",
+                  fontSize: 20,
+                  color: "#656565",
+                  marginTop: "2%",
+                }}
+              >
+                [{item.adName}] {item.foodTitle}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "Play-Regular",
+                  fontSize: 15,
+                  color: "#8B8E90",
+                  marginTop: "1%",
+                }}
+              >
+                {item.donatedDate}
+              </Text>
+              <View
+                style={{
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#DBDBDB",
+                  width: "100%",
+                  marginTop: "5%",
+                }}
+              />
+            </View>
+          </TouchableOpacity>
+        ))}
       </ScrollView>
     </View>
   );

@@ -235,9 +235,8 @@ const Profilesp = ({ navigation, route }) => {
                   />
                 ) : (
                   <Image
-                    style={{ width: 90, height: 90 }}
-                    source={require("../../assets/profileedit.png")}
-                    resizeMode="contain"
+                    source={{ uri: userInfo.profileImage }}
+                    style={styles.profileImage}
                   />
                 )}
                 {/* Plus 이미지 */}
@@ -450,12 +449,6 @@ const Profilesp = ({ navigation, route }) => {
             />
           </TouchableOpacity>
         </View>
-        {/* 마지막 라인(광고) */}
-        <Image
-          style={{ width: "100%", height: "13  %", marginTop: "0%" }}
-          source={require("../../assets/ad.png")}
-          resizeMode="contain"
-        />
       </View>
     </TouchableWithoutFeedback>
   );

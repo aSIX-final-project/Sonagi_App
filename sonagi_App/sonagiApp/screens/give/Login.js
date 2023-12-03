@@ -246,7 +246,7 @@ const Login = ({ navigation }) => {
                 resizeMode="contain"
               />
               <TouchableOpacity
-                onPress={() => setLoginFailedModalVisible(false)} // 모달 내부의 버튼 클릭 시 모달 숨김
+                onPress={() => setLoginFailedModalVisible(false)}
               ></TouchableOpacity>
             </View>
           </View>

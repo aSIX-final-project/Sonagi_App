@@ -2,14 +2,12 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import GiveSignUp from "./screens/give/GiveSignUp";
 import Home from "./screens/give/Home";
 import Login from "./screens/give/Login";
 import Signup from "./screens/give/Signup";
 import Donate from "./screens/give/Donate";
 import Notice from "./screens/give/Notice";
 import Profiles from "./screens/give/Profiles";
-import Thankyou from "./screens/give/Thankyou";
 import KakaoMap from "./screens/give/KakaoMap";
 import ChangePw from "./screens/give/ChangePw";
 import ChangeInfo from "./screens/give/ChangeInfo";
@@ -26,11 +24,9 @@ import Homep from "./screens/givep/Homep";
 import Profilesp from "./screens/givep/Profilesp";
 import ChangeInfop from "./screens/givep/ChangeInfop";
 import ChangePwp from "./screens/givep/ChangePwp";
-import Thankyoup from "./screens/givep/Thankyoup";
 import Noticep from "./screens/givep/Noticep";
 import Donatep from "./screens/givep/Donatep";
 import KakaoMapP from "./screens/givep/KakaoMapP";
-import GiveReqp from "./screens/givep/GiveReqp";
 import Mapaddp from "./screens/givep/Mapaddp";
 import SendReqp from "./screens/givep/SendReqp";
 
@@ -120,13 +116,6 @@ export default function App() {
           }}
         />
         <Stack.Screen
-          name="GiveSignUp"
-          component={GiveSignUp}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
           name="Donate"
           component={Donate}
           options={{
@@ -143,13 +132,6 @@ export default function App() {
         <Stack.Screen
           name="Profiles"
           component={Profiles}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Thankyou"
-          component={Thankyou}
           options={{
             headerShown: false,
           }}
@@ -225,13 +207,6 @@ export default function App() {
           }}
         />
         <Stack.Screen
-          name="Thankyoup"
-          component={Thankyoup}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
           name="Noticep"
           component={Noticep}
           options={{
@@ -255,13 +230,6 @@ export default function App() {
         <Stack.Screen
           name="GiveReq"
           component={GiveReq}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="GiveReqp"
-          component={GiveReqp}
           options={{
             headerShown: false,
           }}

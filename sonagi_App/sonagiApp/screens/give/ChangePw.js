@@ -15,10 +15,15 @@ import {
 } from "react-native";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const ChangePw = ({ navigation, route }) => {
   const { userInfo } = route.params;
+  const [isChangeSuccessModalVisible, setChangeSuccessModalVisible] =
+    useState(false);
 
+  const [isChangeFailedModalVisible, setChangeFailedModalVisible] =
+    useState(false); // 모달 알림창의 상태
   const {
     watch, // 입력 값 감시
     setValue, // 입력 값 설정
@@ -28,15 +33,30 @@ const ChangePw = ({ navigation, route }) => {
   // 로그아웃 버튼을 눌렀을때 값을 서버에 보냄
   const [isLogoutSuccessModalVisible, setLogoutSuccessModalVisible] =
     useState(false); // 모달 알림창의 상태
-
+  const [modalMessage, setModalMessage] = useState("");
   const handlePasswordChange = async () => {
     try {
       if (userInfo.password !== watch("CurPw")) {
-        console.log("현재 비밀번호가 틀립니다. 다시 적어주세요");
+        setModalMessage("현재 비밀번호가 틀립니다.");
+        setChangeFailedModalVisible(true);
+
+        setTimeout(() => {
+          setChangeFailedModalVisible(false);
+        }, 2000);
       } else if (watch("CurPw") === watch("ChangePw")) {
-        console.log("현재 비밀번호와 변경할 비밀번호가 일치합니다.");
+        setModalMessage("현재 비밀번호와 변경할 비밀번호가 일치합니다.");
+        setChangeFailedModalVisible(true);
+
+        setTimeout(() => {
+          setChangeFailedModalVisible(false);
+        }, 2000);
       } else if (watch("ChangePw") !== watch("ChangePwCheck")) {
-        console.log("변경할 비밀번호가 일치하지 않습니다.");
+        setModalMessage("변경할 비밀번호가 일치하지 않습니다.");
+        setChangeFailedModalVisible(true);
+
+        setTimeout(() => {
+          setChangeFailedModalVisible(false);
+        }, 2000);
       } else {
         // POST 요청에 필요한 데이터
         const formData = {
@@ -58,13 +78,22 @@ const ChangePw = ({ navigation, route }) => {
         );
         // 백엔드로부터 온 응답 처리
         if (response.status === 200) {
-          // 비밀번호 변경 성공
           console.log("비밀번호 변경 성공");
-          // 여기에서 필요한 추가 작업 수행 가능
+          setChangeSuccessModalVisible(true);
+
+          // 2초 후에 홈 화면으로 이동
+          setTimeout(() => {
+            setChangeSuccessModalVisible(false);
+            navigation.navigate("Profiles", { userInfo: userInfo });
+          }, 2000);
         } else {
-          // 비밀번호 변경 실패
-          console.log("비밀번호 변경 실패");
-          // 에러 처리 로직
+          setModalMessage("비밀번호 변경 실패");
+          setChangeFailedModalVisible(true);
+
+          // 2초 후에 홈 화면으로 이동
+          setTimeout(() => {
+            setChangeFailedModalVisible(false);
+          }, 2000);
         }
       }
     } catch (error) {
@@ -349,6 +378,68 @@ const ChangePw = ({ navigation, route }) => {
               </Text>
             </TouchableOpacity>
           </View>
+
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={isChangeSuccessModalVisible}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <View style={styles.circle}>
+                  <Icon
+                    name="check"
+                    size={55}
+                    color="#698FF1"
+                    style={styles.iconStyle}
+                  />
+                </View>
+                <Text
+                  style={{
+                    marginTop: "5%",
+                    fontFamily: "Play-Bold",
+                    fontSize: 20,
+                  }}
+                >
+                  비밀번호 변경 성공
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setChangeSuccessModalVisible(false)}
+                ></TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={isChangeFailedModalVisible}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <View style={styles.failCircle}>
+                  <Icon
+                    name="times"
+                    size={55}
+                    color="#FF0000"
+                    style={styles.failIconStyle}
+                  />
+                </View>
+                <Text
+                  style={{
+                    marginTop: "5%",
+                    fontFamily: "Play-Bold",
+                    fontSize: 20,
+                  }}
+                >
+                  {modalMessage}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setChangeFailedModalVisible(false)}
+                ></TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -366,7 +457,36 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#000",
   },
-
+  failCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#FFCCCC",
+    alignSelf: "center",
+    marginBottom: 10,
+    justifyContent: "center", // 여기
+    alignItems: "center", // 그리고 여기
+  },
+  circle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#C2E9FF",
+    alignSelf: "center",
+    marginBottom: 10,
+  },
+  iconStyle: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -25 }, { translateY: -25 }], // 아이콘의 절반 크기만큼 이동
+  },
+  failIconStyle: {
+    position: "absolute",
+    top: "50%",
+    left: "55%",
+    transform: [{ translateX: -27.5 }, { translateY: -27.5 }], // 아이콘의 절반 크기만큼 이동
+  },
   input: {
     width: "88%",
     height: 45,

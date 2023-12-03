@@ -20,8 +20,6 @@ const Mapadd = ({ navigation, route }) => {
   const pressButton = () => {
     setModalVisible(true);
   };
-
-  const heartCount = 3; // 원하는 숫자를 넣으세요.
   return (
     <View style={styles.container}>
       {/* 상단부분 */}
@@ -57,31 +55,6 @@ const Mapadd = ({ navigation, route }) => {
               resizeMode="contain"
             />
           </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            position: "relative",
-            marginRight: "6%",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Image
-            style={{ width: 50, height: 50 }}
-            source={require("../../assets/heart.png")}
-            resizeMode="contain"
-          />
-          {/* 하트 부분 */}
-          <Text
-            style={{
-              position: "absolute",
-              color: "#44A5FF",
-              fontWeight: "bold",
-              fontSize: 25,
-            }}
-          >
-            {heartCount}
-          </Text>
         </View>
       </View>
 

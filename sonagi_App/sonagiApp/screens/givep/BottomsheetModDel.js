@@ -154,7 +154,7 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
                       image ? { uri: image } : require("../../assets/food4.png")
                     }
                     style={{ width: 280, height: 170, borderRadius: 16 }}
-                    resizeMode="fill"
+                    resizeMode="contain"
                   />
                 </TouchableOpacity>
               </View>
@@ -258,13 +258,16 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
                         fontSize: 23,
                         color: "#6F6A6A",
                         paddingLeft: "10%",
-                        paddingTop: "2.5%",
+                        paddingTop: "1%",
                       }}
                     >
                       삭제 하기
                     </Text>
                   </TouchableOpacity>
                 </View>
+
+                {/* 선 긋기 */}
+                <View style={styles.lineStyle} />
 
                 {/* 수정 하기 */}
                 <View style={{ width: "100%", height: "28%" }}>
@@ -278,7 +281,7 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
                         fontSize: 23,
                         color: "#6F6A6A",
                         paddingLeft: "10%",
-                        paddingTop: "2.5%",
+                        paddingTop: "0%",
                       }}
                     >
                       수정 하기
@@ -365,7 +368,7 @@ const styles = StyleSheet.create({
   lineStyle: {
     height: 2, // 선의 두께
     backgroundColor: "#E4E4E4", // 선의 색상
-    width: "90%", // 선의 길이
+    width: "85%", // 선의 길이
     marginBottom: "3%",
   },
   inputtext: {

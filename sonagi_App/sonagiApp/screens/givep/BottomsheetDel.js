@@ -16,7 +16,12 @@ import {
 } from "react-native";
 import { KeyboardAvoidingView } from "react-native";
 
-const BottomsheetDel = ({ modalVisible, setModalVisible, navigation }) => {
+const BottomsheetDel = ({
+  modalVisible,
+  setModalVisible,
+  navigation,
+  route,
+}) => {
   const screenHeight = Dimensions.get("screen").height;
   const panY = useRef(new Animated.Value(screenHeight)).current;
   const translateY = panY.interpolate({
@@ -120,7 +125,7 @@ const BottomsheetDel = ({ modalVisible, setModalVisible, navigation }) => {
 
                 {/* 삭제 하기 */}
                 <View
-                  style={{ width: "100%", height: "28%", marginBottom: "2%" }}
+                  style={{ width: "100%", height: "30%", marginBottom: "4%" }}
                 >
                   <TouchableOpacity style={{ width: "100%", height: "100%" }}>
                     <Text
@@ -129,7 +134,7 @@ const BottomsheetDel = ({ modalVisible, setModalVisible, navigation }) => {
                         fontSize: 23,
                         color: "#6F6A6A",
                         paddingLeft: "10%",
-                        paddingTop: "2.5%",
+                        paddingTop: "2%",
                       }}
                     >
                       삭제 하기

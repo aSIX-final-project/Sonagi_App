@@ -288,7 +288,7 @@ const Profiles = ({ navigation, route }) => {
         <View
           style={{
             flexDirection: "row",
-            marginTop: "5%",
+            marginTop: "10%",
             width: "88%",
             height: "10%",
             backgroundColor: "#E1F1FF",
@@ -332,7 +332,7 @@ const Profiles = ({ navigation, route }) => {
         <View
           style={{
             flexDirection: "row",
-            marginTop: "5%",
+            marginTop: "10%",
             width: "88%",
             height: "10%",
             backgroundColor: "#E1F1FF",
@@ -381,7 +381,7 @@ const Profiles = ({ navigation, route }) => {
         <View
           style={{
             flexDirection: "row",
-            marginTop: "5%",
+            marginTop: "10%",
             width: "88%",
             height: "10%",
             backgroundColor: "#E1F1FF",
@@ -425,12 +425,6 @@ const Profiles = ({ navigation, route }) => {
             />
           </TouchableOpacity>
         </View>
-        {/* 마지막 라인(광고) */}
-        <Image
-          style={{ width: "100%", height: "13  %", marginTop: "0%" }}
-          source={require("../../assets/ad.png")}
-          resizeMode="contain"
-        />
       </View>
     </TouchableWithoutFeedback>
   );

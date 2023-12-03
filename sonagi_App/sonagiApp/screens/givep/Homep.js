@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
 
 const components = [
   {
@@ -43,7 +44,9 @@ const Homep = ({ navigation, route }) => {
   const [image, setImage] = useState(require("../../assets/policy.png"));
   const [activeIndex, setActiveIndex] = useState(null);
   const [noticeList, setNoticeList] = useState({});
-  const [latestNotice, setLatestNotice] = useState(null);
+  const [latestNotice, setLatestNotice] = useState([]);
+  const [reqList, setReqList] = useState([]);
+  const [latestReqList, setLatestReqList] = useState([]);
   useEffect(() => {
     const timer = setInterval(() => {
       setImage((prevImage) =>
@@ -55,29 +58,57 @@ const Homep = ({ navigation, route }) => {
     return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/notice/findAll"
-        );
-        const receivedList = response.data;
-        console.log(receivedList);
-        if (Array.isArray(receivedList)) {
-          setNoticeList(receivedList);
-
-          const sortedList = receivedList.sort(
-            (a, b) => new Date(b.noticeDate) - new Date(a.noticeDate)
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/notice/findAll"
           );
-          setLatestNotice(sortedList[0]);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+          const receivedList = response.data;
+          console.log(receivedList);
+          if (Array.isArray(receivedList)) {
+            setNoticeList(receivedList);
 
-    fetchData();
-  }, []);
+            const sortedList = receivedList.sort(
+              (a, b) => new Date(b.noticeDate) - new Date(a.noticeDate)
+            );
+            setLatestNotice(sortedList.slice(0, 3)); // 최근 공지 3개 선택
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+
+      fetchData();
+    }, [])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchFoodReq = async () => {
+        try {
+          const response = await axios.post(
+            "http://172.16.100.11:8888/boot/foodReq/findBySenderId",
+            { senderId: userInfo.id }
+          );
+
+          // response 처리 로직
+          console.log(response.data);
+          const sortedList = response.data.sort(
+            (a, b) => new Date(b.sendTime) - new Date(a.sendTime)
+          );
+          setReqList(response.data); // 모든 요청 리스트 설정
+          setLatestReqList(sortedList.slice(0, 3));
+        } catch (error) {
+          // 에러 처리 로직
+          console.error(error);
+        }
+      };
+
+      fetchFoodReq();
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
@@ -261,7 +292,7 @@ const Homep = ({ navigation, route }) => {
                       flexDirection: "row",
                       justifyContent: "center",
                       alignItems: "center",
-                      marginBottom: "30%",
+                      marginBottom: "5%",
                     }}
                   >
                     <Text
@@ -288,30 +319,31 @@ const Homep = ({ navigation, route }) => {
                       marginRight: "30%",
                     }}
                   >
-                    {latestNotice && (
-                      <>
-                        <Text
-                          style={{
-                            fontSize: 18,
-                            fontWeight: "bold",
-                            fontFamily: "Play-Bold",
-                            color: "white",
-                          }}
-                        >
-                          {latestNotice.title}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 15,
-                            fontWeight: "bold",
-                            fontFamily: "Play-Regular",
-                            color: "white",
-                          }}
-                        >
-                          {latestNotice.noticeDate.substring(0, 10)}
-                        </Text>
-                      </>
-                    )}
+                    {latestNotice &&
+                      latestNotice.map((notice, index) => (
+                        <View key={index}>
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: "bold",
+                              fontFamily: "Play-Bold",
+                              color: "white",
+                            }}
+                          >
+                            {notice.title}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontWeight: "bold",
+                              fontFamily: "Play-Regular",
+                              color: "white",
+                            }}
+                          >
+                            {notice.noticeDate.substring(0, 10)}
+                          </Text>
+                        </View>
+                      ))}
                   </View>
                 </View>
               </TouchableOpacity>
@@ -319,7 +351,10 @@ const Homep = ({ navigation, route }) => {
               {/* 다섯번째 라인 (기부 요청) */}
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate("SendReqp", { userInfo: userInfo })
+                  navigation.navigate("SendReqp", {
+                    userInfo: userInfo,
+                    reqList: reqList,
+                  })
                 }
               >
                 <View style={styles.fourthTwoContainer}>
@@ -328,9 +363,9 @@ const Homep = ({ navigation, route }) => {
                       flexDirection: "row",
                       justifyContent: "center",
                       alignItems: "center",
-                      marginBottom: "30%",
-                      marginTop: "18%",
-                      left: "3.5%",
+                      marginBottom: "20%",
+                      marginTop: "14%",
+                      marginRight: "30%",
                     }}
                   >
                     <Text
@@ -338,8 +373,7 @@ const Homep = ({ navigation, route }) => {
                         fontSize: 22,
                         fontFamily: "Play-Regular",
                         color: "#6F6A6A",
-                        marginRight: "17%",
-                        marginLeft: "0%",
+                        marginRight: "7%",
                       }}
                     >
                       보낸 요청
@@ -355,29 +389,47 @@ const Homep = ({ navigation, route }) => {
                     style={{
                       flexDirection: "column",
                       justifyContent: "center",
-                      marginleft: "10%",
+                      marginRight: "30%",
+                      marginBottom: "10%",
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 18,
-                        fontWeight: "bold",
-                        fontFamily: "Play-Bold",
-                        color: "#3D3D3D",
-                      }}
-                    >
-                      이모네밥 김치 200인분
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: "bold",
-                        fontFamily: "Play-Regular",
-                        color: "#3D3D3D",
-                      }}
-                    >
-                      2023.11.10
-                    </Text>
+                    {latestReqList && latestReqList.length > 0 ? (
+                      latestReqList.map((req, index) => (
+                        <View key={index}>
+                          <Text
+                            style={{
+                              fontSize: 18,
+                              fontWeight: "bold",
+                              fontFamily: "Play-Bold",
+                              color: "#3D3D3D",
+                            }}
+                          >
+                            {req.foodName} {req.serving}인분
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontWeight: "bold",
+                              fontFamily: "Play-Regular",
+                              color: "#3D3D3D",
+                            }}
+                          >
+                            {req.sendTime.substring(0, 10)}
+                          </Text>
+                        </View>
+                      ))
+                    ) : (
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          fontWeight: "bold",
+                          fontFamily: "Play-Bold",
+                          color: "#3D3D3D",
+                        }}
+                      >
+                        보낸 요청이 없습니다.
+                      </Text>
+                    )}
                   </View>
                 </View>
               </TouchableOpacity>
@@ -441,6 +493,11 @@ const Homep = ({ navigation, route }) => {
                 navigation.navigate(component.route, {
                   userInfo: userInfo,
                   noticeListParam: noticeList,
+                });
+              } else if (component.route === "SendReqp") {
+                navigation.navigate(component.route, {
+                  userInfo: userInfo,
+                  reqList: reqList,
                 });
               } else {
                 navigation.navigate(component.route, { userInfo: userInfo });

@@ -3,19 +3,12 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
 
 const ManagePage = ({ navigation }) => {
-  const [image, setImage] = useState(require("../../assets/policy.png"));
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setImage((prevImage) =>
-        prevImage === require("../../assets/policy.png")
-          ? require("../../assets/policy2.png")
-          : require("../../assets/policy.png")
-      );
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
   return (
     <View style={styles.container}>
+      <View
+        style={{ width: "100%", height: "10%", backgroundColor: "#44A5FF" }}
+      ></View>
+
       {/* 첫번째 라인 */}
       <View
         style={{
@@ -24,7 +17,7 @@ const ManagePage = ({ navigation }) => {
           height: "10%",
           justifyContent: "flex-start",
           alignItems: "center",
-          marginTop: "50%",
+          marginTop: "30%",
           marginLeft: "8%",
         }}
       >
@@ -178,13 +171,15 @@ const ManagePage = ({ navigation }) => {
       </View>
 
       {/* 네번째 라인 */}
-      <View style={styles.thirdContainer}>
-        <Image
-          source={image}
-          style={{ width: "100%", height: "100%" }}
-          resizeMode="cover"
-        />
-      </View>
+      <TouchableOpacity onPress={() => navigation.navigate("KakaoMap")}>
+        <View style={styles.thirdContainer}>
+          <Image
+            source={require("../../assets/map.jpg")}
+            style={{ width: "100%", height: "100%" }}
+            resizeMode="cover"
+          />
+        </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -199,7 +194,7 @@ const styles = StyleSheet.create({
   thirdContainer: {
     flexDirection: "row",
     width: "90%",
-    height: "17%",
+    height: "40%",
     borderRadius: 30,
     marginTop: 20,
     marginBottom: 20,
@@ -235,6 +230,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 30,
     marginLeft: 14,
+    borderColor: "#44A5FF",
+    borderWidth: 1,
   },
 
   fifthContainer: {

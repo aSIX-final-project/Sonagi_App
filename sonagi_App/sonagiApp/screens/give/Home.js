@@ -7,10 +7,13 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
+import Carousel from "react-native-snap-carousel";
+import { Linking } from "react-native";
 
 const components = [
   {
@@ -42,20 +45,45 @@ const components = [
 
 const Home = ({ navigation, route }) => {
   const { userInfo } = route.params;
-  const [image, setImage] = useState(require("../../assets/policy.png"));
   const [activeIndex, setActiveIndex] = useState(null);
   const [noticeList, setNoticeList] = useState({});
   const [latestNotice, setLatestNotice] = useState(null);
   const [requestList, setRequestList] = useState([]);
 
+  const callPhone = (phoneNum) => {
+    // 카카오 네비게이션 API를 이용해 길찾기 실행
+    const url = `tel:${phoneNum}`;
+
+    Linking.openURL(url).catch((err) =>
+      console.error("An error occurred", err)
+    );
+  };
+
+  const images = [
+    { id: "1", url: require("../../assets/moneyCheck.png"), nav: "Screen1" },
+    {
+      id: "2",
+      url: require("../../assets/callConsultation.png"),
+      phone: "1357",
+    },
+    { id: "3", url: require("../../assets/naverCheck.png"), nav: "Screen3" },
+    {
+      id: "4",
+      url: require("../../assets/checkQualification.png"),
+      web: "https://www.semas.or.kr/web/SUP01/SUP0103/SUP010301.kmdc",
+    },
+    {
+      id: "5",
+      url: require("../../assets/naverBlog.png"),
+      web: "https://cafe.naver.com/jangsin1004",
+    },
+  ];
+  const [activeSlide, setActiveSlide] = useState(0);
+
   useEffect(() => {
     const timer = setInterval(() => {
-      setImage((prevImage) =>
-        prevImage === require("../../assets/policy.png")
-          ? require("../../assets/policy2.png")
-          : require("../../assets/policy.png")
-      );
-    }, 5000);
+      setActiveSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    }, 5000); // 5초마다 다음 이미지로 넘어감
     return () => clearInterval(timer);
   }, []);
 
@@ -415,10 +443,32 @@ const Home = ({ navigation, route }) => {
             }}
           >
             <View style={styles.thirdContainer}>
-              <Image
-                source={image}
-                style={{ width: "100%", height: "100%" }}
-                resizeMode="cover"
+              <Carousel
+                data={images}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (item.nav) {
+                        navigation.navigate(item.nav);
+                      } else if (item.web) {
+                        Linking.openURL(item.web);
+                      } else if (item.phone) {
+                        callPhone(item.phone);
+                      }
+                    }}
+                  >
+                    <Image
+                      source={item.url}
+                      style={{ width: "100%", height: "100%" }}
+                      resizeMode="cover"
+                    />
+                  </TouchableOpacity>
+                )}
+                sliderWidth={Dimensions.get("window").width}
+                itemWidth={Dimensions.get("window").width}
+                onSnapToItem={(index) => setActiveSlide(index)}
+                autoplay={true}
+                loop={true}
               />
             </View>
           </View>
@@ -495,7 +545,7 @@ const styles = StyleSheet.create({
 
   thirdContainer: {
     width: "94%",
-    height: "80%",
+    height: "100%",
     borderRadius: 30,
     marginTop: 20,
     overflow: "hidden",

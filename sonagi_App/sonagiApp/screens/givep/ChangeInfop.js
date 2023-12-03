@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const ChangeInfop = ({ navigation, route }) => {
   const { userInfo } = route.params;
@@ -55,19 +56,37 @@ const ChangeInfop = ({ navigation, route }) => {
       console.log(response.data);
       // 백엔드로부터 온 응답 처리
       if (response.status === 200) {
-        // 시설 정보 변경 요청 성공
         console.log("시설 정보 변경 요청 성공");
-        // 여기에서 필요한 추가 작업 수행 가능
+        setChangeSuccessModalVisible(true);
+
+        // 2초 후에 홈 화면으로 이동
+        setTimeout(() => {
+          setChangeSuccessModalVisible(false);
+          navigation.navigate("Profilesp", { userInfo: userInfo });
+        }, 2000);
       } else {
-        // 시설 정보 변경 요청 실패
         console.log("시설 정보 변경 요청 실패");
-        // 에러 처리 로직
+        setChangeFailedModalVisible(true);
+
+        setTimeout(() => {
+          setChangeFailedModalVisible(false);
+        }, 2000);
       }
     } catch (error) {
       console.error("에러:", error);
+      setChangeFailedModalVisible(true);
+
+      setTimeout(() => {
+        setChangeFailedModalVisible(false);
+      }, 2000);
       // 에러 처리 로직
     }
   };
+  const [isChangeSuccessModalVisible, setChangeSuccessModalVisible] =
+    useState(false);
+
+  const [isChangeFailedModalVisible, setChangeFailedModalVisible] =
+    useState(false); // 모달 알림창의 상태
 
   const handleLogoutButtonClick = () => {
     setLogoutSuccessModalVisible(true); // 가입 버튼 클릭 시 모달 표시
@@ -186,20 +205,18 @@ const ChangeInfop = ({ navigation, route }) => {
                 marginTop: "10%",
               }}
             >
-              <TouchableOpacity>
-                {userInfo.profileImage ? (
-                  <Image
-                    source={{ uri: userInfo.profileImage }}
-                    style={styles.profileImage}
-                  />
-                ) : (
-                  <Image
-                    style={{ width: 90, height: 90 }}
-                    source={require("../../assets/profileedit.png")}
-                    resizeMode="contain"
-                  />
-                )}
-              </TouchableOpacity>
+              {userInfo.profileImage ? (
+                <Image
+                  source={{ uri: userInfo.profileImage }}
+                  style={styles.profileImage}
+                />
+              ) : (
+                <Image
+                  style={{ width: 90, height: 90 }}
+                  source={require("../../assets/profileedit.png")}
+                  resizeMode="contain"
+                />
+              )}
               <Text
                 style={{
                   fontFamily: "Play-Bold",
@@ -397,13 +414,67 @@ const ChangeInfop = ({ navigation, route }) => {
               </Text>
             </TouchableOpacity>
           </View>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={isChangeSuccessModalVisible}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <View style={styles.circle}>
+                  <Icon
+                    name="check"
+                    size={55}
+                    color="#698FF1"
+                    style={styles.iconStyle}
+                  />
+                </View>
+                <Text
+                  style={{
+                    marginTop: "5%",
+                    fontFamily: "Play-Bold",
+                    fontSize: 20,
+                  }}
+                >
+                  시설 정보 변경 요청 성공
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setChangeSuccessModalVisible(false)}
+                ></TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
 
-          {/* 마지막 라인(광고) */}
-          <Image
-            style={{ width: "100%", height: "15%" }}
-            source={require("../../assets/ad.png")}
-            resizeMode="contain"
-          />
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={isChangeFailedModalVisible}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <View style={styles.failCircle}>
+                  <Icon
+                    name="times"
+                    size={55}
+                    color="#FF0000"
+                    style={styles.failIconStyle}
+                  />
+                </View>
+                <Text
+                  style={{
+                    marginTop: "5%",
+                    fontFamily: "Play-Bold",
+                    fontSize: 20,
+                  }}
+                >
+                  시설 정보 변경 요청 실패
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setChangeFailedModalVisible(false)}
+                ></TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -432,7 +503,36 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     fontSize: 20,
   },
-
+  failCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#FFCCCC",
+    alignSelf: "center",
+    marginBottom: 10,
+    justifyContent: "center", // 여기
+    alignItems: "center", // 그리고 여기
+  },
+  circle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#C2E9FF",
+    alignSelf: "center",
+    marginBottom: 10,
+  },
+  iconStyle: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -25 }, { translateY: -25 }], // 아이콘의 절반 크기만큼 이동
+  },
+  failIconStyle: {
+    position: "absolute",
+    top: "50%",
+    left: "55%",
+    transform: [{ translateX: -27.5 }, { translateY: -27.5 }], // 아이콘의 절반 크기만큼 이동
+  },
   modalView: {
     marginBottom: 20,
     backgroundColor: "white",

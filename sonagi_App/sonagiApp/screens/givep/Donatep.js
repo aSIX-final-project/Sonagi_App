@@ -39,6 +39,7 @@ const Donatep = ({ navigation, route }) => {
   const [donatedDate, setDonatedDate] = useState("");
   const [reviewTitle, setReviewTitle] = useState("");
   const [reviewContext, setReviewContext] = useState("");
+  const [ReviewImage, setReviewImage] = useState("");
 
   const [donateInfo, setdonateInfo] = useState("");
   const [foodAdName, setfoodAdName] = useState("");
@@ -86,6 +87,37 @@ const Donatep = ({ navigation, route }) => {
 
   const handleSubmit = async () => {
     try {
+      //----------------------------------------------------------------------------//
+
+      const formDataURI = new FormData();
+      formDataURI.append("file", {
+        uri: foodImage,
+        type: "image/jpeg",
+        name: `profile_${userInfo.id}.jpg`,
+      });
+
+      const filename =
+        foodAdName + " " + userInfo.adName + " " + donateInfo[0].donatedDate;
+      console.log(filename);
+
+      // 'nameFile' 파라미터 추가
+      formDataURI.append("nameFile", filename);
+      // console.log(formData);
+      formDataURI.append("folderName", "review");
+
+      const responseURL = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/files",
+        // "http://172.16.104.97:8888/boot/member/files",
+        formDataURI,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      //----------------------------------------------------------------------------//
+
       const formDataForAdName = {
         id: selectedValue.donatedProvider,
       };
@@ -106,6 +138,7 @@ const Donatep = ({ navigation, route }) => {
       console.log(adName);
       console.log(new Date());
       console.log(userInfo.adName);
+      console.log(responseURL.data);
 
       const formData = {
         regionCategory: firstPartOfAddress, // 이 값을 적절하게 설정해 주세요.
@@ -113,7 +146,7 @@ const Donatep = ({ navigation, route }) => {
         reviewContext: content,
         donator: adName, // 이 값을 적절하게 설정해 주세요.
         receiver: userInfo.adName, // 이 값을 적절하게 설정해 주세요.
-        reviewImage: "image", // 이미지 URI. 필요에 따라 적절한 값을 설정해 주세요.
+        reviewImage: responseURL.data, // 이미지 URI. 필요에 따라 적절한 값을 설정해 주세요.
       };
       const response = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/regist",
@@ -143,7 +176,7 @@ const Donatep = ({ navigation, route }) => {
 
       console.log(response.data);
       setModalVisible3(false);
-
+      setfoodImage("");
       navigation.navigate("Donatep", { userInfo: userInfo });
     } catch (error) {
       console.error("Cannot save data: ", error);
@@ -192,6 +225,8 @@ const Donatep = ({ navigation, route }) => {
         setDonatedDate(matchedReviews[0].reviewDate);
         setReviewContext(matchedReviews[0].reviewContext);
         setReviewTitle(matchedReviews[0].reviewTitle);
+        setReviewImage(matchedReviews[0].reviewImage);
+
         setModalVisible2(true);
       }
     } catch (error) {
@@ -227,73 +262,8 @@ const Donatep = ({ navigation, route }) => {
       quality: 1,
     });
 
-    // console.log(result);
-    if (!result.canceled) {
-      try {
-        const formData = new FormData();
-        formData.append("file", {
-          uri: result.assets[0].uri,
-          type: "image/jpeg",
-          name: `profile_${userInfo.id}.jpg`,
-        });
-
-        const filename =
-          foodAdName + " " + userInfo.adName + " " + donateInfo[0].donatedDate;
-        console.log(filename);
-
-        // 'nameFile' 파라미터 추가
-        formData.append("nameFile", filename);
-        // console.log(formData);
-        formData.append("folderName", "review");
-
-        const response = await axios.post(
-          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/files",
-          // "http://172.16.104.97:8888/boot/member/files",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-        if (response.data) {
-          setfoodImage(null);
-          setfoodImage(response.data);
-
-          const formData = {
-            id: userInfo.id,
-            profileImage: response.data,
-          };
-
-          // 폼 데이터를 JSON 문자열로 변환하여 확인
-          const jsonData = JSON.stringify(formData);
-          console.log(jsonData);
-
-          console.log(response.data);
-
-          // 백엔드 서버로 POST 요청 보내기
-          const data = await axios.post(
-            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/updateImageUrl",
-            // "http://172.16.104.219:8888/boot/member/updateImageUrl",
-            formData
-          );
-
-          if (data.data === 1) {
-            console.log(userInfo);
-
-            // 이미지 url 업데이트 성공
-            console.log("이미지 Url 업데이트 성공");
-          }
-          // console.log(response);
-          console.log("이미지 업로드 성공");
-        } else {
-          console.error("이미지 업로드 실패");
-        }
-      } catch (error) {
-        console.error("이미지 업로드 오류:", error);
-      }
-    }
+    setfoodImage("");
+    setfoodImage(result.assets[0].uri);
   };
 
   // 삭제 수정 버튼 클릭
@@ -316,7 +286,10 @@ const Donatep = ({ navigation, route }) => {
                   height: "5%",
                   left: "45%",
                 }}
-                onPress={() => setModalVisible3(false)}
+                onPress={() => {
+                  setModalVisible3(false);
+                  setfoodImage("");
+                }}
               >
                 <View style={{ marginBottom: "0%" }}>
                   <Image
@@ -364,7 +337,7 @@ const Donatep = ({ navigation, route }) => {
                       <Image
                         style={{ width: 300, height: 150, borderRadius: 16 }}
                         source={require("../../assets/food4.png")}
-                        resizeMode="fill"
+                        resizeMode="contain"
                       />
                     )}
                   </TouchableOpacity>
@@ -490,7 +463,7 @@ const Donatep = ({ navigation, route }) => {
             <View style={{ width: "98%", height: "35%", marginTop: "5%" }}>
               <Image
                 style={{ width: "100%", height: "100%" }}
-                source={require("../../assets/donateimage.png")}
+                source={{ uri: ReviewImage }}
                 resizeMode="contain"
               />
               <Text
@@ -643,7 +616,11 @@ const Donatep = ({ navigation, route }) => {
           <View key={index}>
             <View style={{ flexDirection: "row" }}>
               <Text
-                onPress={() => handleClick2(donation)}
+                onPress={() => {
+                  if (Number(donation.isReviewed) === 1) {
+                    handleClick2(donation);
+                  }
+                }}
                 style={{
                   fontFamily: "Play-Bold",
                   fontSize: 20,
