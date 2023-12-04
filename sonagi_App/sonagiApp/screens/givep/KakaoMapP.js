@@ -67,8 +67,10 @@ export default function App({ navigation, route }) {
       Promise.all([fetchData(), fetchData2(), fetchData3()])
         .then(() => {
           console.log("모든 데이터 로딩 완료");
+          // 여기에서 필요한 추가 작업을 수행할 수 있습니다.
         })
-        .catch(error => {
+        .catch((error) => {
+
           console.error(error); // 에러 처리
         });
     }
@@ -121,8 +123,6 @@ export default function App({ navigation, route }) {
     const res = await axios.get(
       "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/findAll"
     ); //스프링 부트 : db에서 값 가져오기
-    console.log("여기 에러같은데")
-    console.log(res.data)
     //마커 찍을 좌표값 가져오기
     const fetchPromises = res.data.map(async (item) => {
       const response = await fetch(
@@ -306,8 +306,6 @@ overlay${i}.setMap(map);
   })(marker${i}, infowindow${i}, overlayContent${i}, location);
 `;
     });
-    
-
     
     resLocations.forEach((location, i) => {
       var phoneNum = location.phoneNum;
@@ -579,6 +577,7 @@ overlay${i}.setMap(map);
             console.log(userInfo);
             navigation.navigate("Mapaddp", { id: id, userInfo: userInfo });
           } else if (message.startsWith("pId:")) {
+
             // 마커에서 전달된 id를 사용
             const id = message.split(": ")[1];
             console.log("피기부자:", id);

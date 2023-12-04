@@ -49,6 +49,7 @@ const Homep = ({ navigation, route }) => {
   const [reqList, setReqList] = useState([]);
   const [latestReqList, setLatestReqList] = useState([]);
 
+
   const [crawlingData, setCrawlingData] = useState([]);
   const [currentItemIndex, setCurrentItemIndex] = useState(0);
 
@@ -66,7 +67,6 @@ const Homep = ({ navigation, route }) => {
 
     fetchData();
   }, []);
-
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentItemIndex((prevIndex) => (prevIndex + 1) % (crawlingData.length || 1));
@@ -107,7 +107,7 @@ const Homep = ({ navigation, route }) => {
       const fetchFoodReq = async () => {
         try {
           const response = await axios.post(
-            "http://172.16.100.11:8888/boot/foodReq/findBySenderId",
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/findBySenderId",
             { senderId: userInfo.id }
           );
 

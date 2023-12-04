@@ -142,6 +142,7 @@ export default function App() {
           }}
         />
         <Stack.Screen
+
           name="Donate"
           component={Donate}
           options={{

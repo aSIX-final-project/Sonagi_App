@@ -22,6 +22,7 @@ import FastImage from "react-native-fast-image";
 
 const RegistGive = ({ navigation, route }) => {
   const [profileImage, setProfileImage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const { userInfo } = route.params;
   console.log(userInfo);
 
@@ -31,44 +32,113 @@ const RegistGive = ({ navigation, route }) => {
     formState: { errors }, // 폼 상태와 에러
   } = useForm();
 
+  // 유효성 검사 함수
+  const validateInput = () => {
+    // 음식 이름
+    if (!watch("foodName")) {
+      console.log("음식 이름을 입력하세요.");
+      setErrorMessage("음식 이름을 입력해주세요.");
+      return false;
+    }
+
+    // 음식 사진
+    if (!profileImage) {
+      console.log("이미지를 선택해주세요.");
+      setErrorMessage("이미지를 선택해주세요.");
+      return false;
+    }
+
+    // 음식 양
+    if (
+      !watch("foodAmount") ||
+      isNaN(watch("foodAmount")) ||
+      watch("foodAmount") % 5 !== 0
+    ) {
+      console.log("음식 양을 입력하세요. (단, 5인분 단위로 설정해야 합니다.)");
+      setErrorMessage(
+        "음식 양을 입력하세요. (단, 5인분 단위로 설정해야 합니다.)"
+      );
+      return false;
+    }
+
+    // 음식 기부 가능 시간
+    const donationTime = new Date();
+    donationTime.setSelectedPeriod(selectedPeriod);
+    donationTime.setHours(selectedHour);
+    donationTime.setMinutes(selectedMinute);
+    if (donationTime <= new Date()) {
+      console.log("기부 가능 시간은 현재 시간 이후로 설정해야 합니다.");
+      setErrorMessage("기부 가능 시간은 현재 시간 이후로 설정해야 합니다.");
+      return false;
+    }
+
+    // 음식 가격
+    if (!watch("foodPrice") || isNaN(watch("foodPrice"))) {
+      console.log("음식 가격을 입력하세요. (1인분 기준)");
+      setErrorMessage("음식 가격을 입력하세요. (1인분 기준)");
+      return false;
+    }
+
+    // 음식 설명
+    if (!watch("context")) {
+      console.log("음식 설명을 입력해주세요.");
+      setErrorMessage("음식 설명을 입력해주세요.");
+      return false;
+    }
+
+    // 모든 검사를 통과하면 에러 메시지를 초기화하고 true를 반환합니다.
+    setErrorMessage(null);
+    return true;
+  };
+
   // 수정 필요 함수 구현 다시 해야댐 Food DB에 값 추가할꺼임
   const handleFoodRegist = async () => {
     try {
-      // POST 요청에 필요한 데이터
-      const formData = {
-        id: userInfo.id,
-        foodName: watch("foodName"),
-        foodAmount: watch("foodAmount"),
-        foodPrice: watch("foodPrice"),
-        foodTel: userInfo.adTel,
-        foodAddress: userInfo.address,
-        foodGiver: userInfo.adName,
-        foodImage: profileImage,
-        foodUploadTime: "",
-        context: watch("context"),
-        cookingTime: selectedPeriod + " " + selectedHour + ":" + selectedMinute,
-      };
+      if (validateInput()) {
+        // 유효성 검사를 통과하면 폼 제출 로직을 실행합니다.
+        // POST 요청에 필요한 데이터
+        const formData = {
+          id: userInfo.id,
+          foodName: watch("foodName"),
+          foodAmount: watch("foodAmount"),
+          foodPrice: watch("foodPrice"),
+          foodTel: userInfo.adTel,
+          foodAddress: userInfo.address,
+          foodGiver: userInfo.adName,
+          foodImage: profileImage,
+          foodUploadTime: "",
+          context: watch("context"),
+          deadline: selectedPeriod + " " + selectedHour + ":" + selectedMinute,
+        };
 
-      // 폼 데이터를 JSON 문자열로 변환하여 확인
-      const jsonData = JSON.stringify(formData);
-      console.log(jsonData);
+        // 폼 데이터를 JSON 문자열로 변환하여 확인
+        const jsonData = JSON.stringify(formData);
+        console.log(jsonData);
 
-      // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
-      const response = await axios.post(
-        // "http://172.16.104.219:8888/boot/food/regist",
-        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/regist",
-        formData
-      );
-      console.log(response.data);
-      // 백엔드로부터 온 응답 처리
-      if (response.status === 200) {
-        // 음식 등록 성공
-        console.log("음식 등록 성공");
-        // 여기에서 필요한 추가 작업 수행 가능
+        // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
+        const response = await axios.post(
+          // "http://172.16.104.219:8888/boot/food/regist",
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/regist",
+          formData
+        );
+        console.log(response.data);
+        // 백엔드로부터 온 응답 처리
+        if (response.status === 200) {
+          // 음식 등록 성공
+          console.log("음식 등록 성공"); // -> 음식 등록 성공 모달 필요
+
+          // 2초 후에 홈 화면으로 이동
+          setTimeout(() => {
+            // setLoginSuccessModalVisible(false); --> 모달 사라지게 하는 코드
+            navigation.navigate("KakaoMap", { userInfo: userInfo });
+          }, 2000);
+        } else {
+          // 음식 등록 실패
+          console.log("음식 등록 실패");
+          // 에러 처리 로직
+        }
       } else {
-        // 음식 등록 실패
-        console.log("음식 등록 실패");
-        // 에러 처리 로직
+        console.log("다시 적어주세요.");
       }
     } catch (error) {
       console.error("에러:", error);
