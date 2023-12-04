@@ -10,14 +10,15 @@ import {
   StyleSheet,
 } from "react-native";
 import * as Location from "expo-location";
-import BottomsheetMarker from "../give/BottomsheetMarker";
-import Registgive from "../give/Registgive";
-
+import BottomsheetMarker from "./BottomsheetMarker";
+import BottomsheetMarker2 from "./BottomsheetMarkerP";
 export default function App({ navigation, route }) {
   const { userInfo } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
 
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const [selectedMarkerId2, setSelectedMarkerId2] = useState(null);
   // testClick 클릭
   const testClick = () => {
     navigation.navigate("Mapadd", { userInfo: userInfo }); // 'Mapadd' 페이지로 이동합니다.
@@ -32,7 +33,9 @@ export default function App({ navigation, route }) {
   const GiveReq = () => {
     navigation.navigate("GiveReq", { userInfo: userInfo });
   };
-
+  const pressButton2 = () => {
+    setModalVisible2(true);
+  };
   const [locations, setLocations] = useState([]);
   const [foodLocations, setFoodLocations] = useState([]);
   const [resLocations, setResLocations] = useState([]);
@@ -44,7 +47,6 @@ export default function App({ navigation, route }) {
     y: null,
   });
   const [html, setHtml] = useState(""); // html 상태 변수 추가
-  const [showEndRoute, setShowEndRoute] = useState(null);
 
   useEffect(() => {
     if (currentPosition && locations.length > 0) {
@@ -101,10 +103,6 @@ export default function App({ navigation, route }) {
       console.error("An error occurred", err)
     );
   };
-
-  const pressButton = () => {
-    setModalVisible(true);
-  };
   //현재 위치 업데이트 하기
   const updateCurrentPosition = (location) => {
     setCurrentPosition({
@@ -120,7 +118,7 @@ export default function App({ navigation, route }) {
     ); //스프링 부트 : db에서 값 가져오기
 
     //마커 찍을 좌표값 가져오기
-    const fetchPromises = res.data.list.map(async (item) => {
+    const fetchPromises = res.data.map(async (item) => {
       const response = await fetch(
         `https://dapi.kakao.com/v2/local/search/address.json?query=${item.address}`,
         {
@@ -290,12 +288,12 @@ overlay${i}.setMap(map);
     };
 
     kakao.maps.event.addListener(marker, 'click', function() {
-      window.ReactNativeWebView.postMessage('id: ${location.id}');
+      window.ReactNativeWebView.postMessage('pId: ${location.id}');
     setSelectedMarkerId(location.id);
   });
   
   overlayContent.addEventListener('click', function() {
-    window.ReactNativeWebView.postMessage('id: ${location.id}');
+    window.ReactNativeWebView.postMessage('pId: ${location.id}');
     setSelectedMarkerId(location.id);
   });
   
@@ -503,16 +501,7 @@ overlay${i}.setMap(map);
 <body>
 <div class="map_wrap">
   <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div> 
-  <!-- 지도타입 컨트롤 div 입니다 -->
-  <div class="custom_typecontrol radius_border">
-    <span id="endRoute" class="selected_btn" onclick="endRoute()">길찾기 종료</span>
-  </div>
   
-  <!-- 지도 확대, 축소 컨트롤 div 입니다 -->
-  <!-- <div class="custom_zoomcontrol radius_border"> 
-      <span onclick="zoomIn()"><img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_plus.png" alt="확대"></span>
-      <span onclick="zoomOut()"><img src="https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/ico_minus.png" alt="축소"></span>
-  </div> -->
 </div>
   <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=1d36d8e3148cff96991f68bd2f32c26a"></script>
   <script>
@@ -527,32 +516,6 @@ overlay${i}.setMap(map);
     };
     var map = new kakao.maps.Map(container, options); //맵 생성
     ${markersData}
-    
-    // linePath에 저장된 좌표를 바탕으로 Polyline 그리기
-    var linePath = ${linePathString}.map(coord => new kakao.maps.LatLng(coord.y, coord.x));
-    var polyline = new kakao.maps.Polyline({
-      path: linePath,
-      strokeWeight: 10,
-      strokeColor: '#FF0000',
-      strokeOpacity: 0.7,
-      strokeStyle: 'solid'
-    });
-    polyline.setMap(map);
-
-    document.getElementById('endRoute').addEventListener('click', function() {
-      polyline.setMap(null);
-      document.getElementById('endRoute').style.display = 'none'; // 추가된 코드
-      window.ReactNativeWebView.postMessage('endRoute');
-    });
-    
-    function zoomIn() {
-      map.setLevel(map.getLevel() - 1);
-    }
-  
-    // 지도 확대, 축소 컨트롤에서 축소 버튼을 누르면 호출되어 지도를 확대하는 함수입니다
-    function zoomOut() {
-        map.setLevel(map.getLevel() + 1);
-    }
   </script>
 </body>
 </html>
@@ -592,64 +555,12 @@ overlay${i}.setMap(map);
               resizeMode="contain"
             />
           </TouchableOpacity>
-          <Text
-            style={{
-              fontFamily: "Play-Bold",
-              fontSize: 25,
-              color: "white",
-              height: "130%",
-            }}
-          >
-            프로필
-          </Text>
-
-          {/* 테스트 아이콘 */}
-          {/* <TouchableOpacity
-            style={{
-              marginTop: "2%",
-              marginRight: "0%",
-              width: "25%",
-              height: "100%",
-              borderRadius: 15,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={testClick}
-          >
-            <Image
-              style={{ width: 40, height: 40 }}
-              source={require("../../assets/deliver.png")}
-              resizeMode="contain"
-            />
-          </TouchableOpacity> */}
-
-          {/* 기부요청 목록 */}
-          {/* <TouchableOpacity
-            style={{
-              marginTop: "2%",
-              marginRight: "2%",
-              backgroundColor: "#68B7FF",
-              marginLeft: "0%",
-              width: "11%",
-              height: "200%",
-              borderRadius: 15,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onPress={GiveReq}
-          >
-            <Image
-              style={{ width: 35, height: 35 }}
-              source={require("../../assets/star.png")}
-              resizeMode="contain"
-            />
-          </TouchableOpacity> */}
-
           {/* 등록 버튼 */}
           <TouchableOpacity
             style={{
-              marginTop: "2%",
-              marginLeft: "0%",
+              position: "absolute",
+              right: 10,
+              top: 5,
               width: "25%",
               height: "100%",
               borderRadius: 15,
@@ -684,9 +595,15 @@ overlay${i}.setMap(map);
           } else if (message.startsWith("id:")) {
             // 마커에서 전달된 id를 사용
             const id = message.split(": ")[1];
-            console.log("Selected Marker ID:", id);
+            console.log("기부자 Marker ID:", id);
             setSelectedMarkerId(id);
             setModalVisible(true);
+          } else if (message.startsWith("pId:")) {
+            // 마커에서 전달된 id를 사용
+            const id = message.split(": ")[1];
+            console.log("피기부자 Marker ID:", id);
+            setSelectedMarkerId2(id);
+            setModalVisible2(true);
           } else {
             const coordinateStrings = message.split(", ");
             const x = parseFloat(coordinateStrings[0].split(": ")[1]);
@@ -709,6 +626,16 @@ overlay${i}.setMap(map);
           setModalVisible={setModalVisible}
           navigation={navigation}
           id={selectedMarkerId}
+        />
+      </View>
+
+      {/* 마커 클릭시 바텀시트2 view */}
+      <View style={styles.rootContainer}>
+        <BottomsheetMarker2
+          modalVisible={modalVisible2}
+          setModalVisible={setModalVisible2}
+          navigation={navigation}
+          id={selectedMarkerId2}
         />
       </View>
     </View>

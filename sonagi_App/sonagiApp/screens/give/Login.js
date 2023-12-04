@@ -246,7 +246,7 @@ const Login = ({ navigation }) => {
                 resizeMode="contain"
               />
               <TouchableOpacity
-                onPress={() => setLoginFailedModalVisible(false)} // 모달 내부의 버튼 클릭 시 모달 숨김
+                onPress={() => setLoginFailedModalVisible(false)}
               ></TouchableOpacity>
             </View>
           </View>
@@ -261,7 +261,13 @@ const Login = ({ navigation }) => {
 
         {/* id */}
         <Image
-          style={{ width: 65, height: 65,bottom: "0%",top:'3%', right: "36%" }}
+          style={{
+            width: 65,
+            height: 65,
+            bottom: "0%",
+            top: "3%",
+            right: "36%",
+          }}
           source={require("../../assets/id.png")}
           resizeMode="contain"
         />

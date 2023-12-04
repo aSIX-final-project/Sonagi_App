@@ -26,7 +26,8 @@ const BottomsheetMarker = ({
 
   useEffect(() => {
     let isMounted = true;
-
+    console.log("asdsadasdas");
+    console.log(id);
     const fetchData = async () => {
       try {
         if (id !== null) {
@@ -59,10 +60,6 @@ const BottomsheetMarker = ({
       isMounted = false;
     };
   }, [id]);
-
-
-
-  const [isCameraModalVisible, setCameraModalVisible] = useState(false);
 
   const screenHeight = Dimensions.get("screen").height;
   const panY = useRef(new Animated.Value(screenHeight)).current;
@@ -119,7 +116,8 @@ const BottomsheetMarker = ({
 
   const kakaoMap = async () => {
     const response = await fetch(
-      `https://dapi.kakao.com/v2/local/search/address.json?query=${userData && userData[0]?.address
+      `https://dapi.kakao.com/v2/local/search/address.json?query=${
+        userData && userData[0]?.address
       }`,
       {
         headers: {
@@ -166,8 +164,6 @@ const BottomsheetMarker = ({
               }}
               {...panResponders.panHandlers}
             >
-              {/* Content of the bottom sheet */}
-
               {/* 상호명, 주소 */}
               <View
                 style={{
@@ -210,7 +206,9 @@ const BottomsheetMarker = ({
                       fontSize: 18,
                       fontWeight: "bold",
                       fontFamily: "Play-Regular",
-                      width: "auto",
+                      width: "100%",
+                      overflow: "visible",
+                      whiteSpace: "normal",
                     }}
                   >
                     {userData && userData[0]?.address}
@@ -224,7 +222,7 @@ const BottomsheetMarker = ({
                   borderBottomColor: "#7D7D7D",
                   borderBottomWidth: 1,
                   width: "90%",
-                  marginTop: "1%",
+                  marginTop: "5%",
                 }}
               />
 
@@ -236,16 +234,6 @@ const BottomsheetMarker = ({
                   marginTop: "2%",
                 }}
               >
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: "bold",
-                    fontFamily: "Play-Regular",
-                    marginRight: "10%",
-                  }}
-                >
-                  총 인원: {userData && userData[0]?.totalHc}
-                </Text>
                 <Text
                   style={{
                     fontSize: 15,
@@ -264,7 +252,7 @@ const BottomsheetMarker = ({
                   width: "90%",
                   height: "17%",
                   alignItems: "center",
-                  marginTop: "10%",
+                  marginTop: "7%",
                   paddingRight: "40%",
                 }}
               >
@@ -276,20 +264,11 @@ const BottomsheetMarker = ({
                       fontWeight: "bold",
                       fontFamily: "Play-Bold",
                       marginBottom: "1%",
+                      fontSize: "20px",
+                      width: "100%",
                     }}
                   >
-                    시설소개
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      color: "#6F6A6A",
-                      fontWeight: "bold",
-                      fontFamily: "Play-Regular",
-                      width: "55%",
-                    }}
-                  >
-                    {userData && userData[0]?.introduction}
+                    현재 등록된 음식이 없습니다!
                   </Text>
                 </View>
               </View>

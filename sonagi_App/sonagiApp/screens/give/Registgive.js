@@ -18,10 +18,11 @@ import * as ImagePicker from "expo-image-picker";
 import { useForm } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
+import FastImage from "react-native-fast-image";
 
 const RegistGive = ({ navigation, route }) => {
   const [profileImage, setProfileImage] = useState(null);
-  const [userInfo, setUserInfo] = useState(route.params.userInfo);
+  const { userInfo } = route.params;
   console.log(userInfo);
 
   const {
@@ -130,8 +131,10 @@ const RegistGive = ({ navigation, route }) => {
             },
           }
         );
+        setProfileImage(null);
         setProfileImage(response.data);
         console.log("이미지 업로드 성공");
+        setCameraModalVisible(false);
       } catch (error) {
         console.error("이미지 업로드 오류:", error);
       }
@@ -390,11 +393,22 @@ const RegistGive = ({ navigation, route }) => {
               }}
               onPress={handleCameraButtonClick}
             >
-              <Image
-                style={{ width: 50, height: 50 }}
-                source={require("../../assets/camara.png")}
-                resizeMode="contain"
-              />
+              {profileImage ? (
+                <Image
+                  source={{
+                    uri: profileImage,
+                    priority: FastImage.priority.high,
+                  }}
+                  style={{ width: 100, height: 100 }}
+                  resizeMode={FastImage.resizeMode.contain}
+                />
+              ) : (
+                <Image
+                  style={{ width: 50, height: 50 }}
+                  source={require("../../assets/camara.png")}
+                  resizeMode="contain"
+                />
+              )}
             </TouchableOpacity>
 
             {/* 텍스트 입력 부분 */}

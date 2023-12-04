@@ -1,352 +1,740 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
-  StyleSheet,
   Text,
-  Modal,
-  Animated,
-  TouchableWithoutFeedback,
-  Dimensions,
-  PanResponder,
-  Image,
-  TextInput,
-  ScrollView,
+  StyleSheet,
   TouchableOpacity,
+  Image,
+  Linking,
+  Platform,
+  Modal,
+  ScrollView,
+  TouchableWithoutFeedback,
   Keyboard,
+  TextInput,
+  KeyboardAvoidingView,
 } from "react-native";
-import { KeyboardAvoidingView } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import BottomsheetModDel from "./BottomsheetModDel";
+import * as ImagePicker from "expo-image-picker";
+import { Picker } from "@react-native-picker/picker";
+import axios from "axios";
 
-const Bottomsheetfoodp = ({
-  modalVisible,
-  setModalVisible,
-  navigation,
-  adName,
-  profileImage,
-  foodGiver,
-  foodName,
-  foodId,
-}) => {
-  const [inputValue, setInputValue] = useState("");
-  const screenHeight = Dimensions.get("screen").height;
-  const panY = useRef(new Animated.Value(screenHeight)).current;
-  const translateY = panY.interpolate({
-    inputRange: [-1, 0, 1],
-    outputRange: [0, 0, 1],
+const Donatep = ({ navigation, route }) => {
+  const [selectedValue, setSelectedValue] = useState({
+    adName: "",
+    donatedProvider: "",
+    donatedDate: "",
   });
-  const resetBottomSheet = Animated.timing(panY, {
-    toValue: 0,
-    duration: 300,
-    useNativeDriver: true,
-  });
+  const [donations, setDonations] = useState([]);
+  const [image, setImage] = useState(null);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [review, setReview] = useState("");
+  // 바텀시트 (삭제, 수정)
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
+  const [modalVisible3, setModalVisible3] = useState(false);
+  const [receiver, setReceiver] = useState("");
+  const [donator, setDonator] = useState("");
+  const [donatedDate, setDonatedDate] = useState("");
+  const [reviewTitle, setReviewTitle] = useState("");
+  const [reviewContext, setReviewContext] = useState("");
+  const [ReviewImage, setReviewImage] = useState("");
 
-  const closeBottomSheet = Animated.timing(panY, {
-    toValue: screenHeight,
-    duration: 300,
-    useNativeDriver: true,
-  });
-  useEffect(() => {
-    if (modalVisible) {
-      resetBottomSheet.start();
-    }
-    // 값이 잘 받아왔는지 확인하기 위한 console.log
-    console.log("adName:", adName);
-    console.log("profileImage:", profileImage);
-    console.log("foodGiver:", foodGiver);
-    console.log("foodName:", foodName);
-    console.log("foodId:", foodId);
-  }, [modalVisible, adName, profileImage, foodGiver, foodName, foodId]);
-  const panResponders = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => {
-        return evt.nativeEvent.locationY < 45;
-      },
-      onMoveShouldSetPanResponder: (evt, gestureState) => {
-        return evt.nativeEvent.locationY < 45;
-      },
-      onPanResponderMove: (event, gestureState) => {
-        panY.setValue(gestureState.dy);
-      },
-      onPanResponderRelease: (event, gestureState) => {
-        if (gestureState.dy > 0 && gestureState.vy > 1.5) {
-          closeModal();
-        } else {
-          resetBottomSheet.start();
-        }
-      },
-    })
-  ).current;
+  const [donateInfo, setdonateInfo] = useState("");
+  const [foodAdName, setfoodAdName] = useState("");
+  const [foodImage, setfoodImage] = useState("");
+
+  const { userInfo } = route.params;
 
   useEffect(() => {
-    if (modalVisible) {
-      resetBottomSheet.start();
-    }
-  }, [modalVisible]);
+    const fetchData = async () => {
+      try {
+        console.log(userInfo.id);
 
-  const closeModal = () => {
-    closeBottomSheet.start(() => {
-      setModalVisible(false);
-    });
-  };
+        const formData = {
+          donatedReceiver: userInfo.id,
+        };
+        let response = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/donation/findByIdR",
+          formData
+        );
 
-  const sendData = async () => {
-    const data = {
-      sender: adName,
-      senderImage: profileImage,
-      receiver: foodGiver,
-      foodName: foodName,
-      serving: inputValue,
+        setdonateInfo(response.data);
+        // donations에 adName 및 donatedDate 추가
+        const donationsWithAdNameAndDonatedDate = await Promise.all(
+          response.data.map(async (donation) => {
+            const adName = await getAdName(donation.donatedProvider);
+            return { ...donation, adName }; // 기존 donation에 adName 및 donatedDate 추가
+          })
+        );
+
+        setDonations(donationsWithAdNameAndDonatedDate); // 데이터를 donations state에 저장합니다.
+        console.log(donationsWithAdNameAndDonatedDate);
+        setDonations(donationsWithAdNameAndDonatedDate);
+        setSelectedValue({
+          adName: donationsWithAdNameAndDonatedDate[0].adName,
+          donatedProvider: donationsWithAdNameAndDonatedDate[0].donatedProvider,
+          donatedDate: donationsWithAdNameAndDonatedDate[0].donatedDate,
+        });
+      } catch (error) {
+        console.error("Cannot fetch data: ", error);
+      }
     };
 
+    fetchData();
+  }, []);
+
+  const handleSubmit = async () => {
     try {
-      const response = await fetch(
+      const formDataForAdName = {
+        id: selectedValue.donatedProvider,
+      };
+      const responseForAdName = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
+        formDataForAdName
       );
 
-      const jsonResponse = await response.json();
-      console.log("Response:", jsonResponse);
+      console.log(responseForAdName.data); // 콘솔에 출력합니다.
+      const adName = responseForAdName.data[0].adName;
+      const address = responseForAdName.data[0].address;
 
-      const responseNo = await fetch(
-        `https://port-0-sonagi-notification-server-32updzt2alpjtaqfk.sel5.cloudtype.app/sendResNotification?adName=${adName}&resId=${foodId}&serving=${inputValue}&foodName=${foodName}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      const firstPartOfAddress = address.split(" ")[0];
+
+      console.log(firstPartOfAddress);
+      console.log(title);
+      console.log(content);
+      console.log(adName);
+      console.log(new Date());
+      console.log(userInfo.adName);
+
+      const formData = {
+        regionCategory: firstPartOfAddress, // 이 값을 적절하게 설정해 주세요.
+        reviewTitle: title,
+        reviewContext: content,
+        donator: adName, // 이 값을 적절하게 설정해 주세요.
+        receiver: userInfo.adName, // 이 값을 적절하게 설정해 주세요.
+        reviewImage: foodImage, // 이미지 URI. 필요에 따라 적절한 값을 설정해 주세요.
+      };
+      const response = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/regist",
+        formData
       );
-      if (!responseNo.ok) {
-        // 추가된 코드
-        throw new Error(`HTTP error! status: ${responseNo.status}`);
-      }
-      console.log("123444");
-      navigation.navigate("KakaoMapP");
+
+      const responseFood = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/findById",
+        formDataForAdName
+      );
+
+      const foodName = responseFood.data[0].foodName;
+      console.log(foodName);
+
+      const formDataIs = {
+        isReviewed: 1,
+        donatedProvider: selectedValue.donatedProvider,
+        foodTitle: foodName,
+      };
+      console.log(selectedValue.adName);
+      console.log(formDataIs);
+
+      const responseIs = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/donation/IsReviewed",
+        formDataIs
+      );
+
+      console.log(response.data);
+      setModalVisible3(false);
+
+      navigation.navigate("Donatep", { userInfo: userInfo });
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Cannot save data: ", error);
     }
   };
 
+  const handleClick2 = async (donation) => {
+    try {
+      const formData = {
+        id: userInfo.id,
+      };
+      let response = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/findById",
+        formData
+      );
+
+      const donatorId = donation.donatedProvider;
+
+      const formData2 = {
+        id: donatorId,
+      };
+      let response2 = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
+        formData2
+      );
+
+      const receiver = response.data[0].adName;
+      const donator = response2.data[0].adName;
+      const donatedDate = donation.donatedDate;
+
+      let response3 = await axios.get(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findAll"
+      );
+      const matchedReviews = response3.data.filter(
+        (review) =>
+          review.receiver === receiver &&
+          review.donator === donator &&
+          review.reviewDate === donatedDate
+      );
+
+      console.log(matchedReviews);
+
+      if (matchedReviews.length > 0) {
+        setReceiver(matchedReviews[0].receiver);
+        setDonator(matchedReviews[0].donator);
+        setDonatedDate(matchedReviews[0].reviewDate);
+        setReviewContext(matchedReviews[0].reviewContext);
+        setReviewTitle(matchedReviews[0].reviewTitle);
+        setReviewImage(matchedReviews[0].reviewImage);
+
+        setModalVisible2(true);
+      }
+    } catch (error) {
+      console.error("Cannot fetch data: ", error);
+    }
+  };
+
+  const getAdName = async (donatedProvider) => {
+    const formData = {
+      id: donatedProvider,
+    };
+    let res = await axios.post(
+      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
+      formData
+    );
+    console.log(res.data[0].adName); // "adName"만 추출하려면 이렇게 수정하면 됩니다.
+
+    setfoodAdName(res.data[0].adName);
+    return res.data[0].adName; // "adName" 값을 반환하도록 수정했습니다.
+  };
+
+  const openImagePicker = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("갤러리 접근 권한이 허용되지 않았습니다.");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    // console.log(result);
+    if (!result.canceled) {
+      try {
+        const formData = new FormData();
+        formData.append("file", {
+          uri: result.assets[0].uri,
+          type: "image/jpeg",
+          name: `profile_${userInfo.id}.jpg`,
+        });
+
+        const filename =
+          foodAdName + " " + userInfo.adName + " " + donateInfo[0].donatedDate;
+        console.log(filename);
+
+        // 'nameFile' 파라미터 추가
+        formData.append("nameFile", filename);
+        // console.log(formData);
+        formData.append("folderName", "review");
+
+        const response = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/files",
+          // "http://172.16.104.97:8888/boot/member/files",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.data) {
+          setfoodImage(null);
+          setfoodImage(response.data);
+
+          const formData = {
+            id: userInfo.id,
+            profileImage: response.data,
+          };
+
+          // 폼 데이터를 JSON 문자열로 변환하여 확인
+          const jsonData = JSON.stringify(formData);
+          console.log(jsonData);
+
+          console.log(response.data);
+
+          // 백엔드 서버로 POST 요청 보내기
+          const data = await axios.post(
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/updateImageUrl",
+            // "http://172.16.104.219:8888/boot/member/updateImageUrl",
+            formData
+          );
+
+          if (data.data === 1) {
+            console.log(userInfo);
+
+            // 이미지 url 업데이트 성공
+            console.log("이미지 Url 업데이트 성공");
+          }
+          // console.log(response);
+          console.log("이미지 업로드 성공");
+        } else {
+          console.error("이미지 업로드 실패");
+        }
+      } catch (error) {
+        console.error("이미지 업로드 오류:", error);
+      }
+    }
+  };
+
+  // 삭제 수정 버튼 클릭
+  const pressButton = () => {
+    setModalVisible(true);
+  };
   return (
-    <Modal
-      visible={modalVisible}
-      animationType={"fade"}
-      transparent
-      statusBarTranslucent
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        style={styles.overlay}
-      >
+    <View style={styles.container}>
+      {/* 글쓰기 모달 관련 코드 */}
+      <Modal animationType="fade" transparent={true} visible={modalVisible3}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.overlay}>
-            <TouchableWithoutFeedback onPress={closeModal}>
-              <View style={styles.background} />
-            </TouchableWithoutFeedback>
-            <Animated.View
-              style={{
-                ...styles.bottomSheetContainer,
-                transform: [{ translateY: translateY }],
-              }}
-              {...panResponders.panHandlers}
-            >
-              {/* 바텀 시트 구성 부분 */}
-              <Text
-                style={{
-                  width: 70,
-                  height: 40,
-                  marginBottom: "10%",
-                  marginTop: "5%",
-                }}
-              />
-
-              {/* 음식 인분 설정하기 */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  height: "7%",
-                  width: "90%",
-                  marginBottom: "0%",
-                  marginTop: "10%",
-                }}
-              >
-                <Image
-                  style={{
-                    width: 27,
-                    height: 27,
-                    marginBottom: "1%",
-                    marginRight: "1%",
-                  }}
-                  source={require("../../assets/food.png")}
-                  resizeMode="contain"
-                />
-                <Text
-                  style={{
-                    fontSize: 25,
-                    fontWeight: "bold",
-                    fontFamily: "Play-Bold",
-                    color: "#383838",
-                    marginTop: "0.5%",
-                  }}
-                >
-                  음식 인분 설정하기
-                </Text>
-              </View>
-              {/* 선 긋기 */}
-              <View style={styles.lineStyle} />
-              <View
-                style={{
-                  flexDirection: "row",
-                  height: "15%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "90%",
-                  marginRight: "50%",
-                }}
-              >
-                {/* 텍스트 입력 부분 */}
-                <TextInput
-                  style={styles.inputtext}
-                  textAlign="center" // 가운데 정렬
-                  keyboardType="numeric" // 숫자만 입력
-                  maxLength={3} // 3자리수 까지 입력가능
-                  onChangeText={(text) => setInputValue(text)}
-                  value={inputValue}
-                />
-                <Text
-                  style={{
-                    fontSize: 30,
-                    fontWeight: "bold",
-                    fontFamily: "Play-Regular",
-                    color: "#6F6A6A",
-                    marginTop: "8.5%",
-                    marginLeft: "3%",
-                  }}
-                >
-                  인분
-                </Text>
-              </View>
-              <View style={styles.lineStyle2} />
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  fontFamily: "Play-Bold",
-                  color: "#383838",
-                  marginRight: "32%",
-                  marginTop: "2%",
-                }}
-              >
-                ※ 5인분 단위로 기부를 받을 수 있습니다.
-              </Text>
-
-              {/* 확인 버튼 */}
+          <View style={styles.centeredView3}>
+            <View style={styles.modalView3}>
+              {/* 게시판 모달 관련 코드 */}
               <TouchableOpacity
                 style={{
-                  width: 360,
-                  height: 55,
-                  borderRadius: 22,
-                  marginTop: "55%",
-                  marginBottom: "15%",
+                  marginTop: "5%",
+                  marginBottom: "2%",
+                  width: "10%",
+                  height: "5%",
+                  left: "45%",
+                }}
+                onPress={() => {
+                  setModalVisible3(false);
+                  setfoodImage("");
+                }}
+              >
+                <View style={{ marginBottom: "0%" }}>
+                  <Image
+                    style={{ width: 20, height: 20 }}
+                    source={require("../../assets/cancle.png")}
+                    resizeMode="contain"
+                  />
+                </View>
+              </TouchableOpacity>
+              <ScrollView style={{}}>
+                {/* 제목 입력칸 */}
+                <TextInput
+                  style={styles.inputtext}
+                  placeholder="제목을 입력하세요."
+                  placeholderTextColor="#808080"
+                  onChangeText={setTitle}
+                />
+
+                {/* 선 긋기 */}
+                <View style={styles.lineStyle} />
+
+                {/* 이미지 관련 코드 */}
+                <View
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "10%",
+                  }}
+                >
+                  <TouchableOpacity
+                    style={{
+                      marginBottom: "8%",
+                      width: "100%",
+                      height: "20%",
+                      marginRight: "1%",
+                    }}
+                    onPress={openImagePicker}
+                  >
+                    {foodImage ? (
+                      <Image
+                        source={{ uri: foodImage }}
+                        style={{ width: 300, height: 150, borderRadius: 16 }}
+                      />
+                    ) : (
+                      <Image
+                        style={{ width: 300, height: 150, borderRadius: 16 }}
+                        source={require("../../assets/food4.png")}
+                        resizeMode="contain"
+                      />
+                    )}
+                  </TouchableOpacity>
+                </View>
+
+                {/* 내가 기부받은 기부자 목록 찾기 피커 */}
+                <Picker
+                  selectedValue={selectedValue.donatedProvider}
+                  onValueChange={(itemValue, itemIndex) =>
+                    setSelectedValue({
+                      adName: donations[itemIndex].adName,
+                      donatedProvider: itemValue,
+                    })
+                  }
+                  style={{ width: 150, height: 50, marginTop: "20%" }}
+                >
+                  {donations
+                    .filter((donation) => !donation.isReviewed)
+                    .map((donation, index) => (
+                      <Picker.Item
+                        key={index}
+                        label={donation.adName}
+                        value={donation.donatedProvider}
+                      />
+                    ))}
+                </Picker>
+
+                {/* 내용을 입력칸 */}
+                <TextInput
+                  style={styles.inputtext2}
+                  placeholder="내용을 입력하세요."
+                  placeholderTextColor="#808080"
+                  multiline={true}
+                  numberOfLines={10}
+                  onChangeText={setContent}
+                />
+
+                {/* 가격 입력칸 */}
+                <TextInput
+                  style={[styles.inputtext3, { marginBottom: 150 }]}
+                  placeholder="가격을 입력하세요."
+                  placeholderTextColor="#808080"
+                  multiline={true}
+                  keyboardType="numeric" // 숫자만 입력
+                  maxLength={10} // 최대 숫자 개수를 10으로 지정
+                ></TextInput>
+              </ScrollView>
+              {/* 등록 버튼 */}
+              <TouchableOpacity
+                style={{
+                  width: "90%",
+                  height: "8%",
+                  borderRadius: 16,
                   backgroundColor: "#44A5FF",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-                onPress={sendData}
+                onPress={handleSubmit}
               >
                 <Text
                   style={{
-                    fontSize: 32,
+                    fontSize: 23,
                     fontWeight: "bold",
-                    fontFamily: "Play-Bold",
+                    fontFamily: "Play-Regular",
                     color: "#FFFFFF",
                   }}
                 >
-                  확인
+                  등록
                 </Text>
               </TouchableOpacity>
-            </Animated.View>
+            </View>
           </View>
         </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-    </Modal>
+      </Modal>
+
+      {/* 기부내역 보기 모달 관련 코드 */}
+      <Modal animationType="fade" transparent={true} visible={modalVisible2}>
+        <View style={styles.centeredView2}>
+          <View style={styles.modalView2}>
+            <TouchableOpacity
+              style={{ width: "10%", height: "10%", left: "48%" }}
+              onPress={() => setModalVisible2(false)}
+            >
+              <View style={{ marginBottom: "10%" }}>
+                <Image
+                  style={{ width: 20, height: 20 }}
+                  source={require("../../assets/cancle.png")}
+                  resizeMode="contain"
+                />
+              </View>
+            </TouchableOpacity>
+
+            <View
+              style={{
+                marginBottom: "10%",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontFamily: "Play-Bold",
+                  fontSize: 25,
+                  color: "#656565",
+                }}
+              >
+                {reviewTitle}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: "Play-Bold",
+                  fontSize: 20,
+                  color: "#656565",
+                }}
+              >
+                {donatedDate}
+              </Text>
+            </View>
+
+            {/* 선 긋기 */}
+            <View style={styles.lineStyle} />
+
+            <View style={{ width: "98%", height: "35%", marginTop: "5%" }}>
+              <Image
+                style={{ width: "100%", height: "100%" }}
+                source={{ uri: ReviewImage }}
+                resizeMode="contain"
+              />
+              <Text
+                style={{
+                  fontFamily: "Play-Regular",
+                  fontSize: 20,
+                  color: "#A9A9A9",
+                  marginTop: "10%",
+                }}
+              >
+                {reviewContext}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <View
+        style={{
+          backgroundColor: "#44A5FF",
+          width: "100%",
+          height: "40%",
+          borderBottomLeftRadius: 20,
+          borderBottomRightRadius: 20,
+        }}
+      >
+        {/* 상단부분 */}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            backgroundColor: "#44A5FF",
+            width: "100%",
+            height: "17%",
+            marginTop: "10%",
+          }}
+        >
+          <TouchableOpacity
+            style={{ marginLeft: "6%", marginRight: "2%" }}
+            onPress={() => navigation.navigate("Homep", { userInfo: userInfo })}
+          >
+            <Image
+              style={{ width: 50, height: 50 }}
+              source={require("../../assets/backkey.png")}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+          <Text
+            style={{ fontFamily: "Play-Bold", fontSize: 25, color: "white" }}
+          >
+            기부 받은 내역
+          </Text>
+
+          {/* 리뷰 글쓰기 */}
+          <TouchableOpacity
+            style={{ marginLeft: "35%", marginTop: "2%" }}
+            onPress={() => setModalVisible3(true)}
+          >
+            <Image
+              style={{ width: 35, height: 35 }}
+              source={require("../../assets/writereview.png")}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* 프로필 부분 */}
+        <View
+          style={{
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "10%",
+          }}
+        >
+          {userInfo.profileImage ? (
+            <Image
+              source={{ uri: userInfo.profileImage }}
+              style={{
+                width: 90,
+                height: 90,
+                borderRadius: 100,
+                borderWidth: 1,
+                borderColor: "#000",
+              }}
+            />
+          ) : (
+            <Image
+              style={{
+                width: 90,
+                height: 90,
+                borderRadius: 100,
+                borderWidth: 1,
+                borderColor: "#000",
+              }}
+              source={require("../../assets/profileremove.png")}
+              resizeMode="contain"
+            />
+          )}
+
+          <Text
+            style={{
+              fontFamily: "Play-Bold",
+              fontSize: 25,
+              color: "white",
+              marginTop: "2%",
+            }}
+          >
+            {userInfo.managerName} 님
+          </Text>
+          <Text
+            style={{
+              fontFamily: "Play-Regular",
+              fontSize: 20,
+              color: "white",
+              marginTop: "1%",
+            }}
+          >
+            {userInfo.adName}
+          </Text>
+        </View>
+      </View>
+
+      {/* 중앙 부분 */}
+      <Text
+        style={{
+          fontFamily: "Play-Regular",
+          fontSize: 18,
+          color: "#8B8E90",
+          marginTop: "5%",
+          marginRight: "38%",
+        }}
+      >
+        총 {donations.length}건의 기부받은 내역이 있습니다.
+      </Text>
+
+      <View
+        style={{
+          borderBottomWidth: 1,
+          borderBottomColor: "#7D7D7D",
+          width: "89.5%",
+          marginTop: "1.5%",
+        }}
+      />
+
+      <ScrollView
+        style={{ backgroundColor: "#FAFAFC", width: "89.5%", height: "80%" }}
+      >
+        {donations.map((donation, index) => (
+          <View key={index}>
+            <View style={{ flexDirection: "row" }}>
+              <Text
+                onPress={() => {
+                  if (Number(donation.isReviewed) === 1) {
+                    handleClick2(donation);
+                  }
+                }}
+                style={{
+                  fontFamily: "Play-Bold",
+                  fontSize: 20,
+                  color: "#656565",
+                  marginTop: "2%",
+                  marginRight: "15%",
+                }}
+              >
+                {donation.foodTitle}
+              </Text>
+              <Image
+                style={{
+                  width: 20,
+                  height: 20,
+                  marginTop: "1.8%",
+                  marginLeft: "25%",
+                }}
+                source={
+                  Number(donation.isReviewed) === 1
+                    ? require("../../assets/reviewon.png")
+                    : require("../../assets/reviewoff.png")
+                }
+                resizeMode="contain"
+              />
+
+              <TouchableOpacity
+                style={{ marginLeft: "5%", marginTop: "2.5%" }}
+                onPress={pressButton}
+              >
+                <Image
+                  style={{ width: 15, height: 15 }}
+                  source={require("../../assets/motifydelete.png")}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            </View>
+            <Text
+              style={{
+                fontFamily: "Play-Regular",
+                fontSize: 15,
+                color: "#8B8E90",
+                marginTop: "1%",
+              }}
+            >
+              {donation.donatedDate}
+            </Text>
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderBottomColor: "#DBDBDB",
+                width: "100%",
+                marginTop: "5%",
+              }}
+            />
+          </View>
+        ))}
+      </ScrollView>
+
+      {/* 바텀시트 view */}
+      <View style={styles.rootContainer}>
+        <BottomsheetModDel
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          navigation={navigation}
+        />
+      </View>
+    </View>
   );
 };
-
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.2)", // 바텀시트 올라왔을때 어두워짐
-  },
-  background: {
-    flex: 1,
-  },
-  bottomSheetContainer: {
-    height: "80%", // 올라오는 크기
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
-    borderTopLeftRadius: 20, // 모서리 부분
-    borderTopRightRadius: 20,
-  },
-
-  scrollViewContainer: {
-    alignItems: "center",
-    paddingTop: 0,
-  },
-
-  lineStyle: {
-    height: 2, // 선의 두께
-    backgroundColor: "#E4E4E4", // 선의 색상
-    width: "90%", // 선의 길이
-    marginBottom: "3%",
-  },
-
-  lineStyle2: {
-    height: 2, // 선의 두께
-    backgroundColor: "#E4E4E4", // 선의 색상
-    width: "90%", // 선의 길이
-    marginTop: "3%",
-  },
-
-  inputtext: {
-    width: "23%",
-    height: "77%",
-    borderColor: "#828282",
-    fontSize: 45,
-    color: "#6F6A6A",
-    backgroundColor: "#E1F1FF",
-    borderRadius: 22,
-    color: "#393939",
-    textAlign: "center",
-  },
-
-  inputtext2: {
-    width: "100%",
-    height: "77%",
-    borderColor: "#828282",
-    fontSize: 45,
-    color: "#6F6A6A",
-    backgroundColor: "#E1F1FF",
-    borderRadius: 22,
-    color: "#393939",
-    textAlign: "center",
-  },
-
-  centeredView: {
+  rootContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
   },
 
+  container: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "#FAFAFC",
+  },
   modalView: {
     marginBottom: 20,
     backgroundColor: "white",
@@ -363,9 +751,22 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+
+  centeredView2: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
   modalView2: {
-    width: "50%",
-    height: "25%",
+    width: "85%",
+    height: "60%",
     marginBottom: 20,
     backgroundColor: "white",
     borderRadius: 20,
@@ -380,12 +781,69 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  centeredView2: {
+
+  lineStyle: {
+    borderColor: "#DBDBDB",
+    borderWidth: 1,
+    width: "98%",
+  },
+
+  centeredView3: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
   },
-});
+  modalView3: {
+    width: "85%",
+    height: "80%",
+    marginBottom: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
 
-export default Bottomsheetfoodp;
+  inputtext: {
+    width: "80%",
+    paddingBottom: 10,
+    borderColor: "#828282",
+    left: "0%",
+    fontSize: 20,
+    marginBottom: 10,
+    color: "#6F6A6A",
+  },
+
+  inputtext2: {
+    width: "100%",
+    height: "30%",
+    paddingBottom: 25,
+    borderColor: "#828282",
+    marginTop: "30%",
+    paddingTop: "10%",
+    left: "0%",
+    fontSize: 20,
+    marginBottom: "7%",
+    marginTop: "38%",
+    color: "#6F6A6A",
+  },
+
+  inputtext3: {
+    width: "95%",
+    height: "7%",
+    paddingBottom: 25,
+    borderColor: "#828282",
+    fontSize: 20,
+    marginBottom: "0%",
+    color: "#6F6A6A",
+  },
+});
+export default Donatep;

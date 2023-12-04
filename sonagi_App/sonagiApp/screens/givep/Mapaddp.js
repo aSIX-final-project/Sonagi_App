@@ -389,6 +389,8 @@ const Mapaddp = ({ navigation, route }) => {
           foodGiver={foodData?.[0].foodGiver}
           foodName={foodData?.[0].foodName}
           foodId={foodData?.[0].id}
+          foodPrice={foodData?.[0].foodPrice}
+          userInfo={userInfo}
         />
       </View>
     </View>

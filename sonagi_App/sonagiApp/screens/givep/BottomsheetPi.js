@@ -29,60 +29,6 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
     useState(false);
 
   const handleSignupButtonClick = async () => {
-    if (!isUsernameValid) {
-      setUsernameError(true);
-      return;
-    }
-
-    // 비밀번호 유효성 검사
-    if (!isPasswordValid) {
-      setPasswordError(true);
-      return;
-    }
-
-    // 이름 유효성 검사
-    if (!isNameValid) {
-      setNameError(true);
-      return;
-    }
-
-    // 전화번호 유효성 검사
-    if (!isPhoneNumberValid) {
-      setPhoneNumberError(true);
-      return;
-    }
-
-    // 시설 이름 유효성 검사
-    if (!isGivernameValid) {
-      setGivernameError(true);
-      return;
-    }
-
-    // 시설 전화번호 유효성 검사
-    if (!isGiverPhoneNumberValid) {
-      setGiverPhoneNumberError(true);
-      return;
-    }
-
-    // 시설 주소 유효성 검사
-    if (!isGiveraddressValid) {
-      setGiveraddressError(true);
-      return;
-    }
-
-    // 총 인원 수 유효성 검사
-    if (!isPersonNumberValid) {
-      setPersonNumberError(true);
-      return;
-    }
-
-    //  현재 인원 수 유효성 검사
-    if (!isTodayPersonNumberValid) {
-      setTodayPersonNumberError(true);
-      return;
-    }
-
-
     try {
       // POST 요청에 필요한 데이터
       const formData = {
@@ -112,12 +58,7 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
       console.log(response.data);
 
       if (response.data === 1) {
-        setSignupSuccessModalVisible(true);
         console.log("회원 가입 완료!");
-        // 3초 후에 모달 숨김
-        setTimeout(() => {
-          setSignupSuccessModalVisible(false);
-        }, 3000);
       } else {
         console.log("회원 가입 실패");
       }
@@ -126,96 +67,7 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
       // 에러 처리 로직
     }
   };
-  // 유효성 검사 라인 (아이디)
-  const [username, setUsername] = useState('');
-  const [usernameError, setUsernameError] = useState(false);
 
-  const isUsernameValid = /^[a-zA-Z0-9]{4,12}$/.test(username);
-  const handleUsernameChange = (text) => {
-    setUsername(text); // 아이디 입력값 업데이트
-    setUsernameError(false); // 에러 표시 숨김
-  };
-
-  // 유효성 검사 라인 (비밀번호)
-  const [password, setPassword] = useState(''); // 비밀번호 입력값을 상태 변수로 관리
-  const [passwordError, setPasswordError] = useState(false);
-
-  // 영문, 숫자, 특수문자를 포함한 8자 이상의 유효성 검사
-  const isPasswordValid = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\W_]).{8,}$/.test(password);
-  const handlePasswordChange = (text) => {
-    setPassword(text); // 비밀번호 입력값 업데이트
-    setPasswordError(false); // 에러 표시 숨김
-  };
-
-  // 유효성 검사 라인 (이름)
-  const [name, setName] = useState(''); // 이름 입력값을 상태 변수로 관리
-  const [nameError, setNameError] = useState(false); // 이름 유효성 검사 에러 표시를 위한 상태 변수
-
-  const isNameValid = name !== ''; // 이름이 비어있지 않은지 검사
-  const handleNameChange = (text) => {
-    setName(text); // 이름 입력값 업데이트
-    setNameError(false); // 에러 표시 숨김
-  };
-
-  // 유효성 검사 라인 (전화번호)
-  const [phoneNumber, setPhoneNumber] = useState(''); // 전화번호 입력값을 상태 변수로 관리
-  const [phoneNumberError, setPhoneNumberError] = useState(false); // 전화번호 유효성 검사 에러 표시를 위한 상태 변수
-
-  const isPhoneNumberValid = /^\d+$/.test(phoneNumber); // 전화번호가 숫자만으로 이루어져 있는지 검사
-  const handlePhoneNumberChange = (text) => {
-    setPhoneNumber(text); // 전화번호 입력값 업데이트
-    setPhoneNumberError(false); // 에러 표시 숨김
-  };
-
-  // 유효성 검사 라인 (시설 이름)
-  const [givername, setGivername] = useState(''); // 이름 입력값을 상태 변수로 관리
-  const [givernameError, setGivernameError] = useState(false); // 이름 유효성 검사 에러 표시를 위한 상태 변수
-
-  const isGivernameValid = givername !== ''; // 이름이 비어있지 않은지 검사
-  const handleGivernameChange = (text) => {
-    setGivername(text); // 이름 입력값 업데이트
-    setGivernameError(false); // 에러 표시 숨김
-  };
-
-  // 유효성 검사 라인 (시설 전화번호)
-  const [giverphoneNumber, setGiverPhoneNumber] = useState(''); // 전화번호 입력값을 상태 변수로 관리
-  const [giverphoneNumberError, setGiverPhoneNumberError] = useState(false); // 전화번호 유효성 검사 에러 표시를 위한 상태 변수
-
-  const isGiverPhoneNumberValid = /^\d+$/.test(giverphoneNumber); // 전화번호가 숫자만으로 이루어져 있는지 검사
-  const handleGiverPhoneNumberChange = (text) => {
-    setGiverPhoneNumber(text); // 전화번호 입력값 업데이트
-    setGiverPhoneNumberError(false); // 에러 표시 숨김
-  };
-
-  // 유효성 검사 라인 (시설 주소)
-  const [giveraddress, setGiveraddress] = useState(''); // 주소 입력값을 상태 변수로 관리
-  const [giveraddressError, setGiveraddressError] = useState(false); // 주소 유효성 검사 에러 표시를 위한 상태 변수
-
-  const isGiveraddressValid = giveraddress !== ''; // 주소가 비어있지 않은지 검사
-  const handleGiveraddressChange = (text) => {
-    setGiveraddress(text); // 주소 입력값 업데이트
-    setGiveraddressError(false); // 에러 표시 숨김
-  };
-
-  // 유효성 검사 라인 (총 인원 수)
-  const [personNumber, setPersonNumber] = useState(''); // 총 인원 입력값을 상태 변수로 관리
-  const [personNumberError, setPersonNumberError] = useState(false); // 총 인원 유효성 검사 에러 표시를 위한 상태 변수
-
-  const isPersonNumberValid = /^\d+$/.test(personNumber); // 총 인원이 숫자만으로 이루어져 있는지 검사
-  const handlePersonNumberChange = (text) => {
-    setPersonNumber(text); // 총 인원 입력값 업데이트
-    setPersonNumberError(false); // 에러 표시 숨김
-  };
-
-  // 유효성 검사 라인 (현재 인원 수)
-  const [todaypersonNumber, setTodayPersonNumber] = useState(''); // 총 인원 입력값을 상태 변수로 관리
-  const [todaypersonNumberError, setTodayPersonNumberError] = useState(false); // 총 인원 유효성 검사 에러 표시를 위한 상태 변수
-
-  const isTodayPersonNumberValid = /^\d+$/.test(todaypersonNumber); // 총 인원이 숫자만으로 이루어져 있는지 검사
-  const handleTodayPersonNumberChange = (text) => {
-    setTodayPersonNumber(text); // 총 인원 입력값 업데이트
-    setTodayPersonNumberError(false); // 에러 표시 숨김
-  };
   const screenHeight = Dimensions.get("screen").height;
   const panY = useRef(new Animated.Value(screenHeight)).current;
   const translateY = panY.interpolate({
@@ -312,6 +164,17 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
                 resizeMode="contain"
               />
 
+              <Text
+                style={{
+                  fontFamily: "Play-Bold",
+                  fontSize: 20,
+                  color: "#000000",
+                  marginTop: "13.5%",
+                  marginLeft: "44%",
+                }}
+              >
+                (피기부자)
+              </Text>
             </View>
 
             <ScrollView
@@ -328,21 +191,15 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
               />
 
               <TextInput
-                style={[
-                  styles.inputtext,
-                  !isUsernameValid && { borderColor: 'red' }
-                ]}
-                placeholder="아이디를 입력하세요."
-                placeholderTextColor='#808080'
-                value={username}
-                onChangeText={handleUsernameChange}
+                style={styles.inputtext}
+                placeholder="Enter ID"
+                onChangeText={(text) => setValue("id", text)}
+                placeholderTextColor="#808080"
               ></TextInput>
 
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
-              {usernameError && (
-                <Text style={styles.errorText}>4~12자리의 영문자 또는 숫자여야 합니다.</Text>
-              )}
+
               {/* ///////////////////////////////////////////////////////////// */}
 
               {/* 비밀번호 */}
@@ -353,22 +210,15 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
               />
 
               <TextInput
-                style={[
-                  styles.inputtext,
-                  !isPasswordValid && { borderColor: 'red' }
-                ]}
-                placeholder="비밀번호를 입력하세요."
+                style={styles.inputtext}
+                placeholder="Enter password"
+                onChangeText={(text) => setValue("password", text)}
                 placeholderTextColor="#808080"
-                secureTextEntry
-                value={password}
-                onChangeText={handlePasswordChange} // 텍스트 변경 시 비밀번호 유효성 검사 수행
               ></TextInput>
 
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
-              {passwordError && (
-                <Text style={styles.errorText2}>영문, 숫자, 특수문자를 포함한 8글자 이상이어야 합니다.</Text>
-              )}
+
               {/* ///////////////////////////////////////////////////////////// */}
 
               {/* 이름 */}
@@ -379,21 +229,15 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
               />
 
               <TextInput
-                style={[
-                  styles.inputtext,
-                  !isNameValid && { borderColor: 'red' } // 이름 유효성 검사에 실패하면 테두리 색상을 빨간색으로 변경
-                ]}
-                placeholder="이름을 입력하세요."
+                style={styles.inputtext}
+                placeholder="Enter name"
+                onChangeText={(text) => setValue("managerName", text)}
                 placeholderTextColor="#808080"
-                value={name}
-                onChangeText={handleNameChange} // 텍스트 변경 시 이름 유효성 검사 수행
               ></TextInput>
 
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
-              {nameError && (
-                <Text style={styles.errorText3}>이름을 입력하세요.</Text>
-              )}
+
               {/* ///////////////////////////////////////////////////////////// */}
 
               {/* 전화번호 */}
@@ -404,21 +248,15 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
               />
 
               <TextInput
-                style={[
-                  styles.inputtext,
-                  !isPhoneNumberValid && { borderColor: 'red' }
-                ]}
-                placeholder="전화번호를 입력하세요."
+                style={styles.inputtext}
+                placeholder="010-1234-5678"
+                onChangeText={(text) => setValue("phoneNum", text)}
                 placeholderTextColor="#808080"
-                value={phoneNumber}
-                onChangeText={handlePhoneNumberChange}
               ></TextInput>
 
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
-              {phoneNumberError && (
-                <Text style={styles.errorText4}>전화번호는 숫자만 입력할 수 있습니다.</Text>
-              )}
+
               {/* ///////////////////////////////////////////////////////////// */}
 
               {/* 시설 전화번호 */}
@@ -429,21 +267,15 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
               />
 
               <TextInput
-                style={[
-                  styles.inputtext,
-                  !isGiverPhoneNumberValid && { borderColor: 'red' }
-                ]}
-                placeholder="시설 전화번호를 입력하세요."
+                style={styles.inputtext}
+                placeholder="02-123-4567"
+                onChangeText={(text) => setValue("adTel", text)}
                 placeholderTextColor="#808080"
-                value={giverphoneNumber}
-                onChangeText={handleGiverPhoneNumberChange}
               ></TextInput>
 
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
-              {giverphoneNumberError && (
-                <Text style={styles.errorText4}>전화번호는 숫자만 입력할 수 있습니다.</Text>
-              )}
+
               {/* ///////////////////////////////////////////////////////////// */}
 
               {/* 시설 이름 */}
@@ -454,20 +286,15 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
               />
 
               <TextInput
-                style={[styles.inputtext,
-                !isGivernameValid && { borderColor: 'red' } // 시설이름 유효성 검사
-                ]}
-                placeholder="시설 이름을 입력하세요."
+                style={styles.inputtext}
+                placeholder="Enter name"
+                onChangeText={(text) => setValue("adName", text)}
                 placeholderTextColor="#808080"
-                value={givername}
-                onChangeText={handleGivernameChange} // 텍스트 변경시 시설이름 유효성 검사 수행
               ></TextInput>
 
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
-              {givernameError && (
-                <Text style={styles.errorText5}>시설 이름을 입력하세요.</Text>
-              )}
+
               {/* ///////////////////////////////////////////////////////////// */}
 
               {/* 시설 주소 */}
@@ -478,20 +305,15 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
               />
 
               <TextInput
-                style={[styles.inputtext,
-                !isGiveraddressValid && { borderColor: 'red' } // 시설이름 유효성 검사
-                ]}
-                placeholder="시설 주소를 입력하세요."
+                style={styles.inputtext}
+                placeholder="Enter address"
+                onChangeText={(text) => setValue("address", text)}
                 placeholderTextColor="#808080"
-                value={giveraddress}
-                onChangeText={handleGiveraddressChange} // 텍스트 변경시 시설이름 유효성 검사 수행
               ></TextInput>
 
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
-              {giveraddressError && (
-                <Text style={styles.errorText5}>시설 주소를 입력하세요.</Text>
-              )}
+
               {/* ///////////////////////////////////////////////////////////// */}
 
               {/* 총 인원 수 */}
@@ -502,21 +324,15 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
               />
 
               <TextInput
-                style={[
-                  styles.inputtext,
-                  !isPersonNumberValid && { borderColor: 'red' }
-                ]}
-                placeholder="숫자를 입력하세요."
+                style={styles.inputtext}
+                placeholder="Enter number"
+                onChangeText={(text) => setValue("totalHc", text)}
                 placeholderTextColor="#808080"
-                value={personNumber}
-                onChangeText={handlePersonNumberChange}
               ></TextInput>
 
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
-              {personNumberError && (
-                <Text style={styles.errorText6}>총 인원수는 숫자만 입력할 수 있습니다.</Text>
-              )}
+
               {/* ///////////////////////////////////////////////////////////// */}
 
               {/* 현재 인원 수 */}
@@ -527,21 +343,15 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
               />
 
               <TextInput
-                style={[
-                  styles.inputtext,
-                  !isTodayPersonNumberValid && { borderColor: 'red' }
-                ]}
-                placeholder="숫자를 입력하세요."
+                style={styles.inputtext}
+                placeholder="Enter number"
+                onChangeText={(text) => setValue("currHc", text)}
                 placeholderTextColor="#808080"
-                value={todaypersonNumber}
-                onChangeText={handleTodayPersonNumberChange}
               ></TextInput>
 
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
-              {todaypersonNumberError && (
-                <Text style={styles.errorText7}>현재 인원수는 숫자만 입력할 수 있습니다.</Text>
-              )}
+
               {/* ///////////////////////////////////////////////////////////// */}
 
               {/* 시설 소개 */}

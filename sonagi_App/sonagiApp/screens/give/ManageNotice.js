@@ -13,7 +13,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import BottomsheetModal from "./BottomsheetModDel";
+import BottomsheetMoDe from "./BottomsheetModDel";
 
 const ManageNotice = ({ navigation }) => {
   // 바텀시트 (삭제, 수정)
@@ -41,7 +41,7 @@ const ManageNotice = ({ navigation }) => {
   const [isNotionModalVisible2, setNotionModalVisible2] = useState(false);
   // 게시판 버튼 클릭 핸들러
   const handleNotionButtonClick2 = () => {
-    console.log("sucess");
+    console.log("sucess2");
     setNotionModalVisible2(true);
   };
 
@@ -305,7 +305,7 @@ const ManageNotice = ({ navigation }) => {
             >
               <Image
                 style={{ width: 18, height: 18 }}
-                source={require("../../assets/modifydelete.png")}
+                source={require("../../assets/motifydelete.png")}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -334,7 +334,7 @@ const ManageNotice = ({ navigation }) => {
 
       {/* 바텀시트 view */}
       <View style={styles.rootContainer}>
-        <BottomsheetModal
+        <BottomsheetMoDe
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           navigation={navigation}

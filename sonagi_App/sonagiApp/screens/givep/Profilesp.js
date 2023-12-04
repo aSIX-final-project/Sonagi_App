@@ -449,12 +449,6 @@ const Profilesp = ({ navigation, route }) => {
             />
           </TouchableOpacity>
         </View>
-        {/* 마지막 라인(광고) */}
-        <Image
-          style={{ width: "100%", height: "13  %", marginTop: "0%" }}
-          source={require("../../assets/ad.png")}
-          resizeMode="contain"
-        />
       </View>
     </TouchableWithoutFeedback>
   );
