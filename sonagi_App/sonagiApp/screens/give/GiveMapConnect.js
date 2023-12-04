@@ -10,35 +10,17 @@ import {
   Modal,
   ScrollView,
 } from "react-native";
-// 바텀시트
-import Bottomsheetfoodp from "./Bottomsheetfoodp";
 import axios from "axios";
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
-const Mapaddp = ({ navigation, route }) => {
+const GiveMapConnect = ({ navigation, route }) => {
   const [userData, setUserData] = useState(null);
   const [foodData, setFoodData] = useState(null);
   const { id, userInfo } = route.params;
 
   console.log("123");
   console.log(userInfo.adName);
-  useEffect(() => {
-    if (foodData) {
-      const fetchFoodReq = async () => {
-        const formData = { receiverId: foodData.id };
-        try {
-          const foodReqRes = await axios.post(
-            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/findById",
-            formData
-          );
-          console.log("FoodReqResponse:", foodReqRes);
-        } catch (error) {
-          console.error("Error fetching food request data:", error.message);
-        }
-      };
-      fetchFoodReq();
-    }
-  }, [foodData]);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -136,7 +118,7 @@ const Mapaddp = ({ navigation, route }) => {
           <TouchableOpacity
             style={{ marginLeft: "6%", marginRight: "2%" }}
             onPress={() =>
-              navigation.navigate("KakaoMapP", { userInfo: userInfo })
+              navigation.navigate("KakaoMap", { userInfo: userInfo })
             }
           >
             <Image
@@ -287,9 +269,6 @@ const Mapaddp = ({ navigation, route }) => {
               {foodData ? foodData[0].foodName : "로딩중..."}{" "}
               {foodData ? foodData[0].foodAmount : "로딩중..."}인분
             </Text>
-
-
-
             <View
               style={{
                 backgroundColor: "#D0D0D0",
@@ -304,10 +283,6 @@ const Mapaddp = ({ navigation, route }) => {
             >
               <Text style={{ fontSize: 20, fontWeight: "bold" }}>예약중</Text>
             </View>
-
-
-
-
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             <Text
@@ -364,58 +339,6 @@ const Mapaddp = ({ navigation, route }) => {
         </View>
       </View>
 
-      {/* 하단 버튼 */}
-
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          width: "85%",
-          height: "2%",
-          alignItems: "center",
-          justifyContent: "center",
-          marginTop: "20%",
-          paddingRight: "0%",
-          paddingRight: "0%",
-          backgroundColor: "#44A5FF",
-          height: "7%",
-          borderRadius: 20,
-        }}
-        onPress={pressButton}
-      >
-        <MaterialCommunityIcons
-          name="silverware-fork-knife"
-          size={24}
-          color="white"
-          style={{ marginRight: "1%" }}
-        />
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: "bold",
-            fontFamily: "Play-Bold",
-            color: "#383838",
-            color: "white",
-          }}
-        >
-          나눔 요청
-        </Text>
-      </TouchableOpacity>
-
-      {/* 바텀시트 view */}
-      <View style={styles.rootContainer}>
-        <Bottomsheetfoodp
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
-          navigation={navigation}
-          adName={userInfo.adName}
-          profileImage={userData?.[0].profileImage}
-          foodGiver={foodData?.[0].foodGiver}
-          foodName={foodData?.[0].foodName}
-          foodId={foodData?.[0].id}
-          foodPrice={foodData?.[0].foodPrice}
-          userInfo={userInfo}
-        />
-      </View>
     </View>
   );
 };
@@ -431,4 +354,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-export default Mapaddp;
+export default GiveMapConnect;

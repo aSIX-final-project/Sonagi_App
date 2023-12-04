@@ -212,7 +212,7 @@ export default function App({ navigation, route }) {
 
   var currentMarkerInfoWindow = new kakao.maps.InfoWindow({ content: '<div style="padding:5px;">현위치</div>' });
   kakao.maps.event.addListener(currentMarker, 'click', function() {
-    window.ReactNativeWebView.postMessage('bottomSheet');
+    currentMarkerInfoWindow.open(map, currentMarker);
   });
 `;
     }
@@ -507,9 +507,8 @@ overlay${i}.setMap(map);
   <script>
     var container = document.getElementById('map');
     var options = {
-      center: new kakao.maps.LatLng(${
-        currentPosition ? currentPosition.y : locations[0].coordinates.y
-      }, ${currentPosition ? currentPosition.x : locations[0].coordinates.x}),
+      center: new kakao.maps.LatLng(${currentPosition ? currentPosition.y : locations[0].coordinates.y
+    }, ${currentPosition ? currentPosition.x : locations[0].coordinates.x}),
       maxLevel:3,
       minLevel:1,
       level: 1
@@ -591,7 +590,7 @@ overlay${i}.setMap(map);
             const id = message.split(": ")[1];
             console.log(id);
             console.log(userInfo);
-            navigation.navigate("Mapadd", { id: id, userInfo: userInfo });
+            navigation.navigate("GiveMapConnect", { id: id, userInfo: userInfo });
           } else if (message.startsWith("id:")) {
             // 마커에서 전달된 id를 사용
             const id = message.split(": ")[1];
