@@ -33,7 +33,7 @@ const SendReqp = ({ navigation, route }) => {
   const [fetchFoodReq, setFetchFoodReq] = useState(() => async () => {
     try {
       const response = await axios.post(
-        "http://172.16.100.11:8888/boot/foodReq/findBySenderId",
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/findBySenderId",
         { senderId: userInfo.id }
       );
 
