@@ -27,7 +27,7 @@ const GiveReq = ({ navigation, route }) => {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        "http://172.16.102.43:8888/boot/foodReq/findById",
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/findById",
         {
           receiverId: userInfo.id,
         }
@@ -251,7 +251,7 @@ const GiveReq = ({ navigation, route }) => {
                 onPress={async () => {
                   try {
                     const response1 = await axios.post(
-                      "http://172.16.102.43:8888/boot/food/minus",
+                      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/minus",
                       {
                         foodAmount: item.serving,
                         id: item.receiverId,
@@ -260,7 +260,7 @@ const GiveReq = ({ navigation, route }) => {
                     console.log("res", response1.data);
 
                     const response2 = await axios.post(
-                      "http://172.16.102.43:8888/boot/donation/regist",
+                      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/donation/regist",
                       {
                         donatedProvider: item.receiverId,
                         donatedReceiver: item.senderId,
@@ -272,7 +272,7 @@ const GiveReq = ({ navigation, route }) => {
                     console.log(response2.data);
 
                     const response3 = await axios.post(
-                      "http://172.16.102.43:8888/boot/foodReq/delete",
+                      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/delete",
                       {
                         senderId: item.senderId,
                       }
@@ -325,7 +325,7 @@ const GiveReq = ({ navigation, route }) => {
                 onPress={async () => {
                   try {
                     const response = await axios.post(
-                      "http://172.16.102.43:8888/boot/foodReq/delete",
+                      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/delete",
                       {
                         senderId: item.senderId,
                       }
