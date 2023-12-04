@@ -18,6 +18,10 @@ import ManagePage from "./screens/give/ManagePage";
 import ManageNotice from "./screens/give/ManageNotice";
 import ManageReq from "./screens/give/ManageReq";
 import BottomsheetModDel from "./screens/give/BottomsheetModDel";
+import GiveMapConnect from "./screens/give/GiveMapConnect";
+import CrawlingNotice from "./screens/give/CrawlingNotice";
+import CrawlingNaver from "./screens/give/CrawlingNaver";
+
 
 // 피기부자
 import Homep from "./screens/givep/Homep";
@@ -29,6 +33,7 @@ import Donatep from "./screens/givep/Donatep";
 import KakaoMapP from "./screens/givep/KakaoMapP";
 import Mapaddp from "./screens/givep/Mapaddp";
 import SendReqp from "./screens/givep/SendReqp";
+
 
 import { useState, useRef, useEffect } from "react";
 // 폰트 관련 코드
@@ -109,6 +114,13 @@ export default function App() {
           }}
         />
         <Stack.Screen
+          name="GiveMapConnect"
+          component={GiveMapConnect}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
           name="Signup"
           component={Signup}
           options={{
@@ -116,6 +128,21 @@ export default function App() {
           }}
         />
         <Stack.Screen
+          name="CrawlingNotice"
+          component={CrawlingNotice}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="CrawlingNaver"
+          component={CrawlingNaver}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+
           name="Donate"
           component={Donate}
           options={{

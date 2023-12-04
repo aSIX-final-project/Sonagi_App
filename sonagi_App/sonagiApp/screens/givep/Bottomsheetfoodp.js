@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import axios from "axios";
 
+
 const Bottomsheetfoodp = ({
   modalVisible,
   setModalVisible,
@@ -112,6 +113,7 @@ const Bottomsheetfoodp = ({
 
       const responseCheck = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/findByIdFoodNameSenderId",
+
         {
           receiverId: foodId,
           foodName: foodName,
@@ -131,7 +133,6 @@ const Bottomsheetfoodp = ({
           senderTel: userInfo.phoneNum,
           senderId: userInfo.id,
         };
-
         console.log(data);
         const response = await fetch(
           "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/regist",

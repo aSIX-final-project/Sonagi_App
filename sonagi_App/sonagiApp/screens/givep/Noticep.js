@@ -207,6 +207,7 @@ const Notice = ({ navigation, route }) => {
                   style={{
                     fontWeight: "bold",
                     fontSize: 23,
+
                     marginTop: "3%",
                   }}
                 >

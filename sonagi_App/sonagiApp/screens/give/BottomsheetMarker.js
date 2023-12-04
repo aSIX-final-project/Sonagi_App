@@ -265,6 +265,7 @@ const BottomsheetMarker = ({
                       fontFamily: "Play-Bold",
                       marginBottom: "1%",
                       fontSize: 20,
+
                       width: "100%",
                     }}
                   >

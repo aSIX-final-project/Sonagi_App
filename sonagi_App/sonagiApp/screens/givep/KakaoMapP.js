@@ -70,6 +70,7 @@ export default function App({ navigation, route }) {
           // 여기에서 필요한 추가 작업을 수행할 수 있습니다.
         })
         .catch((error) => {
+
           console.error(error); // 에러 처리
         });
     }
@@ -122,8 +123,6 @@ export default function App({ navigation, route }) {
     const res = await axios.get(
       "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/findAll"
     ); //스프링 부트 : db에서 값 가져오기
-    console.log("여기 에러같은데");
-    console.log(res.data);
     //마커 찍을 좌표값 가져오기
     const fetchPromises = res.data.map(async (item) => {
       const response = await fetch(
@@ -307,7 +306,7 @@ overlay${i}.setMap(map);
   })(marker${i}, infowindow${i}, overlayContent${i}, location);
 `;
     });
-
+    
     resLocations.forEach((location, i) => {
       var phoneNum = location.phoneNum;
       phoneNum =
@@ -512,9 +511,8 @@ overlay${i}.setMap(map);
   <script>
     var container = document.getElementById('map');
     var options = {
-      center: new kakao.maps.LatLng(${
-        currentPosition ? currentPosition.y : locations[0].coordinates.y
-      }, ${currentPosition ? currentPosition.x : locations[0].coordinates.x}),
+      center: new kakao.maps.LatLng(${currentPosition ? currentPosition.y : locations[0].coordinates.y
+    }, ${currentPosition ? currentPosition.x : locations[0].coordinates.x}),
       maxLevel:3,
       minLevel:1,
       level: 1
@@ -560,6 +558,7 @@ overlay${i}.setMap(map);
               resizeMode="contain"
             />
           </TouchableOpacity>
+
         </View>
       </View>
       <WebView
@@ -578,18 +577,21 @@ overlay${i}.setMap(map);
             console.log(userInfo);
             navigation.navigate("Mapaddp", { id: id, userInfo: userInfo });
           } else if (message.startsWith("pId:")) {
+
             // 마커에서 전달된 id를 사용
             const id = message.split(": ")[1];
             console.log("피기부자:", id);
             setSelectedMarkerId2(id);
             setModalVisible2(true);
-          } else if (message.startsWith("id:")) {
+          }
+          else if (message.startsWith("id:")) {
             // 마커에서 전달된 id를 사용
             const id = message.split(": ")[1];
             console.log("기부자:", id);
             setSelectedMarkerId(id);
             setModalVisible(true);
-          } else {
+          } 
+          else {
             const coordinateStrings = message.split(", ");
             const x = parseFloat(coordinateStrings[0].split(": ")[1]);
             const y = parseFloat(coordinateStrings[1].split(": ")[1]);
@@ -621,6 +623,9 @@ overlay${i}.setMap(map);
           id={selectedMarkerId}
         />
       </View>
+
+
+
     </View>
   );
 }

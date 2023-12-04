@@ -10,6 +10,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
+import { Linking } from 'react-native';
+
 
 const components = [
   {
@@ -41,20 +43,36 @@ const components = [
 
 const Homep = ({ navigation, route }) => {
   const { userInfo } = route.params;
-  const [image, setImage] = useState(require("../../assets/policy.png"));
   const [activeIndex, setActiveIndex] = useState(null);
   const [noticeList, setNoticeList] = useState({});
   const [latestNotice, setLatestNotice] = useState([]);
   const [reqList, setReqList] = useState([]);
   const [latestReqList, setLatestReqList] = useState([]);
+
+
+  const [crawlingData, setCrawlingData] = useState([]);
+  const [currentItemIndex, setCurrentItemIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/crawling/findAll');
+        console.log("gdgd")
+        console.log(response.data.list);
+        setCrawlingData(response.data.list);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
   useEffect(() => {
     const timer = setInterval(() => {
-      setImage((prevImage) =>
-        prevImage === require("../../assets/policy.png")
-          ? require("../../assets/policy2.png")
-          : require("../../assets/policy.png")
-      );
+      setCurrentItemIndex((prevIndex) => (prevIndex + 1) % (crawlingData.length || 1));
     }, 5000);
+    console.log(timer)
+
     return () => clearInterval(timer);
   }, []);
 
@@ -436,7 +454,6 @@ const Homep = ({ navigation, route }) => {
             </View>
           </View>
 
-          {/* 여섯 번째 라인 광고*/}
           <View
             style={{
               justifyContent: "center",
@@ -453,15 +470,26 @@ const Homep = ({ navigation, route }) => {
             }}
           >
             <View style={styles.thirdContainer}>
-              <Image
-                source={image}
-                style={{ width: "100%", height: "100%" }}
-                resizeMode="cover"
-              />
+              {crawlingData.length > 0 && (
+                <TouchableOpacity onPress={() => Linking.openURL('https://www.donorscamp.org/culSupportProgList_P.do')}>
+                  <Image
+                    source={{ uri: crawlingData[currentItemIndex].imageSrc }}
+                    style={{ width: "100%", height: "100%" }}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
+              )}
             </View>
           </View>
+
+
+
         </ScrollView>
       </View>
+
+
+
+
       <View
         style={{
           position: "absolute",
@@ -536,8 +564,8 @@ const styles = StyleSheet.create({
   },
 
   thirdContainer: {
-    width: "94%",
-    height: "80%",
+    width: "85%",
+    height: "90%",
     borderRadius: 30,
     marginTop: 20,
     overflow: "hidden",

@@ -60,13 +60,16 @@ const Home = ({ navigation, route }) => {
   };
 
   const images = [
-    { id: "1", url: require("../../assets/moneyCheck.png"), nav: "Screen1" },
+
+    { id: "1", url: require("../../assets/moneyCheck.png"), nav: "CrawlingNotice" },
+
     {
       id: "2",
       url: require("../../assets/callConsultation.png"),
       phone: "1357",
     },
-    { id: "3", url: require("../../assets/naverCheck.png"), nav: "Screen3" },
+
+    { id: "3", url: require("../../assets/naverCheck.png"), nav: "CrawlingNaver" },
     {
       id: "4",
       url: require("../../assets/checkQualification.png"),
@@ -115,11 +118,11 @@ const Home = ({ navigation, route }) => {
         try {
           const response = await axios.post(
             "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/findById",
+
             {
               receiverId: userInfo.id,
             }
           );
-          console.log("123", response.data);
           setRequestList(response.data);
           console.log(requestList.length);
         } catch (error) {
@@ -449,7 +452,8 @@ const Home = ({ navigation, route }) => {
                   <TouchableOpacity
                     onPress={() => {
                       if (item.nav) {
-                        navigation.navigate(item.nav);
+
+                        navigation.navigate(item.nav, { userInfo : userInfo });
                       } else if (item.web) {
                         Linking.openURL(item.web);
                       } else if (item.phone) {

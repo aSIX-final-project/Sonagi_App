@@ -28,6 +28,7 @@ const GiveReq = ({ navigation, route }) => {
     try {
       const response = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/findById",
+
         {
           receiverId: userInfo.id,
         }
@@ -124,7 +125,6 @@ const GiveReq = ({ navigation, route }) => {
 
       {/* 선 긋기 */}
       <View style={styles.lineStyle} />
-
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         {requestList.map((item, index) => (
           <View
