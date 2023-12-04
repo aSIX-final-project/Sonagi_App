@@ -250,35 +250,88 @@ const GiveReq = ({ navigation, route }) => {
                 }}
                 onPress={async () => {
                   try {
-                    const response1 = await axios.post(
-                      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/minus",
+                    const responseAmount = await axios.post(
+                      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/findById",
                       {
-                        foodAmount: item.serving,
                         id: item.receiverId,
                       }
                     );
-                    console.log("res", response1.data);
 
-                    const response2 = await axios.post(
-                      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/donation/regist",
-                      {
-                        donatedProvider: item.receiverId,
-                        donatedReceiver: item.senderId,
-                        donatedAmount: item.serving,
-                        donatedPrice: item.foodPrice,
-                        foodTitle: item.foodName,
-                      }
+                    // 서로의 타입이 달라서 타입을 일치시킴
+                    const foodAmount = Number(
+                      responseAmount.data[0].foodAmount
                     );
-                    console.log(response2.data);
+                    const serving = Number(item.serving);
 
-                    const response3 = await axios.post(
-                      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/delete",
-                      {
-                        senderId: item.senderId,
-                      }
-                    );
-                    console.log(response3.data);
-                    fetchData();
+                    if (foodAmount > serving) {
+                      const responseMinus = await axios.post(
+                        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/minus",
+                        {
+                          foodAmount: item.serving,
+                          id: item.receiverId,
+                        }
+                      );
+                      console.log("responseMinus: ", responseMinus.data);
+
+                      const response2 = await axios.post(
+                        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/donation/regist",
+                        {
+                          donatedProvider: item.receiverId,
+                          donatedReceiver: item.senderId,
+                          donatedAmount: item.serving,
+                          donatedPrice: item.foodPrice,
+                          foodTitle: item.foodName,
+                        }
+                      );
+                      console.log(response2.data);
+
+                      const response3 = await axios.post(
+                        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/delete",
+                        {
+                          senderId: item.senderId,
+                          serving: item.serving,
+                          receiver: item.receiver,
+                          foodName: item.foodName,
+                        }
+                      );
+                      console.log(response3.data);
+                      fetchData();
+                    } else if (foodAmount == serving) {
+                      const responseDelete = await axios.post(
+                        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/delete",
+                        {
+                          foodName: item.foodName,
+                          id: item.receiverId,
+                        }
+                      );
+                      console.log("responseDelete: ", responseDelete.data);
+
+                      const response2 = await axios.post(
+                        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/donation/regist",
+                        {
+                          donatedProvider: item.receiverId,
+                          donatedReceiver: item.senderId,
+                          donatedAmount: item.serving,
+                          donatedPrice: item.foodPrice,
+                          foodTitle: item.foodName,
+                        }
+                      );
+                      console.log(response2.data);
+
+                      const response3 = await axios.post(
+                        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/delete",
+                        {
+                          senderId: item.senderId,
+                          serving: item.serving,
+                          receiver: item.receiver,
+                          foodName: item.foodName,
+                        }
+                      );
+                      console.log(response3.data);
+                      fetchData();
+                    } else if (foodAmount < serving) {
+                      console.log("양이 부족합니다. 다시 입력하세요");
+                    }
                   } catch (error) {
                     console.error("데이터를 처리하는데 실패했습니다:", error);
                   }
@@ -328,6 +381,9 @@ const GiveReq = ({ navigation, route }) => {
                       "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/delete",
                       {
                         senderId: item.senderId,
+                        serving: item.serving,
+                        receiver: item.receiver,
+                        foodName: item.foodName,
                       }
                     );
 

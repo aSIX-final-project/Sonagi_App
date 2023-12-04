@@ -46,7 +46,7 @@ const RegistGive = ({ navigation, route }) => {
         foodImage: profileImage,
         foodUploadTime: "",
         context: watch("context"),
-        cookingTime: selectedPeriod + " " + selectedHour + ":" + selectedMinute,
+        deadline: selectedPeriod + " " + selectedHour + ":" + selectedMinute,
       };
 
       // 폼 데이터를 JSON 문자열로 변환하여 확인
@@ -63,8 +63,13 @@ const RegistGive = ({ navigation, route }) => {
       // 백엔드로부터 온 응답 처리
       if (response.status === 200) {
         // 음식 등록 성공
-        console.log("음식 등록 성공");
-        // 여기에서 필요한 추가 작업 수행 가능
+        console.log("음식 등록 성공"); // -> 음식 등록 성공 모달 필요
+
+        // 2초 후에 홈 화면으로 이동
+        setTimeout(() => {
+          // setLoginSuccessModalVisible(false); --> 모달 사라지게 하는 코드
+          navigation.navigate("KakaoMap", { userInfo: userInfo });
+        }, 2000);
       } else {
         // 음식 등록 실패
         console.log("음식 등록 실패");

@@ -114,7 +114,7 @@ const Home = ({ navigation, route }) => {
       const fetchData2 = async () => {
         try {
           const response = await axios.post(
-            "http://172.16.102.43:8888/boot/foodReq/findById",
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/findById",
             {
               receiverId: userInfo.id,
             }

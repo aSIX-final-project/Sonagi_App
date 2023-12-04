@@ -15,6 +15,7 @@ import {
   Keyboard,
   Alert,
 } from "react-native";
+import axios from "axios";
 
 const Bottomsheetfoodp = ({
   modalVisible,
@@ -103,62 +104,58 @@ const Bottomsheetfoodp = ({
   };
 
   const sendData = async () => {
-    if (!inputValue || inputValue % 5 !== 0) {
-      setErrorMessage("양을 5인분 단위로 설정해주세요!"); // 에러 메시지 상태를 설정합니다.
-      return; // 이 함수를 더 이상 실행하지 않습니다.
-    }
-    const data = {
-      sender: adName,
-      senderImage: profileImage,
-      receiver: foodGiver,
-      foodName: foodName,
-      serving: inputValue,
-      foodPrice: foodPrice,
-      receiverId: foodId,
-      senderTel: userInfo.phoneNum,
-      senderId: userInfo.id,
-    };
-
-    console.log(data);
-
     try {
-      console.log(data);
-      const response = await fetch(
-        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/regist",
+      if (!inputValue || inputValue % 5 !== 0) {
+        setErrorMessage("양을 5인분 단위로 설정해주세요!"); // 에러 메시지 상태를 설정합니다.
+        return; // 이 함수를 더 이상 실행하지 않습니다.
+      }
+
+      const responseCheck = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/findByIdFoodNameSenderId",
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
+          receiverId: foodId,
+          foodName: foodName,
+          senderId: userInfo.id,
         }
       );
+      console.log(responseCheck.data[0]);
+      if (!responseCheck.data[0]) {
+        const data = {
+          sender: adName,
+          senderImage: profileImage,
+          receiver: foodGiver,
+          foodName: foodName,
+          serving: inputValue,
+          foodPrice: foodPrice,
+          receiverId: foodId,
+          senderTel: userInfo.phoneNum,
+          senderId: userInfo.id,
+        };
 
-      console.log(response.data);
+        console.log(data);
+        const response = await fetch(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/regist",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
 
-      // const jsonResponse = await response.json();
-      // console.log("Response:", jsonResponse);
+        console.log(response.data);
 
-      // const responseNo = await fetch(
-      //   `https://port-0-sonagi-notification-server-32updzt2alpjtaqfk.sel5.cloudtype.app/sendResNotification?adName=${adName}&resId=${foodId}&serving=${inputValue}&foodName=${foodName}`,
-      //   {
-      //     method: "GET",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //   }
-      // );
-      // if (!responseNo.ok) {
-      //   throw new Error(`HTTP error! status: ${responseNo.status}`);
-      // }
-
-      console.log("123444");
-      navigation.navigate("KakaoMapP", { userInfo: userInfo });
-      Alert.alert(
-        "요청 완료", // 제목
-        `${foodName} ${inputValue}인분 요청이 완료되었습니다.`, // 메시지
-        [{ text: "확인" }] // 버튼 배열
-      );
+        console.log("123444");
+        navigation.navigate("KakaoMapP", { userInfo: userInfo });
+        Alert.alert(
+          "요청 완료", // 제목
+          `${foodName} ${inputValue}인분 요청이 완료되었습니다.`, // 메시지
+          [{ text: "확인" }] // 버튼 배열
+        );
+      } else {
+        console.log("이미 등록된 요청이 있습니다.");
+      }
     } catch (error) {
       console.error("Error:", error);
     }
