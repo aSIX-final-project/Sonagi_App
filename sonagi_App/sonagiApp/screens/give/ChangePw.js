@@ -19,45 +19,102 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 const ChangePw = ({ navigation, route }) => {
   const { userInfo } = route.params;
+
+  // 로그아웃 버튼을 눌렀을때 값을 서버에 보냄
+  const [isLogoutSuccessModalVisible, setLogoutSuccessModalVisible] =
+    useState(false); // 모달 알림창의 상태
+
   const [isChangeSuccessModalVisible, setChangeSuccessModalVisible] =
     useState(false);
 
   const [isChangeFailedModalVisible, setChangeFailedModalVisible] =
     useState(false); // 모달 알림창의 상태
+
+  const [modalMessage, setModalMessage] = useState("");
+
   const {
     watch, // 입력 값 감시
     setValue, // 입력 값 설정
     formState: { errors }, // 폼 상태와 에러
   } = useForm();
 
-  // 로그아웃 버튼을 눌렀을때 값을 서버에 보냄
-  const [isLogoutSuccessModalVisible, setLogoutSuccessModalVisible] =
-    useState(false); // 모달 알림창의 상태
-  const [modalMessage, setModalMessage] = useState("");
+  // 유효성 검사 함수
+  const validateInput = () => {
+    if (!watch("CurPw")) {
+      setModalMessage("비밀번호를 입력하세요.");
+      setChangeFailedModalVisible(true);
+
+      setTimeout(() => {
+        setChangeFailedModalVisible(false);
+      }, 2000);
+      return false;
+    }
+
+    if (userInfo.password !== watch("CurPw")) {
+      setModalMessage("현재 비밀번호가 틀립니다.");
+      setChangeFailedModalVisible(true);
+
+      setTimeout(() => {
+        setChangeFailedModalVisible(false);
+      }, 2000);
+      return false;
+    }
+
+    if (!watch("ChangePw")) {
+      setModalMessage("변경할 비밀번호를 입력하세요.");
+      setChangeFailedModalVisible(true);
+
+      setTimeout(() => {
+        setChangeFailedModalVisible(false);
+      }, 2000);
+      return false;
+    } else if (watch("ChangePw") && watch("ChangePw").length <= 4) {
+      setModalMessage("변경할 비밀번호를 4자리 이상 입력하세요.");
+      setChangeFailedModalVisible(true);
+
+      setTimeout(() => {
+        setChangeFailedModalVisible(false);
+      }, 2000);
+      return false;
+    }
+
+    if (watch("CurPw") === watch("ChangePw")) {
+      setModalMessage("현재 비밀번호와 변경할 비밀번호가 일치합니다.");
+      setChangeFailedModalVisible(true);
+
+      setTimeout(() => {
+        setChangeFailedModalVisible(false);
+      }, 2000);
+      return false;
+    }
+
+    if (!watch("ChangePwCheck")) {
+      setModalMessage("변경할 비밀번호를 다시 입력하세요.");
+      setChangeFailedModalVisible(true);
+
+      setTimeout(() => {
+        setChangeFailedModalVisible(false);
+      }, 2000);
+      return false;
+    }
+
+    if (watch("ChangePw") !== watch("ChangePwCheck")) {
+      setModalMessage("변경할 비밀번호가 일치하지 않습니다.");
+      setChangeFailedModalVisible(true);
+
+      setTimeout(() => {
+        setChangeFailedModalVisible(false);
+      }, 2000);
+      return false;
+    }
+
+    // 모든 검사를 통과하면 에러 메시지를 초기화하고 true를 반환합니다.
+    return true;
+  };
+
   const handlePasswordChange = async () => {
     try {
-      if (userInfo.password !== watch("CurPw")) {
-        setModalMessage("현재 비밀번호가 틀립니다.");
-        setChangeFailedModalVisible(true);
-
-        setTimeout(() => {
-          setChangeFailedModalVisible(false);
-        }, 2000);
-      } else if (watch("CurPw") === watch("ChangePw")) {
-        setModalMessage("현재 비밀번호와 변경할 비밀번호가 일치합니다.");
-        setChangeFailedModalVisible(true);
-
-        setTimeout(() => {
-          setChangeFailedModalVisible(false);
-        }, 2000);
-      } else if (watch("ChangePw") !== watch("ChangePwCheck")) {
-        setModalMessage("변경할 비밀번호가 일치하지 않습니다.");
-        setChangeFailedModalVisible(true);
-
-        setTimeout(() => {
-          setChangeFailedModalVisible(false);
-        }, 2000);
-      } else {
+      if (validateInput()) {
         // POST 요청에 필요한 데이터
         const formData = {
           id: userInfo.id,
@@ -87,6 +144,7 @@ const ChangePw = ({ navigation, route }) => {
             navigation.navigate("Profiles", { userInfo: userInfo });
           }, 2000);
         } else {
+          console.log("비밀번호 변경 실패");
           setModalMessage("비밀번호 변경 실패");
           setChangeFailedModalVisible(true);
 
@@ -95,10 +153,16 @@ const ChangePw = ({ navigation, route }) => {
             setChangeFailedModalVisible(false);
           }, 2000);
         }
+      } else {
+        console.log("다시 입력하세요.");
       }
     } catch (error) {
       console.error("에러:", error);
-      // 에러 처리 로직
+      setChangeFailedModalVisible(true);
+
+      setTimeout(() => {
+        setChangeFailedModalVisible(false);
+      }, 2000);
     }
   };
 

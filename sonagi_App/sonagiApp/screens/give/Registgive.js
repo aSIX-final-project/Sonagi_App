@@ -23,11 +23,16 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 const RegistGive = ({ navigation, route }) => {
   const [profileImage, setProfileImage] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
   const { userInfo } = route.params;
   console.log(userInfo);
   const [isRegistSuccessModalVisible, setRegistSuccessModalVisible] =
     useState(false);
+
+  const [isRegistFailedModalVisible, setRegistFailedModalVisible] =
+    useState(false); // 모달 알림창의 상태
+
+  const [modalMessage, setModalMessage] = useState("");
+
   const {
     watch, // 입력 값 감시
     setValue, // 입력 값 설정
@@ -39,14 +44,24 @@ const RegistGive = ({ navigation, route }) => {
     // 음식 이름
     if (!watch("foodName")) {
       console.log("음식 이름을 입력하세요.");
-      setErrorMessage("음식 이름을 입력해주세요.");
+      setModalMessage("음식 이름을 입력하세요.");
+      setRegistFailedModalVisible(true);
+
+      setTimeout(() => {
+        setRegistFailedModalVisible(false);
+      }, 2000);
       return false;
     }
 
     // 음식 사진
     if (!profileImage) {
       console.log("이미지를 선택해주세요.");
-      setErrorMessage("이미지를 선택해주세요.");
+      setModalMessage("이미지를 선택해주세요.");
+      setRegistFailedModalVisible(true);
+
+      setTimeout(() => {
+        setRegistFailedModalVisible(false);
+      }, 2000);
       return false;
     }
 
@@ -57,41 +72,59 @@ const RegistGive = ({ navigation, route }) => {
       watch("foodAmount") % 5 !== 0
     ) {
       console.log("음식 양을 입력하세요. (단, 5인분 단위로 설정해야 합니다.)");
-      setErrorMessage(
+      setModalMessage(
         "음식 양을 입력하세요. (단, 5인분 단위로 설정해야 합니다.)"
       );
+      setRegistFailedModalVisible(true);
+
+      setTimeout(() => {
+        setRegistFailedModalVisible(false);
+      }, 2000);
       return false;
     }
 
     // 음식 기부 가능 시간
     const donationTime = new Date();
-    // donationTime.setSelectedPeriod(selectedPeriod);
     donationTime.setHours(
       selectedPeriod === "오전" ? selectedHour : selectedHour + 12
     );
     donationTime.setMinutes(selectedMinute);
     if (donationTime <= new Date()) {
       console.log("기부 가능 시간은 현재 시간 이후로 설정해야 합니다.");
-      setErrorMessage("기부 가능 시간은 현재 시간 이후로 설정해야 합니다.");
+      setModalMessage("기부 가능 시간은 현재 시간 이후로 설정해야 합니다.");
+      setRegistFailedModalVisible(true);
+
+      setTimeout(() => {
+        setRegistFailedModalVisible(false);
+      }, 2000);
       return false;
     }
 
     // 음식 가격
     if (!watch("foodPrice") || isNaN(watch("foodPrice"))) {
       console.log("음식 가격을 입력하세요. (1인분 기준)");
-      setErrorMessage("음식 가격을 입력하세요. (1인분 기준)");
+      setModalMessage("음식 가격을 입력하세요. (1인분 기준)");
+      setRegistFailedModalVisible(true);
+
+      setTimeout(() => {
+        setRegistFailedModalVisible(false);
+      }, 2000);
       return false;
     }
 
     // 음식 설명
     if (!watch("context")) {
       console.log("음식 설명을 입력해주세요.");
-      setErrorMessage("음식 설명을 입력해주세요.");
+      setModalMessage("음식 설명을 입력해주세요.");
+      setRegistFailedModalVisible(true);
+
+      setTimeout(() => {
+        setRegistFailedModalVisible(false);
+      }, 2000);
       return false;
     }
 
     // 모든 검사를 통과하면 에러 메시지를 초기화하고 true를 반환합니다.
-    setErrorMessage(null);
     return true;
   };
 
@@ -129,7 +162,8 @@ const RegistGive = ({ navigation, route }) => {
         // 백엔드로부터 온 응답 처리
         if (response.status === 200) {
           // 음식 등록 성공
-          console.log("음식 등록 성공"); // -> 음식 등록 성공 모달 필요
+          console.log("음식 등록 성공");
+          setRegistSuccessModalVisible(true);
 
           //모달 띄우기
           setRegistSuccessModalVisible(true);
@@ -142,14 +176,26 @@ const RegistGive = ({ navigation, route }) => {
         } else {
           // 음식 등록 실패
           console.log("음식 등록 실패");
-          // 에러 처리 로직
+          setModalMessage("음식 등록 실패");
+          setRegistFailedModalVisible(true);
+
+          // 2초 후에 홈 화면으로 이동
+          setTimeout(() => {
+            setRegistFailedModalVisible(false);
+          }, 2000);
         }
       } else {
-        console.log("다시 적어주세요.");
+        console.log("다시 입력하세요.");
       }
     } catch (error) {
       console.error("에러:", error);
-      // 에러 처리 로직
+      setModalMessage("다시 입력하세요.");
+      setRegistFailedModalVisible(true);
+
+      // 2초 후에 홈 화면으로 이동
+      setTimeout(() => {
+        setRegistFailedModalVisible(false);
+      }, 2000);
     }
   };
 
@@ -208,6 +254,8 @@ const RegistGive = ({ navigation, route }) => {
             },
           }
         );
+
+        console.log(response.data);
         setProfileImage(null);
         setProfileImage(response.data);
         console.log("이미지 업로드 성공");
@@ -393,7 +441,7 @@ const RegistGive = ({ navigation, route }) => {
               fontSize={30}
               fontWeight="bold"
               fontFamily="Play-Bold"
-              onChangeText={(text) => setValue("foodName", text)}
+              onRegistText={(text) => setValue("foodName", text)}
             />
           </View>
           <View style={styles.lineStyle} />
@@ -492,7 +540,7 @@ const RegistGive = ({ navigation, route }) => {
               textAlign="center" // 가운데 정렬
               keyboardType="numeric" // 숫자만 입력
               maxLength={3} // 3자리수 까지 입력가능
-              onChangeText={(text) => setValue("foodAmount", text)}
+              onRegistText={(text) => setValue("foodAmount", text)}
             />
             <Text
               style={{
@@ -575,7 +623,7 @@ const RegistGive = ({ navigation, route }) => {
               <Picker
                 selectedValue={selectedPeriod}
                 style={{ height: 50, width: 100 }}
-                onValueChange={(itemValue) => setSelectedPeriod(itemValue)}
+                onValueRegist={(itemValue) => setSelectedPeriod(itemValue)}
               >
                 <Picker.Item label="오전" value="오전" />
                 <Picker.Item label="오후" value="오후" />
@@ -584,7 +632,7 @@ const RegistGive = ({ navigation, route }) => {
               <Picker
                 selectedValue={selectedHour}
                 style={{ height: 50, width: 100 }}
-                onValueChange={(itemValue) => setSelectedHour(itemValue)}
+                onValueRegist={(itemValue) => setSelectedHour(itemValue)}
               >
                 {Array.from({ length: 12 }, (_, i) => i + 1).map((item) => (
                   <Picker.Item
@@ -598,7 +646,7 @@ const RegistGive = ({ navigation, route }) => {
               <Picker
                 selectedValue={selectedMinute}
                 style={{ height: 50, width: 100 }}
-                onValueChange={(itemValue) => setSelectedMinute(itemValue)}
+                onValueRegist={(itemValue) => setSelectedMinute(itemValue)}
               >
                 {Array.from({ length: 6 }, (_, i) => i * 10).map((item) => (
                   <Picker.Item
@@ -683,7 +731,7 @@ const RegistGive = ({ navigation, route }) => {
               fontSize={30}
               fontWeight="bold"
               fontFamily="Play-Bold"
-              onChangeText={(text) => setValue("foodPrice", text)}
+              onRegistText={(text) => setValue("foodPrice", text)}
             />
           </View>
           <View style={styles.lineStyle} />
@@ -759,7 +807,7 @@ const RegistGive = ({ navigation, route }) => {
               fontWeight="bold"
               fontFamily="Play-Bold"
               multiline
-              onChangeText={(text) => setValue("context", text)}
+              onRegistText={(text) => setValue("context", text)}
             />
           </View>
           <View style={styles.lineStyle} />
@@ -830,6 +878,36 @@ const RegistGive = ({ navigation, route }) => {
             </Text>
             <TouchableOpacity
               onPress={() => setRegistSuccessModalVisible(false)}
+            ></TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isRegistFailedModalVisible}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View style={styles.failCircle}>
+              <Icon
+                name="times"
+                size={55}
+                color="#FF0000"
+                style={styles.failIconStyle}
+              />
+            </View>
+            <Text
+              style={{
+                marginTop: "5%",
+                fontFamily: "Play-Bold",
+                fontSize: 20,
+              }}
+            >
+              {modalMessage}
+            </Text>
+            <TouchableOpacity
+              onPress={() => setRegistFailedModalVisible(false)}
             ></TouchableOpacity>
           </View>
         </View>
