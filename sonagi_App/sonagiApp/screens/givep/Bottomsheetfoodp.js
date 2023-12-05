@@ -16,7 +16,7 @@ import {
   Alert,
 } from "react-native";
 import axios from "axios";
-
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const Bottomsheetfoodp = ({
   modalVisible,
@@ -29,6 +29,7 @@ const Bottomsheetfoodp = ({
   foodName,
   foodId,
   foodPrice,
+  foodAmount,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [errorMessage, setErrorMessage] = useState(null); // 에러 메시지 상태를 추가합니다.
@@ -38,6 +39,15 @@ const Bottomsheetfoodp = ({
     inputRange: [-1, 0, 1],
     outputRange: [0, 0, 1],
   });
+
+  const [isFoodReqSuccessModalVisible, setFoodReqSuccessModalVisible] =
+    useState(false);
+
+  const [isFoodReqFailedModalVisible, setFoodReqFailedModalVisible] =
+    useState(false); // 모달 알림창의 상태
+
+  const [modalMessage, setModalMessage] = useState("");
+
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
     duration: 300,
@@ -49,28 +59,30 @@ const Bottomsheetfoodp = ({
     duration: 300,
     useNativeDriver: true,
   });
-  useEffect(() => {
-    if (modalVisible) {
-      resetBottomSheet.start();
-    }
-    // 값이 잘 받아왔는지 확인하기 위한 console.log
-    console.log("adName:", adName);
-    console.log("profileImage:", profileImage);
-    console.log("foodGiver:", foodGiver);
-    console.log("foodName:", foodName);
-    console.log("foodId:", foodId);
-    console.log("foodPrice:", foodPrice);
-    console.log("userInfo:", userInfo);
-  }, [
-    modalVisible,
-    adName,
-    profileImage,
-    foodGiver,
-    foodName,
-    foodId,
-    foodPrice,
-    userInfo,
-  ]);
+
+  // useEffect(() => {
+  //   if (modalVisible) {
+  //     resetBottomSheet.start();
+  //   }
+  //   // 값이 잘 받아왔는지 확인하기 위한 console.log
+  //   console.log("adName:", adName);
+  //   console.log("profileImage:", profileImage);
+  //   console.log("foodGiver:", foodGiver);
+  //   console.log("foodName:", foodName);
+  //   console.log("foodId:", foodId);
+  //   console.log("foodPrice:", foodPrice);
+  //   console.log("userInfo:", userInfo);
+  // }, [
+  //   modalVisible,
+  //   adName,
+  //   profileImage,
+  //   foodGiver,
+  //   foodName,
+  //   foodId,
+  //   foodPrice,
+  //   userInfo,
+  // ]);
+
   const panResponders = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: (evt, gestureState) => {
@@ -104,61 +116,141 @@ const Bottomsheetfoodp = ({
     });
   };
 
+  //유효성 검사
+  const validateInput = () => {
+    if (!inputValue) {
+      setModalMessage("인분 수를 설정해주세요!");
+      setFoodReqFailedModalVisible(true);
+
+      setTimeout(() => {
+        setFoodReqFailedModalVisible(false);
+      }, 2000);
+      return false;
+    }
+
+    if (!Number.isInteger(Number(inputValue))) {
+      setModalMessage("정확한 인분 수를 입력하세요.");
+      setFoodReqFailedModalVisible(true);
+
+      setTimeout(() => {
+        setFoodReqFailedModalVisible(false);
+      }, 2000);
+      return false;
+    }
+
+    if (inputValue % 5 !== 0) {
+      setModalMessage("인분 수를 5인분 단위로 설정해주세요!");
+      setFoodReqFailedModalVisible(true);
+
+      setTimeout(() => {
+        setFoodReqFailedModalVisible(false);
+      }, 2000);
+      return false;
+    }
+
+    // 모든 검사를 통과하면 에러 메시지를 초기화하고 true를 반환합니다.
+    return true;
+  };
+
   const sendData = async () => {
     try {
-      if (!inputValue || inputValue % 5 !== 0) {
-        setErrorMessage("양을 5인분 단위로 설정해주세요!"); // 에러 메시지 상태를 설정합니다.
-        return; // 이 함수를 더 이상 실행하지 않습니다.
-      }
-
-      const responseCheck = await axios.post(
-        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/findByIdFoodNameSenderId",
-
-        {
-          receiverId: foodId,
-          foodName: foodName,
-          senderId: userInfo.id,
-        }
-      );
-      console.log(responseCheck.data[0]);
-      if (!responseCheck.data[0]) {
-        const data = {
-          sender: adName,
-          senderImage: profileImage,
-          receiver: foodGiver,
-          foodName: foodName,
-          serving: inputValue,
-          foodPrice: foodPrice,
-          receiverId: foodId,
-          senderTel: userInfo.phoneNum,
-          senderId: userInfo.id,
-        };
-        console.log(data);
-        const response = await fetch(
-          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/regist",
+      if (validateInput()) {
+        console.log("들어왔다");
+        const responseCheck = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/findByIdFoodNameSenderId",
           {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
+            receiverId: foodId,
+            foodName: foodName,
+            senderId: userInfo.id,
           }
         );
+        console.log(responseCheck.data[0]);
 
-        console.log(response.data);
+        if (!responseCheck.data[0]) {
+          console.log("들어왔는가?", foodAmount);
+          console.log("들어왔는가?", inputValue);
+          if (Number(foodAmount) >= Number(inputValue)) {
+            const data = {
+              sender: adName,
+              senderImage: profileImage,
+              receiver: foodGiver,
+              foodName: foodName,
+              serving: inputValue,
+              foodPrice: foodPrice,
+              receiverId: foodId,
+              senderTel: userInfo.phoneNum,
+              senderId: userInfo.id,
+            };
+            // console.log(data);
 
-        console.log("123444");
-        navigation.navigate("KakaoMapP", { userInfo: userInfo });
-        Alert.alert(
-          "요청 완료", // 제목
-          `${foodName} ${inputValue}인분 요청이 완료되었습니다.`, // 메시지
-          [{ text: "확인" }] // 버튼 배열
-        );
-      } else {
-        console.log("이미 등록된 요청이 있습니다.");
+            const response = await fetch(
+              "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/regist",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+              }
+            );
+
+            // 백엔드로부터 온 응답 처리
+            if (response.status === 200) {
+              console.log(
+                foodName + " " + inputValue + "인분 요청이 완료되었습니다."
+              );
+              setFoodReqSuccessModalVisible(true);
+
+              // 2초 후에 홈 화면으로 이동
+              setTimeout(() => {
+                setFoodReqSuccessModalVisible(false);
+                navigation.navigate("KakaoMapP", { userInfo: userInfo });
+              }, 2000);
+            } else {
+              console.log("요청 실패, 다시 시도해주세요.");
+              setModalMessage("요청 실패, 다시 시도해주세요.");
+              setFoodReqFailedModalVisible(true);
+
+              // 2초 후에 홈 화면으로 이동
+              setTimeout(() => {
+                setFoodReqFailedModalVisible(false);
+              }, 2000);
+            }
+          } else {
+            console.log("요청 가능한 인분 수를 초과하였습니다.");
+            setModalMessage("요청 가능한 인분 수를 초과하였습니다.");
+            setFoodReqFailedModalVisible(true);
+
+            // 2초 후에 홈 화면으로 이동
+            setTimeout(() => {
+              setFoodReqFailedModalVisible(false);
+            }, 2000);
+          }
+
+          // Alert.alert(
+          //   "요청 완료", // 제목
+          //   `${foodName} ${inputValue}인분 요청이 완료되었습니다.`, // 메시지
+          //   [{ text: "확인" }] // 버튼 배열
+          // );
+        } else {
+          console.log("이미 등록된 요청이 있습니다.");
+          setModalMessage("이미 등록된 요청이 있습니다.");
+          setFoodReqFailedModalVisible(true);
+
+          // 2초 후에 홈 화면으로 이동
+          setTimeout(() => {
+            setFoodReqFailedModalVisible(false);
+          }, 2000);
+        }
       }
     } catch (error) {
-      console.error("Error:", error);
+      console.error("에러:", error);
+      setFoodReqFailedModalVisible(true);
+
+      // 2초 후에 홈 화면으로 이동
+      setTimeout(() => {
+        setFoodReqFailedModalVisible(false);
+      }, 2000);
     }
   };
 
@@ -304,6 +396,71 @@ const Bottomsheetfoodp = ({
                 요청
               </Text>
             </TouchableOpacity>
+
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={isFoodReqSuccessModalVisible}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <View style={styles.circle}>
+                    <Icon
+                      name="check"
+                      size={55}
+                      color="#698FF1"
+                      style={styles.iconStyle}
+                    />
+                  </View>
+                  <Text
+                    style={{
+                      marginTop: "5%",
+                      fontFamily: "Play-Bold",
+                      fontSize: 20,
+                    }}
+                  >
+                    {foodName +
+                      " " +
+                      inputValue +
+                      "인분 요청이 완료되었습니다."}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => setFoodReqSuccessModalVisible(false)}
+                  ></TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={isFoodReqFailedModalVisible}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <View style={styles.failCircle}>
+                    <Icon
+                      name="times"
+                      size={55}
+                      color="#FF0000"
+                      style={styles.failIconStyle}
+                    />
+                  </View>
+                  <Text
+                    style={{
+                      marginTop: "5%",
+                      fontFamily: "Play-Bold",
+                      fontSize: 20,
+                    }}
+                  >
+                    {modalMessage}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => setFoodReqFailedModalVisible(false)}
+                  ></TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
           </Animated.View>
         </View>
       </TouchableWithoutFeedback>
@@ -417,6 +574,36 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
+  },
+  failCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#FFCCCC",
+    alignSelf: "center",
+    marginBottom: 10,
+    justifyContent: "center", // 여기
+    alignItems: "center", // 그리고 여기
+  },
+  circle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#C2E9FF",
+    alignSelf: "center",
+    marginBottom: 10,
+  },
+  iconStyle: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -25 }, { translateY: -25 }], // 아이콘의 절반 크기만큼 이동
+  },
+  failIconStyle: {
+    position: "absolute",
+    top: "50%",
+    left: "55%",
+    transform: [{ translateX: -27.5 }, { translateY: -27.5 }], // 아이콘의 절반 크기만큼 이동
   },
 });
 

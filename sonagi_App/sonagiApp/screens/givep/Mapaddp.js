@@ -288,8 +288,6 @@ const Mapaddp = ({ navigation, route }) => {
               {foodData ? foodData[0].foodAmount : "로딩중..."}인분
             </Text>
 
-
-
             <View
               style={{
                 backgroundColor: "#D0D0D0",
@@ -304,10 +302,6 @@ const Mapaddp = ({ navigation, route }) => {
             >
               <Text style={{ fontSize: 20, fontWeight: "bold" }}>예약중</Text>
             </View>
-
-
-
-
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             <Text
@@ -413,6 +407,7 @@ const Mapaddp = ({ navigation, route }) => {
           foodName={foodData?.[0].foodName}
           foodId={foodData?.[0].id}
           foodPrice={foodData?.[0].foodPrice}
+          foodAmount={foodData?.[0].foodAmount}
           userInfo={userInfo}
         />
       </View>

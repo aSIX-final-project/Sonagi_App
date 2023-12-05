@@ -19,11 +19,18 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 const ChangeInfo = ({ navigation, route }) => {
   const { userInfo } = route.params;
+
+  // 로그아웃 버튼을 눌렀을때 값을 서버에 보냄
+  const [isLogoutSuccessModalVisible, setLogoutSuccessModalVisible] =
+    useState(false); // 모달 알림창의 상태
+
   const [isChangeSuccessModalVisible, setChangeSuccessModalVisible] =
     useState(false);
 
   const [isChangeFailedModalVisible, setChangeFailedModalVisible] =
     useState(false); // 모달 알림창의 상태
+
+  const [modalMessage, setModalMessage] = useState("");
 
   const {
     watch, // 입력 값 감시
@@ -31,50 +38,93 @@ const ChangeInfo = ({ navigation, route }) => {
     formState: { errors }, // 폼 상태와 에러
   } = useForm();
 
-  // 로그아웃 버튼을 눌렀을때 값을 서버에 보냄
-  const [isLogoutSuccessModalVisible, setLogoutSuccessModalVisible] =
-    useState(false); // 모달 알림창의 상태
+  // 유효성 검사 함수
+  const validateInput = () => {
+    // 시설 주소
+    if (!watch("Changeadd")) {
+      console.log("시설 주소를 입력하세요.");
+      setModalMessage("시설 주소를 입력하세요.");
+      setChangeFailedModalVisible(true);
+
+      setTimeout(() => {
+        setChangeFailedModalVisible(false);
+      }, 2000);
+      return false;
+    }
+
+    // 시설 전화번호
+    if (!watch("Changenum") || isNaN(watch("Changenum"))) {
+      console.log("시설 전화번호를 입력하세요.");
+      setModalMessage("시설 전화번호를 입력하세요.");
+      setChangeFailedModalVisible(true);
+
+      setTimeout(() => {
+        setChangeFailedModalVisible(false);
+      }, 2000);
+      return false;
+    }
+
+    // 시설 이름
+    if (!watch("Changename")) {
+      console.log("시설 이름을 입력하세요.");
+      setModalMessage("시설 이름을 입력하세요.");
+      setChangeFailedModalVisible(true);
+
+      setTimeout(() => {
+        setChangeFailedModalVisible(false);
+      }, 2000);
+      return false;
+    }
+
+    // 모든 검사를 통과하면 에러 메시지를 초기화하고 true를 반환합니다.
+    return true;
+  };
 
   const handleInfoChange = async () => {
     try {
-      // POST 요청에 필요한 데이터
-      const formData = {
-        id: userInfo.id,
-        adName: watch("Changename"),
-        adTel: watch("Changenum"),
-        managerName: userInfo.name,
-        address: watch("Changeadd"),
-        totalHc: 0,
-        introduction: null,
-      };
+      if (validateInput()) {
+        // POST 요청에 필요한 데이터
+        const formData = {
+          id: userInfo.id,
+          adName: watch("Changename"),
+          adTel: watch("Changenum"),
+          managerName: userInfo.name,
+          address: watch("Changeadd"),
+          totalHc: 0,
+          introduction: null,
+        };
 
-      // 폼 데이터를 JSON 문자열로 변환하여 확인
-      const jsonData = JSON.stringify(formData);
-      console.log(jsonData);
+        // 폼 데이터를 JSON 문자열로 변환하여 확인
+        const jsonData = JSON.stringify(formData);
+        console.log(jsonData);
 
-      // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
-      const response = await axios.post(
-        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/admin/requestAdmin",
-        formData
-      );
-      console.log(response.data);
-      // 백엔드로부터 온 응답 처리
-      if (response.status === 200) {
-        console.log("시설 정보 변경 요청 성공");
-        setChangeSuccessModalVisible(true);
+        // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
+        const response = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/admin/requestAdmin",
+          formData
+        );
+        console.log(response.data);
+        // 백엔드로부터 온 응답 처리
+        if (response.status === 200) {
+          console.log("시설 정보 변경 요청 성공");
+          setChangeSuccessModalVisible(true);
 
-        // 2초 후에 홈 화면으로 이동
-        setTimeout(() => {
-          setChangeSuccessModalVisible(false);
-          navigation.navigate("Profiles", { userInfo: userInfo });
-        }, 2000);
+          // 2초 후에 홈 화면으로 이동
+          setTimeout(() => {
+            setChangeSuccessModalVisible(false);
+            navigation.navigate("Profiles", { userInfo: userInfo });
+          }, 2000);
+        } else {
+          console.log("시설 정보 변경 요청 실패");
+          setModalMessage("시설 정보 변경 요청 실패");
+          setChangeFailedModalVisible(true);
+
+          setTimeout(() => {
+            setChangeFailedModalVisible(false);
+          }, 2000);
+        }
       } else {
-        console.log("시설 정보 변경 요청 실패");
-        setChangeFailedModalVisible(true);
-
-        setTimeout(() => {
-          setChangeFailedModalVisible(false);
-        }, 2000);
+        console.log("다시 적어주세요.");
       }
     } catch (error) {
       console.error("에러:", error);
@@ -242,7 +292,7 @@ const ChangeInfo = ({ navigation, route }) => {
 
           {/* 중앙 부분 */}
 
-          {/* 비밀번호 변경 */}
+          {/* 시설정보 변경 */}
           <View
             style={{
               marginTop: "5%",
@@ -415,7 +465,7 @@ const ChangeInfo = ({ navigation, route }) => {
                     fontSize: 20,
                   }}
                 >
-                  시설 정보 변경 요청 실패
+                  {modalMessage}
                 </Text>
                 <TouchableOpacity
                   onPress={() => setChangeFailedModalVisible(false)}
