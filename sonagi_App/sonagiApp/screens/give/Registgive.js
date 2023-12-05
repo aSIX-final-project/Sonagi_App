@@ -19,13 +19,15 @@ import { useForm } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 import FastImage from "react-native-fast-image";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const RegistGive = ({ navigation, route }) => {
   const [profileImage, setProfileImage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const { userInfo } = route.params;
   console.log(userInfo);
-
+  const [isRegistSuccessModalVisible, setRegistSuccessModalVisible] =
+    useState(false);
   const {
     watch, // 입력 값 감시
     setValue, // 입력 값 설정
@@ -63,8 +65,10 @@ const RegistGive = ({ navigation, route }) => {
 
     // 음식 기부 가능 시간
     const donationTime = new Date();
-    donationTime.setSelectedPeriod(selectedPeriod);
-    donationTime.setHours(selectedHour);
+    // donationTime.setSelectedPeriod(selectedPeriod);
+    donationTime.setHours(
+      selectedPeriod === "오전" ? selectedHour : selectedHour + 12
+    );
     donationTime.setMinutes(selectedMinute);
     if (donationTime <= new Date()) {
       console.log("기부 가능 시간은 현재 시간 이후로 설정해야 합니다.");
@@ -127,9 +131,12 @@ const RegistGive = ({ navigation, route }) => {
           // 음식 등록 성공
           console.log("음식 등록 성공"); // -> 음식 등록 성공 모달 필요
 
+          //모달 띄우기
+          setRegistSuccessModalVisible(true);
+
           // 2초 후에 홈 화면으로 이동
           setTimeout(() => {
-            // setLoginSuccessModalVisible(false); --> 모달 사라지게 하는 코드
+            setRegistSuccessModalVisible(false);
             navigation.navigate("KakaoMap", { userInfo: userInfo });
           }, 2000);
         } else {
@@ -297,8 +304,6 @@ const RegistGive = ({ navigation, route }) => {
           width: "100%",
           height: "12%",
           paddingTop: "7%",
-          borderBottomLeftRadius: 20,
-          borderBottomRightRadius: 20,
         }}
       >
         <View
@@ -798,6 +803,37 @@ const RegistGive = ({ navigation, route }) => {
           확인
         </Text>
       </TouchableOpacity>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isRegistSuccessModalVisible}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View style={styles.circle}>
+              <Icon
+                name="check"
+                size={55}
+                color="#698FF1"
+                style={styles.iconStyle}
+              />
+            </View>
+            <Text
+              style={{
+                marginTop: "5%",
+                fontFamily: "Play-Bold",
+                fontSize: 20,
+              }}
+            >
+              음식 등록 성공
+            </Text>
+            <TouchableOpacity
+              onPress={() => setRegistSuccessModalVisible(false)}
+            ></TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };

@@ -16,7 +16,7 @@ import {
   Alert,
 } from "react-native";
 import axios from "axios";
-
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const Bottomsheetfoodp = ({
   modalVisible,
@@ -43,7 +43,8 @@ const Bottomsheetfoodp = ({
     duration: 300,
     useNativeDriver: true,
   });
-
+  const [isRequestSuccessModalVisible, setRequestSuccessModalVisible] =
+    useState(false);
   const closeBottomSheet = Animated.timing(panY, {
     toValue: screenHeight,
     duration: 300,
@@ -147,13 +148,14 @@ const Bottomsheetfoodp = ({
 
         console.log(response.data);
 
-        console.log("123444");
-        navigation.navigate("KakaoMapP", { userInfo: userInfo });
-        Alert.alert(
-          "요청 완료", // 제목
-          `${foodName} ${inputValue}인분 요청이 완료되었습니다.`, // 메시지
-          [{ text: "확인" }] // 버튼 배열
-        );
+        setRequestSuccessModalVisible(true);
+
+        setTimeout(() => {
+          setRequestSuccessModalVisible(false);
+          navigation.navigate("KakaoMapP", { userInfo: userInfo });
+        }, 2000);
+
+
       } else {
         console.log("이미 등록된 요청이 있습니다.");
       }
@@ -305,6 +307,36 @@ const Bottomsheetfoodp = ({
               </Text>
             </TouchableOpacity>
           </Animated.View>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={isRequestSuccessModalVisible}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <View style={styles.circle}>
+                  <Icon
+                    name="check"
+                    size={55}
+                    color="#698FF1"
+                    style={styles.iconStyle}
+                  />
+                </View>
+                <Text
+                  style={{
+                    marginTop: "5%",
+                    fontFamily: "Play-Bold",
+                    fontSize: 20,
+                  }}
+                >
+                  음식 등록 성공
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setRequestSuccessModalVisible(false)}
+                ></TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
       </TouchableWithoutFeedback>
     </Modal>

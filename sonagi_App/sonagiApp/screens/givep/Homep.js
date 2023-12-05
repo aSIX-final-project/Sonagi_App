@@ -6,12 +6,13 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
 import { Linking } from 'react-native';
-
+import Carousel from 'react-native-snap-carousel';
 
 const components = [
   {
@@ -43,6 +44,8 @@ const components = [
 
 const Homep = ({ navigation, route }) => {
   const { userInfo } = route.params;
+  console.log("하이")
+  console.log(userInfo)
   const [activeIndex, setActiveIndex] = useState(null);
   const [noticeList, setNoticeList] = useState({});
   const [latestNotice, setLatestNotice] = useState([]);
@@ -334,7 +337,6 @@ const Homep = ({ navigation, route }) => {
                     style={{
                       flexDirection: "column",
                       justifyContent: "center",
-                      marginRight: "30%",
                     }}
                   >
                     {latestNotice &&
@@ -348,7 +350,7 @@ const Homep = ({ navigation, route }) => {
                               color: "white",
                             }}
                           >
-                            {notice.title}
+                            {notice.title.substring(0, 15)}
                           </Text>
                           <Text
                             style={{
@@ -382,7 +384,7 @@ const Homep = ({ navigation, route }) => {
                       justifyContent: "center",
                       alignItems: "center",
                       marginBottom: "20%",
-                      marginTop: "14%",
+                      marginTop: "5%",
                       marginRight: "30%",
                     }}
                   >
@@ -470,26 +472,26 @@ const Homep = ({ navigation, route }) => {
             }}
           >
             <View style={styles.thirdContainer}>
-              {crawlingData.length > 0 && (
-                <TouchableOpacity onPress={() => Linking.openURL('https://www.donorscamp.org/culSupportProgList_P.do')}>
-                  <Image
-                    source={{ uri: crawlingData[currentItemIndex].imageSrc }}
-                    style={{ width: "100%", height: "100%" }}
-                    resizeMode="cover"
-                  />
-                </TouchableOpacity>
-              )}
+              <Carousel
+                data={crawlingData}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => Linking.openURL('https://www.donorscamp.org/culSupportProgList_P.do')}>
+                    <Image
+                      source={{ uri: item.imageSrc }}
+                      style={{ width: "100%", height: "100%", borderRadius:30 }}
+                      resizeMode="cover"
+                    />
+                  </TouchableOpacity>
+                )}
+                sliderWidth={Dimensions.get("window").width}
+                itemWidth={Dimensions.get("window").width}
+                autoplay={true}
+                loop={true}
+              />
             </View>
           </View>
-
-
-
         </ScrollView>
       </View>
-
-
-
-
       <View
         style={{
           position: "absolute",
@@ -566,7 +568,6 @@ const styles = StyleSheet.create({
   thirdContainer: {
     width: "85%",
     height: "90%",
-    borderRadius: 30,
     marginTop: 20,
     overflow: "hidden",
   },
@@ -581,7 +582,7 @@ const styles = StyleSheet.create({
   },
 
   fourthOneContainer: {
-    width: "92%",
+    width: "150px",
     height: "95%",
     backgroundColor: "#44A5FF",
     borderRadius: 30,

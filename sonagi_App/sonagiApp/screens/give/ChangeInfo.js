@@ -102,7 +102,6 @@ const ChangeInfo = ({ navigation, route }) => {
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        {/* 키보드 가려짐 패치 */}
         <View style={styles.container}>
           {/* 로그인 완료 모달 */}
           <Modal
