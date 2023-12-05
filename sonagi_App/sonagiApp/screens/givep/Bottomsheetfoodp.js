@@ -53,7 +53,8 @@ const Bottomsheetfoodp = ({
     duration: 300,
     useNativeDriver: true,
   });
-
+  const [isRequestSuccessModalVisible, setRequestSuccessModalVisible] =
+    useState(false);
   const closeBottomSheet = Animated.timing(panY, {
     toValue: screenHeight,
     duration: 300,
@@ -242,6 +243,7 @@ const Bottomsheetfoodp = ({
             setFoodReqFailedModalVisible(false);
           }, 2000);
         }
+
       }
     } catch (error) {
       console.error("에러:", error);
@@ -462,6 +464,36 @@ const Bottomsheetfoodp = ({
               </View>
             </Modal>
           </Animated.View>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={isRequestSuccessModalVisible}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <View style={styles.circle}>
+                  <Icon
+                    name="check"
+                    size={55}
+                    color="#698FF1"
+                    style={styles.iconStyle}
+                  />
+                </View>
+                <Text
+                  style={{
+                    marginTop: "5%",
+                    fontFamily: "Play-Bold",
+                    fontSize: 20,
+                  }}
+                >
+                  음식 등록 성공
+                </Text>
+                <TouchableOpacity
+                  onPress={() => setRequestSuccessModalVisible(false)}
+                ></TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
       </TouchableWithoutFeedback>
     </Modal>

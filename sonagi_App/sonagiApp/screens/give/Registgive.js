@@ -19,12 +19,12 @@ import { useForm } from "react-hook-form";
 import { Picker } from "@react-native-picker/picker";
 import axios from "axios";
 import FastImage from "react-native-fast-image";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const RegistGive = ({ navigation, route }) => {
   const [profileImage, setProfileImage] = useState(null);
   const { userInfo } = route.params;
   console.log(userInfo);
-
   const [isRegistSuccessModalVisible, setRegistSuccessModalVisible] =
     useState(false);
 
@@ -165,9 +165,12 @@ const RegistGive = ({ navigation, route }) => {
           console.log("음식 등록 성공");
           setRegistSuccessModalVisible(true);
 
+          //모달 띄우기
+          setRegistSuccessModalVisible(true);
+
           // 2초 후에 홈 화면으로 이동
           setTimeout(() => {
-            setLoginSuccessModalVisible(false);
+            setRegistSuccessModalVisible(false);
             navigation.navigate("KakaoMap", { userInfo: userInfo });
           }, 2000);
         } else {
@@ -349,8 +352,6 @@ const RegistGive = ({ navigation, route }) => {
           width: "100%",
           height: "12%",
           paddingTop: "7%",
-          borderBottomLeftRadius: 20,
-          borderBottomRightRadius: 20,
         }}
       >
         <View
@@ -881,7 +882,6 @@ const RegistGive = ({ navigation, route }) => {
           </View>
         </View>
       </Modal>
-
       <Modal
         animationType="fade"
         transparent={true}

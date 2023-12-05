@@ -316,7 +316,8 @@ const Home = ({ navigation, route }) => {
                       flexDirection: "row",
                       justifyContent: "center",
                       alignItems: "center",
-                      marginBottom: "30%",
+                      marginBottom: "20%",
+                      marginTop: "5%",
                     }}
                   >
                     <Text
@@ -324,8 +325,7 @@ const Home = ({ navigation, route }) => {
                         fontSize: 22,
                         fontFamily: "Play-Regular",
                         color: "white",
-                        marginRight: "14%",
-                        marginLeft: "5%",
+                        marginRight: "7%",
                       }}
                     >
                       공지사항
@@ -340,7 +340,6 @@ const Home = ({ navigation, route }) => {
                     style={{
                       flexDirection: "column",
                       justifyContent: "center",
-                      marginRight: "30%",
                     }}
                   >
                     {latestNotice && (
@@ -353,7 +352,7 @@ const Home = ({ navigation, route }) => {
                             color: "white",
                           }}
                         >
-                          {latestNotice.title}
+                          {latestNotice.title.substring(0, 15)}...
                         </Text>
                         <Text
                           style={{
@@ -453,7 +452,7 @@ const Home = ({ navigation, route }) => {
                     onPress={() => {
                       if (item.nav) {
 
-                        navigation.navigate(item.nav, { userInfo : userInfo });
+                        navigation.navigate(item.nav, { userInfo: userInfo });
                       } else if (item.web) {
                         Linking.openURL(item.web);
                       } else if (item.phone) {
@@ -565,7 +564,7 @@ const styles = StyleSheet.create({
   },
 
   fourthOneContainer: {
-    width: "92%",
+    width: "150px",
     height: "95%",
     backgroundColor: "#44A5FF",
     borderRadius: 30,

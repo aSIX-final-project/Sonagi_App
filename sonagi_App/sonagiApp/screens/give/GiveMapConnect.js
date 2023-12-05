@@ -10,16 +10,40 @@ import {
   Modal,
   ScrollView,
 } from "react-native";
+// 바텀시트
 import axios from "axios";
 import { Ionicons, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const GiveMapConnect = ({ navigation, route }) => {
   const [userData, setUserData] = useState(null);
   const [foodData, setFoodData] = useState(null);
-  const { id, userInfo } = route.params;
+  const { id, userInfo, foodName } = route.params;
+  const [foodReqList, setFoodReqList] = useState([]);
+
 
   console.log("123");
-  console.log(userInfo.adName);
+  console.log(id, userInfo, foodName);
+  useEffect(() => {
+    if (foodData) {
+      const fetchFoodReq = async () => {
+        const formData = { receiverId: foodData[0].id, foodName: foodName };
+        try {
+          const foodReqRes = await axios.post(
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/foodReq/findByIdFoodName",
+            formData
+          );
+          console.log("FoodReqResponse1:", foodReqRes);
+          if (foodReqRes.data && foodReqRes.data.length > 0) {
+            setFoodReqList(foodReqRes.data);
+          }
+        } catch (error) {
+          console.error("Error fetching food request data:", error.message);
+        }
+      };
+      fetchFoodReq();
+    }
+  }, [foodData]);
+
 
   useEffect(() => {
     let isMounted = true;
@@ -27,14 +51,15 @@ const GiveMapConnect = ({ navigation, route }) => {
     const fetchUserDataAndFoodData = async () => {
       if (id !== null) {
         const formData = { id: id };
+        const formDataFood = { id: id, foodName: foodName }
         try {
           const userRes = await axios.post(
             "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
             formData
           );
           const foodRes = await axios.post(
-            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/findById",
-            formData
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/findByFoodName",
+            formDataFood
           );
           if (isMounted) {
             console.log("UserResponse:", userRes);
@@ -118,7 +143,7 @@ const GiveMapConnect = ({ navigation, route }) => {
           <TouchableOpacity
             style={{ marginLeft: "6%", marginRight: "2%" }}
             onPress={() =>
-              navigation.navigate("KakaoMap", { userInfo: userInfo })
+              navigation.navigate("KakaoMapP", { userInfo: userInfo })
             }
           >
             <Image
@@ -248,15 +273,14 @@ const GiveMapConnect = ({ navigation, route }) => {
           paddingRight: "40%",
         }}
       >
-        <View style={{ marginTop: "10%" }}>
+        <View style={{ marginTop: "5%" }}>
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
-              padding: 10,
-              width: "95%",
-              marginTop: "10%",
+              paddingBottom:20,
+              width: "110%",
             }}
           >
             <Text
@@ -269,20 +293,27 @@ const GiveMapConnect = ({ navigation, route }) => {
               {foodData ? foodData[0].foodName : "로딩중..."}{" "}
               {foodData ? foodData[0].foodAmount : "로딩중..."}인분
             </Text>
-            <View
-              style={{
-                backgroundColor: "#D0D0D0",
-                borderRadius: 15,
-                paddingHorizontal: 20,
-                paddingVertical: 5,
-                height: "70%",
-                marginLeft: "8%",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text style={{ fontSize: 20, fontWeight: "bold" }}>예약중</Text>
-            </View>
+
+
+
+            {foodReqList.length > 0 &&
+              <View
+                style={{
+                  backgroundColor: "#D0D0D0",
+                  borderRadius: 15,
+                  paddingHorizontal: 20,
+                  paddingVertical: 5,
+                  height: "70%",
+                  marginLeft: "8%",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ fontSize: 20, fontWeight: "bold" }}>예약중</Text>
+              </View>
+            }
+
+
           </View>
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             <Text
@@ -296,26 +327,7 @@ const GiveMapConnect = ({ navigation, route }) => {
               {foodData ? foodData[0].context : "로딩중..."}
             </Text>
           </View>
-          <View style={{ flexDirection: "row", marginTop: "3%" }}>
-            <Text
-              style={{
-                fontSize: 17,
-                fontWeight: "bold",
-                fontFamily: "Play-Bold",
-              }}
-            >
-              조리 완료 시간
-            </Text>
-            <Text
-              style={{
-                fontSize: 17,
-                fontWeight: "bold",
-                fontFamily: "Play-Regular",
-              }}
-            >
-              : {foodData ? foodData[0].cookingTime : "로딩중..."}
-            </Text>
-          </View>
+
           <View style={{ flexDirection: "row", marginTop: "3%" }}>
             <Text
               style={{
@@ -338,7 +350,6 @@ const GiveMapConnect = ({ navigation, route }) => {
           </View>
         </View>
       </View>
-
     </View>
   );
 };

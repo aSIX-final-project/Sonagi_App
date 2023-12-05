@@ -12,11 +12,14 @@ import {
 import * as Location from "expo-location";
 import BottomsheetMarker from "./BottomsheetMarker";
 import BottomsheetMarker2 from "./BottomsheetMarkerP";
+import BottomsheetMarkerFoodSelect from "./BottomsheetMarkerFoodSelect";
+
 export default function App({ navigation, route }) {
   const { userInfo } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
-
+  const [modalVisible3, setModalVisible3] = useState(false);
+  const [selectedMarkerId3, setSelectedMarkerId3] = useState(null);
   const [modalVisible2, setModalVisible2] = useState(false);
   const [selectedMarkerId2, setSelectedMarkerId2] = useState(null);
   // testClick 클릭
@@ -115,9 +118,7 @@ export default function App({ navigation, route }) {
   const fetchData = async () => {
     const res = await axios.get(
       "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/findAll"
-    ); //스프링 부트 : db에서 값 가져오기
-
-    //마커 찍을 좌표값 가져오기
+    );
     const fetchPromises = res.data.map(async (item) => {
       const response = await fetch(
         `https://dapi.kakao.com/v2/local/search/address.json?query=${item.address}`,
@@ -128,8 +129,6 @@ export default function App({ navigation, route }) {
         }
       );
       const data = await response.json();
-      console.log("123");
-      console.log(data);
       const { x, y } =
         data.documents[0].road_address || data.documents[0].address;
       return { ...item, coordinates: { x, y } };
@@ -143,8 +142,7 @@ export default function App({ navigation, route }) {
   const fetchData2 = async () => {
     const res = await axios.get(
       "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/findAll"
-    ); //스프링 부트 : db에서 값 가져오기
-    //마커 찍을 좌표값 가져오기
+    ); 
     console.log(res.data.list);
     const fetchPromises = res.data.list.map(async (item) => {
       const response = await fetch(
@@ -156,8 +154,6 @@ export default function App({ navigation, route }) {
         }
       );
       const data = await response.json();
-      console.log("456");
-      console.log(data);
       const { x, y } =
         data.documents[0].road_address || data.documents[0].address;
       return { ...item, coordinates: { x, y } };
@@ -171,8 +167,7 @@ export default function App({ navigation, route }) {
   const fetchData3 = async () => {
     const res = await axios.get(
       "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findAll"
-    ); //스프링 부트 : db에서 값 가져오기
-    //마커 찍을 좌표값 가져오기
+    ); 
     console.log(res.data.list);
     const fetchPromises = res.data.list.map(async (item) => {
       const response = await fetch(
@@ -184,8 +179,6 @@ export default function App({ navigation, route }) {
         }
       );
       const data = await response.json();
-      console.log("789");
-      console.log(data);
       const { x, y } =
         data.documents[0].road_address || data.documents[0].address;
       return { ...item, coordinates: { x, y } };
@@ -590,7 +583,10 @@ overlay${i}.setMap(map);
             const id = message.split(": ")[1];
             console.log(id);
             console.log(userInfo);
-            navigation.navigate("GiveMapConnect", { id: id, userInfo: userInfo });
+
+            setSelectedMarkerId3(id);
+            setModalVisible3(true);
+            // navigation.navigate("GiveMapConnect", { id: id, userInfo: userInfo });
           } else if (message.startsWith("id:")) {
             // 마커에서 전달된 id를 사용
             const id = message.split(": ")[1];
@@ -635,6 +631,16 @@ overlay${i}.setMap(map);
           setModalVisible={setModalVisible2}
           navigation={navigation}
           id={selectedMarkerId2}
+        />
+      </View>
+
+      <View style={styles.rootContainer}>
+        <BottomsheetMarkerFoodSelect
+          modalVisible={modalVisible3}
+          setModalVisible={setModalVisible3}
+          navigation={navigation}
+          id={selectedMarkerId3}
+          userInfo={userInfo}
         />
       </View>
     </View>

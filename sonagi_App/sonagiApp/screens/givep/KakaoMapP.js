@@ -12,14 +12,19 @@ import {
 import * as Location from "expo-location";
 import BottomsheetMarkerP from "../give/BottomsheetMarkerP";
 import BottomsheetMarker from "../give/BottomsheetMarker";
+import BottomsheetMarkerFoodSelectP from "./BottomsheetMarkerFoodSelectP";
+
 
 export default function App({ navigation, route }) {
   const { userInfo } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMarkerId, setSelectedMarkerId] = useState(null);
-
+  const [modalVisible3, setModalVisible3] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
   const [selectedMarkerId2, setSelectedMarkerId2] = useState(null);
+  const [selectedMarkerId3, setSelectedMarkerId3] = useState(null);
+
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   // testClick 클릭
   const testClick = () => {
@@ -67,14 +72,14 @@ export default function App({ navigation, route }) {
       Promise.all([fetchData(), fetchData2(), fetchData3()])
         .then(() => {
           console.log("모든 데이터 로딩 완료");
-          // 여기에서 필요한 추가 작업을 수행할 수 있습니다.
+          setDataLoaded(true); // 데이터 로딩이 완료되면 dataLoaded 상태를 true로 설정
         })
         .catch((error) => {
-
           console.error(error); // 에러 처리
         });
     }
   }, [permissionStatus]);
+
 
   //위치 권한 요청
   const requestLocationPermission = async () => {
@@ -306,7 +311,7 @@ overlay${i}.setMap(map);
   })(marker${i}, infowindow${i}, overlayContent${i}, location);
 `;
     });
-    
+
     resLocations.forEach((location, i) => {
       var phoneNum = location.phoneNum;
       phoneNum =
@@ -572,12 +577,13 @@ overlay${i}.setMap(map);
             var phoneNum = message.split(": ")[1];
             callPhone(phoneNum);
           } else if (message.startsWith("foodid")) {
+            console.log("음식 등록한 사람의 id : ");
             const id = message.split(": ")[1];
             console.log(id);
             console.log(userInfo);
-            navigation.navigate("Mapaddp", { id: id, userInfo: userInfo });
+            setSelectedMarkerId3(id);
+            setModalVisible3(true);
           } else if (message.startsWith("pId:")) {
-
             // 마커에서 전달된 id를 사용
             const id = message.split(": ")[1];
             console.log("피기부자:", id);
@@ -590,7 +596,7 @@ overlay${i}.setMap(map);
             console.log("기부자:", id);
             setSelectedMarkerId(id);
             setModalVisible(true);
-          } 
+          }
           else {
             const coordinateStrings = message.split(", ");
             const x = parseFloat(coordinateStrings[0].split(": ")[1]);
@@ -623,7 +629,15 @@ overlay${i}.setMap(map);
           id={selectedMarkerId}
         />
       </View>
-
+      <View style={styles.rootContainer}>
+        <BottomsheetMarkerFoodSelectP
+          modalVisible={modalVisible3}
+          setModalVisible={setModalVisible3}
+          navigation={navigation}
+          id={selectedMarkerId3}
+          userInfo={userInfo}
+        />
+      </View>
 
 
     </View>
