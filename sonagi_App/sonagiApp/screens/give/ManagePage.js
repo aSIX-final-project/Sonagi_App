@@ -1,8 +1,58 @@
 //홈화면
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
+import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
 
-const ManagePage = ({ navigation }) => {
+const ManagePage = ({ navigation, route }) => {
+  const { userInfo } = route.params;
+  const [dataList, setDataList] = useState([]);
+  const [noticeList, setNoticeList] = useState({});
+  const [latestNotice, setLatestNotice] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        let response = await axios.get(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/admin/findAll"
+        );
+        console.log(response.data);
+        setDataList(response.data);
+      } catch (error) {
+        console.error("Cannot fetch data: ", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/notice/findAll"
+          );
+          const receivedList = response.data;
+          console.log(receivedList);
+          if (Array.isArray(receivedList)) {
+            setNoticeList(receivedList);
+
+            const sortedList = receivedList.sort(
+              (a, b) => new Date(b.noticeDate) - new Date(a.noticeDate)
+            );
+            setLatestNotice(sortedList[0]);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+
+      fetchData();
+    }, [])
+  );
+
+
   return (
     <View style={styles.container}>
       <View
@@ -50,7 +100,7 @@ const ManagePage = ({ navigation }) => {
 
       {/* 공지사항 */}
       <View style={styles.fourthContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate("ManageNotice")}>
+        <TouchableOpacity onPress={() => navigation.navigate("ManageNotice", { userInfo: userInfo, noticeListParam: noticeList, })}>
           <View style={styles.fourthOneContainer}>
             <View
               style={{
@@ -87,32 +137,43 @@ const ManagePage = ({ navigation }) => {
                 marginLeft: "2%",
               }}
             >
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: "bold",
-                  fontFamily: "Play-Bold",
-                  color: "white",
-                }}
-              >
-                11월 첫째주 기부왕
-              </Text>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "bold",
-                  fontFamily: "Play-Regular",
-                  color: "white",
-                }}
-              >
-                2023.11.10
-              </Text>
+
+              {latestNotice && (
+                <>
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "bold",
+                      fontFamily: "Play-Bold",
+                      color: "white",
+                    }}
+                  >
+                    {latestNotice.title}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: "bold",
+                      fontFamily: "Play-Regular",
+                      color: "white",
+                    }}
+                  >
+                    {latestNotice.noticeDate.substring(0, 10)}
+                  </Text>
+                </>
+              )}
+
+
+
+
+
+
             </View>
           </View>
         </TouchableOpacity>
 
         {/* 사용자 요청 관리 */}
-        <TouchableOpacity onPress={() => navigation.navigate("ManageReq")}>
+        <TouchableOpacity onPress={() => navigation.navigate("ManageReq", { userInfo: userInfo })}>
           <View style={styles.fourthTwoContainer}>
             <View
               style={{
@@ -162,7 +223,7 @@ const ManagePage = ({ navigation }) => {
                     bottom: "50%",
                   }}
                 >
-                  1
+                  {dataList.length}
                 </Text>
               </View>
             </View>
@@ -171,7 +232,7 @@ const ManagePage = ({ navigation }) => {
       </View>
 
       {/* 네번째 라인 */}
-      <TouchableOpacity onPress={() => navigation.navigate("KakaoMap")}>
+      <TouchableOpacity onPress={() => navigation.navigate("KakaoMapA", { userInfo: userInfo })}>
         <View style={styles.thirdContainer}>
           <Image
             source={require("../../assets/map.jpg")}

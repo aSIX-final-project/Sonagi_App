@@ -15,21 +15,21 @@ import {
   Keyboard,
 } from "react-native";
 import { KeyboardAvoidingView } from "react-native";
+import axios from "axios";
 
 const BottomsheetModDel = ({
   modalVisible,
   setModalVisible,
   navigation,
-  route,
+  item,
+  onClose,
 }) => {
-  const { userInfo } = route.params;
   const screenHeight = Dimensions.get("screen").height;
   const panY = useRef(new Animated.Value(screenHeight)).current;
   const translateY = panY.interpolate({
     inputRange: [-1, 0, 1],
     outputRange: [0, 0, 1],
   });
-
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
     duration: 300,
@@ -70,20 +70,47 @@ const BottomsheetModDel = ({
   }, [modalVisible]);
 
   const closeModal = () => {
-    console.log("first");
-    closeBottomSheet.start(() => {
-      console.log("second");
-      setModalVisible(false);
+    return new Promise((resolve) => {
+      closeBottomSheet.start(() => {
+        setModalVisible(false);
+        resolve();
+      });
     });
   };
 
   // 게시판 모달 상태(게시글 수정하기)
   const [isNotionModalVisible3, setNotionModalVisible3] = useState(false);
+
+
+  // 수정 모달 상태(게시글 수정하기
   // 게시판 버튼 클릭 핸들러
-  const handleNotionButtonClick3 = () => {
+  const handleNotionButtonClick2 = () => {
+    closeModal().then(() => {
+      setNotionModalVisible3(true);
+    });
+  };
+
+
+  const handleNotionButtonClick3 = async () => {
     console.log("Click3");
+
+    try {
+      const formData = {
+        textNum: item,
+      };
+      let response = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/notice/delete",
+        formData
+      );
+    } catch (error) {
+      console.error("Cannot fetch data: ", error);
+    }
+
     closeModal(); // 추가
     setNotionModalVisible3(true);
+    if (onClose) {
+      onClose();
+    }
   };
 
   return (
@@ -95,7 +122,7 @@ const BottomsheetModDel = ({
         visible={isNotionModalVisible3}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.centeredView2}>
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', zIndex: 1 }}>
             <View style={styles.modalView2}>
               {/* 게시판 모달 관련 코드 */}
               <TouchableOpacity
@@ -112,51 +139,52 @@ const BottomsheetModDel = ({
               </TouchableOpacity>
 
               {/* 제목 입력칸 */}
-              <View style={{ flexDirection: "row" }}>
-                <Text
-                  style={{
-                    fontFamily: "Play-Bold",
-                    fontSize: 20,
-                    color: "#656565",
-                    marginTop: "10%",
-                  }}
-                >
-                  [공지]23시-03시 정기 점검 예정
-                </Text>
-              </View>
-              <Text
-                style={{
-                  fontFamily: "Play-Regular",
-                  fontSize: 15,
-                  color: "#8B8E90",
-                  marginTop: "1%",
-                }}
-              >
-                2023.11.06
-              </Text>
-              <View
-                style={{
-                  borderBottomColor: "#DBDBDB",
-                  width: "100%",
-                  marginTop: "5%",
-                }}
+              <TextInput
+                style={styles.inputtext}
+                placeholder="제목을 입력하세요."
+                placeholderTextColor="#808080"
+                onChangeText={text => setTitle(text)}
+              // value={title}
               />
 
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
 
-              {/* 내용을 입력칸 */}
-              <Text
+              <TextInput
+                style={styles.inputtext2}
+                placeholder="내용을 입력하세요."
+                placeholderTextColor="#808080"
+                multiline={true}
+                numberOfLines={10}
+                onChangeText={text => setContent(text)}
+              // value={content}
+              />
+
+              {/* 등록 버튼 */}
+              <TouchableOpacity
                 style={{
-                  width: "90%",
-                  height: "60%",
-                  fontSize: 20,
-                  marginTop: "5%",
+                  width: "95%",
+                  height: "10%",
+                  borderRadius: 18,
+                  marginTop: "8%",
+                  marginBottom: "15%",
+                  backgroundColor: "#44A5FF",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
+              // onPress={handleSubmit}
               >
-                전체 앱 점검을 23시 ~ 03시까지 진행 할 예정이니 이용에 참고
-                부탁드립니다.
-              </Text>
+                <Text
+                  style={{
+                    fontSize: 26,
+                    fontWeight: "bold",
+                    fontFamily: "Play-Bold",
+                    color: "#FFFFFF",
+                  }}
+                >
+                  수정하기
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableWithoutFeedback>
@@ -205,9 +233,12 @@ const BottomsheetModDel = ({
                   </TouchableOpacity>
                 </View>
 
-                {/* 수락 하기 */}
+                {/* 수정 하기 */}
                 <View style={{ width: "100%", height: "28%" }}>
-                  <TouchableOpacity style={{ width: "100%", height: "100%" }}>
+                  <TouchableOpacity
+                    style={{ width: "100%", height: "100%" }}
+                    onPress={handleNotionButtonClick2}
+                  >
                     <Text
                       style={{
                         fontFamily: "Play-Regular",
@@ -217,12 +248,12 @@ const BottomsheetModDel = ({
                         paddingTop: "2.5%",
                       }}
                     >
-                      수락 하기
+                      수정
                     </Text>
                   </TouchableOpacity>
                 </View>
 
-                {/* 거절 하기 */}
+                {/* 삭제 하기 */}
                 <View style={{ width: "100%", height: "28%" }}>
                   <TouchableOpacity
                     style={{ width: "100%", height: "100%" }}
@@ -237,7 +268,7 @@ const BottomsheetModDel = ({
                         paddingTop: "2.5%",
                       }}
                     >
-                      거절 하기
+                      삭제
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -290,8 +321,8 @@ const styles = StyleSheet.create({
   },
 
   modalView2: {
-    width: "50%",
-    height: "25%",
+    width: "75%",
+    height: "70%",
     marginBottom: 20,
     backgroundColor: "white",
     borderRadius: 20,
@@ -316,6 +347,89 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "#FAFAFC",
+  },
+  container: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: "#FAFAFC",
+  },
+  modalView: {
+    marginBottom: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+
+  rootContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+
+  modalView: {
+    marginBottom: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  inputtext: {
+    width: "80%",
+    paddingBottom: 10,
+    borderColor: "#828282",
+    marginTop: "10%",
+    left: "0%",
+    fontSize: 26,
+    marginBottom: 10,
+    color: "#6F6A6A",
+  },
+
+  inputtext2: {
+    width: "80%",
+    height: "55%",
+    paddingBottom: 25,
+    borderColor: "#828282",
+    marginTop: "8%",
+    left: "0%",
+    fontSize: 26,
+    marginBottom: "7%",
+    color: "#6F6A6A",
+  },
+  lineStyle: {
+    height: 2, // 선의 두께
+    backgroundColor: "#E4E4E4", // 선의 색상
+    width: "90%", // 선의 길이
+    marginBottom: "3%",
   },
 });
 

@@ -209,6 +209,31 @@ const Login = ({ navigation }) => {
             setLoginSuccessModalVisible(false);
             navigation.navigate("Homep", { userInfo: userInfoM });
           }, 2000);
+        } else if (watch("username") === 'admin' && watch("password") === '1234') {
+
+          const userInfoA = {
+            adName: "admin",
+            adTel: "01034445792",
+            addres: "충청남도 아산시 탕정면 탕정면로 137-27",
+            bNum: "123123",
+            expotoken: "expotoken",
+            fcmtoken: "fcmtoken",
+            id: "admin",
+            name: "admin",
+            password: "1234",
+            phoneNum: "01034445792",
+            profileImage: "asdf",
+          };
+          console.log("로그인 성공", userInfoA);
+
+          // 모달 표시
+          setLoginSuccessModalVisible(true);
+
+          setTimeout(() => {
+            setLoginSuccessModalVisible(false);
+            navigation.navigate("ManagePage", { userInfo: userInfoA });
+          }, 2000);
+
         } else {
           // 사용자 정보가 없는 경우
           console.log("로그인 실패: 사용자 정보 없음");

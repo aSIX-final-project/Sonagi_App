@@ -441,7 +441,7 @@ const RegistGive = ({ navigation, route }) => {
               fontSize={30}
               fontWeight="bold"
               fontFamily="Play-Bold"
-              onRegistText={(text) => setValue("foodName", text)}
+              onChangeText={(text) => setValue("foodName", text)}
             />
           </View>
           <View style={styles.lineStyle} />
@@ -540,7 +540,7 @@ const RegistGive = ({ navigation, route }) => {
               textAlign="center" // 가운데 정렬
               keyboardType="numeric" // 숫자만 입력
               maxLength={3} // 3자리수 까지 입력가능
-              onRegistText={(text) => setValue("foodAmount", text)}
+              onChangeText={(text) => setValue("foodAmount", text)}
             />
             <Text
               style={{
@@ -731,7 +731,7 @@ const RegistGive = ({ navigation, route }) => {
               fontSize={30}
               fontWeight="bold"
               fontFamily="Play-Bold"
-              onRegistText={(text) => setValue("foodPrice", text)}
+              onChangeText={(text) => setValue("foodPrice", text)}
             />
           </View>
           <View style={styles.lineStyle} />
@@ -807,7 +807,7 @@ const RegistGive = ({ navigation, route }) => {
               fontWeight="bold"
               fontFamily="Play-Bold"
               multiline
-              onRegistText={(text) => setValue("context", text)}
+              onChangeText={(text) => setValue("context", text)}
             />
           </View>
           <View style={styles.lineStyle} />

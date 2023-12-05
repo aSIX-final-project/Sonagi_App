@@ -68,7 +68,7 @@ const ChangePw = ({ navigation, route }) => {
         setChangeFailedModalVisible(false);
       }, 2000);
       return false;
-    } else if (watch("ChangePw") && watch("ChangePw").length <= 4) {
+    } else if (watch("ChangePw") && watch("ChangePw").length < 4) {
       setModalMessage("변경할 비밀번호를 4자리 이상 입력하세요.");
       setChangeFailedModalVisible(true);
 

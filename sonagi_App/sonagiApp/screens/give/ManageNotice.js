@@ -1,36 +1,155 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Image,
-  Linking,
-  Platform,
   Modal,
-  ScrollView,
   TextInput,
   TouchableWithoutFeedback,
   Keyboard,
+  FlatList,
 } from "react-native";
 import BottomsheetMoDe from "./BottomsheetModDel";
+import axios from "axios";
 
-const ManageNotice = ({ navigation }) => {
-  // 바텀시트 (삭제, 수정)
+const ManageNotice = ({ navigation, route }) => {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [isNotionModalVisible, setNotionModalVisible] = useState(false);
+  const [isNotionModalVisible2, setNotionModalVisible2] = useState(false);
+
+
+  const { userInfo, noticeListParam } = route.params;
+  const [noticeList, setNoticeList] = useState({});
+  const [selectedNotice, setSelectedNotice] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
-  // 등록 버튼 클릭
-  const RegistNotice = () => {
-    navigation.navigate("RegistGive");
+  useEffect(() => {
+    setNoticeList(noticeListParam);
+    console.log(noticeList);
+  }, []);
+
+  const renderNoticeItem = ({ item }) => (
+    <TouchableOpacity
+      onPress={() => {
+        setSelectedNotice(item);
+        console.log("item : ", item);
+        setNotionModalVisible2(true);
+      }}
+    >
+      <View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: "Play-Bold",
+              fontSize: 20,
+              color: "#656565",
+              marginTop: "2%",
+              zIndex:10,
+            }}
+          >
+            [공지]{item.title}
+          </Text>
+          <TouchableOpacity
+            style={{ marginLeft: "5%", marginTop: "2.5%", width: "7%", height: "80%" }}
+            onPress={() => pressButton(item.textNum)}
+          >
+            <Image
+              style={{ width: 15, height: 15 }}
+              source={require("../../assets/motifydelete.png")}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </View>
+        <Text
+          style={{
+            fontFamily: "Play-Regular",
+            fontSize: 15,
+            color: "#8B8E90",
+            marginTop: "1%",
+          }}
+        >
+          {item.noticeDate.substring(0, 16)}
+        </Text>
+        <View
+          style={{
+            borderBottomWidth: 1,
+            borderBottomColor: "#DBDBDB",
+            width: "100%",
+            marginTop: "5%",
+          }}
+        />
+      </View>
+    </TouchableOpacity>
+  );
+
+  const fetchData = async () => {
+    let res = await axios.get(
+      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/notice/findAll"
+    );
+    setNoticeList(res.data);
   };
+  const handleSubmit = () => {
+    // title과 content에 접근 가능
+    console.log(title, content);
+    const fetchData2 = async () => {
+      try {
+        const formData = {
+          id: 'admin',
+          title: title,
+          context: content,
+          noticeIdentify: 0,
+        };
+        let response = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/notice/regist",
+          formData
+        );
+        // POST 요청이 성공적으로 끝난 후에 모달을 닫고 title과 content를 null로 설정합니다.
+        setNotionModalVisible(false);
+        setTitle(null);
+        setContent(null);
+        fetchData();
+      } catch (error) {
+        console.error("Cannot fetch data: ", error);
+      }
+    };
+    fetchData2();
+  };
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log("noticeList : ", noticeList);
+  }, [noticeList]); // noticeList 상태가 변경될 때마다 로그를 출력
 
   // 삭제 수정 버튼 클릭
-  const pressButton = () => {
+  const pressButton = (item) => {
+    console.log("Button pressed");
+    console.log(item);
+    console.log("Button pressed");
+    setSelectedItem(item);
     setModalVisible(true);
   };
 
-  // 게시판 모달 상태
-  const [isNotionModalVisible, setNotionModalVisible] = useState(false);
+  const asdf = () => {
+    setNotionModalVisible(false);
+    setTitle(null);
+    setContent(null);
+    fetchData();
+  };
+
+  // 게시판 모달 상태 
+
   // 게시판 버튼 클릭 핸들러
   const handleNotionButtonClick = () => {
     console.log("sucess");
@@ -38,15 +157,17 @@ const ManageNotice = ({ navigation }) => {
   };
 
   // 게시판 모달 상태(게시글 들어가기)
-  const [isNotionModalVisible2, setNotionModalVisible2] = useState(false);
-  // 게시판 버튼 클릭 핸들러
-  const handleNotionButtonClick2 = () => {
-    console.log("sucess2");
-    setNotionModalVisible2(true);
-  };
+
 
   return (
+
+
     <View style={styles.container}>
+
+
+
+
+
       {/* 공지 게시글 등록하기 모달 디자인 */}
       <Modal
         animationType="fade"
@@ -58,7 +179,7 @@ const ManageNotice = ({ navigation }) => {
             <View style={styles.modalView2}>
               {/* 게시판 모달 관련 코드 */}
               <TouchableOpacity
-                style={{ width: "10%", height: "%", left: "48%" }}
+                style={{ width: "10%", left: "48%" }}
                 onPress={() => setNotionModalVisible(false)}
               >
                 <View style={{ marginBottom: "10%" }}>
@@ -75,19 +196,22 @@ const ManageNotice = ({ navigation }) => {
                 style={styles.inputtext}
                 placeholder="제목을 입력하세요."
                 placeholderTextColor="#808080"
-              ></TextInput>
+                onChangeText={text => setTitle(text)}
+                value={title}
+              />
 
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
 
-              {/* 내용을 입력칸 */}
               <TextInput
                 style={styles.inputtext2}
                 placeholder="내용을 입력하세요."
                 placeholderTextColor="#808080"
                 multiline={true}
                 numberOfLines={10}
-              ></TextInput>
+                onChangeText={text => setContent(text)}
+                value={content}
+              />
 
               {/* 등록 버튼 */}
               <TouchableOpacity
@@ -101,6 +225,7 @@ const ManageNotice = ({ navigation }) => {
                   alignItems: "center",
                   justifyContent: "center",
                 }}
+                onPress={handleSubmit}
               >
                 <Text
                   style={{
@@ -117,6 +242,9 @@ const ManageNotice = ({ navigation }) => {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
+
+
+
 
       {/* 공지 게시글 보기 모달 디자인 */}
       <Modal
@@ -151,9 +279,10 @@ const ManageNotice = ({ navigation }) => {
                     marginTop: "10%",
                   }}
                 >
-                  [공지]23시-03시 정기 점검 예정
+                  {selectedNotice ? selectedNotice.title : ''}
                 </Text>
               </View>
+
               <Text
                 style={{
                   fontFamily: "Play-Regular",
@@ -162,8 +291,9 @@ const ManageNotice = ({ navigation }) => {
                   marginTop: "1%",
                 }}
               >
-                2023.11.06
+                {selectedNotice ? selectedNotice.noticeDate : ''}
               </Text>
+
               <View
                 style={{
                   borderBottomColor: "#DBDBDB",
@@ -184,8 +314,7 @@ const ManageNotice = ({ navigation }) => {
                   marginTop: "5%",
                 }}
               >
-                전체 앱 점검을 23시 ~ 03시까지 진행 할 예정이니 이용에 참고
-                부탁드립니다.
+                {selectedNotice ? selectedNotice.context : ''}
               </Text>
             </View>
           </View>
@@ -197,8 +326,11 @@ const ManageNotice = ({ navigation }) => {
           backgroundColor: "#44A5FF",
           width: "100%",
           height: "40%",
-          borderBottomLeftRadius: 20,
-          borderBottomRightRadius: 20,
+          flexDirection: "row",
+          alignItems: "center",
+          width: "100%",
+          height: "10%",
+          marginTop: "10%",
         }}
       >
         {/* 상단부분 */}
@@ -208,13 +340,12 @@ const ManageNotice = ({ navigation }) => {
             alignItems: "center",
             backgroundColor: "#44A5FF",
             width: "100%",
-            height: "17%",
-            marginTop: "10%",
+            height: "100%",
           }}
         >
           <TouchableOpacity
             style={{ marginLeft: "6%", marginRight: "2%" }}
-            onPress={() => navigation.navigate("ManagePage")}
+            onPress={() => navigation.navigate("ManagePage", { userInfo: userInfo })}
           >
             <Image
               style={{ width: 50, height: 50 }}
@@ -258,10 +389,10 @@ const ManageNotice = ({ navigation }) => {
           fontSize: 18,
           color: "#8B8E90",
           marginTop: "5%",
-          marginRight: "45%",
+          marginRight: "35%",
         }}
       >
-        총 30건의 공지사항이 있습니다.
+        총 {noticeList.length}건의 공지사항이 있습니다.
       </Text>
       <View
         style={{
@@ -272,65 +403,18 @@ const ManageNotice = ({ navigation }) => {
         }}
       />
 
-      <ScrollView
-        style={{ backgroundColor: "#FFFFFF", width: "89.5%", height: "80%" }}
-      >
-        <TouchableOpacity
-          style={{ flexDirection: "column", paddingBottom: "5%" }}
-          onPress={handleNotionButtonClick2}
-        >
-          <View style={{ flexDirection: "row" }}>
-            <Text
-              style={{
-                fontFamily: "Play-Bold",
-                fontSize: 20,
-                color: "#656565",
-                marginTop: "2%",
-              }}
-            >
-              [공지]23시-03시 정기 점검 예정
-            </Text>
+      <FlatList
+        data={noticeList}
+        renderItem={renderNoticeItem}
+        keyExtractor={(item, index) => index.toString()}
+        style={{
+          backgroundColor: "#FFFFFF",
+          width: "89.5%",
+          height: "80%",
+        }}
+      />
 
-            <TouchableOpacity
-              style={{
-                marginLeft: "35%",
-                marginTop: "2.5%",
-                marginRight: 10,
-                paddingTop: "2%",
-                paddingBottom: "2%",
-                marginTop: "1%",
-                paddingHorizontal: "2%",
-              }}
-              onPress={pressButton}
-            >
-              <Image
-                style={{ width: 18, height: 18 }}
-                source={require("../../assets/motifydelete.png")}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-          </View>
 
-          <Text
-            style={{
-              fontFamily: "Play-Regular",
-              fontSize: 15,
-              color: "#8B8E90",
-              marginTop: "1%",
-            }}
-          >
-            2023.11.06
-          </Text>
-        </TouchableOpacity>
-        <View
-          style={{
-            borderBottomWidth: 1,
-            borderBottomColor: "#DBDBDB",
-            width: "100%",
-            marginTop: "5%",
-          }}
-        />
-      </ScrollView>
 
       {/* 바텀시트 view */}
       <View style={styles.rootContainer}>
@@ -338,8 +422,11 @@ const ManageNotice = ({ navigation }) => {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           navigation={navigation}
+          item={selectedItem}
+          onClose={asdf} // fetchData 함수를 onClose 이벤트 핸들러로 전달합니다.
         />
       </View>
+
     </View>
   );
 };

@@ -15,8 +15,11 @@ import {
   Keyboard,
 } from "react-native";
 import { KeyboardAvoidingView } from "react-native";
+import axios from "axios";
 
-const BottomsheetAC = ({ modalVisible, setModalVisible, navigation }) => {
+const BottomsheetAC = ({ modalVisible, setModalVisible, navigation, selectedItem }) => {
+  const [dataList, setDataList] = useState([]);
+
   const screenHeight = Dimensions.get("screen").height;
   const panY = useRef(new Animated.Value(screenHeight)).current;
   const translateY = panY.interpolate({
@@ -62,6 +65,129 @@ const BottomsheetAC = ({ modalVisible, setModalVisible, navigation }) => {
       resetBottomSheet.start();
     }
   }, [modalVisible]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (selectedItem != null) {
+        console.log("asdasdasd", selectedItem.id);
+
+        const formData = {
+          id: selectedItem.id,
+        };
+        let res = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/findById",
+          formData
+        );
+
+        if (res.data.length < 1) {
+          res = await axios.post(
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
+            formData
+          );
+        }
+        setDataList(res.data);
+
+        console.log("qwerasdzxc", res.data);
+      }
+    };
+    fetchData();
+  }, [selectedItem]); // selectedItem이 변경될 때마다 fetchData가 실행됩니다.
+
+
+
+
+  const acceptMethod = async () => {
+    // 수락 버튼이 눌렸을 때 실행할 로직을 이곳에 작성합니다.
+    console.log('수락하기 버튼이 눌렸습니다.');
+    console.log(dataList);
+    console.log(selectedItem);
+
+    if (selectedItem.introduction != null) {// 시설 수정 -> 시설 이름, 시설 전화번호, 시설 주소, 시설 인원수, 시설 소개
+      const formData1 = {
+        id: dataList[0].id,
+        password: dataList[0].password,
+        adTel: selectedItem.adTel,
+        adName: selectedItem.adName,
+        address: selectedItem.address,
+        totalHc: selectedItem.totalHc,
+        introduction: selectedItem.introduction,
+      };
+      let res = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/modify",
+        formData1
+      );
+      console.log("시설 수정 완료");
+      const formData2 = {
+        adName: selectedItem.adName,
+        adTel: selectedItem.adTel,
+        address: selectedItem.address,
+        id: selectedItem.id,
+        introduction: selectedItem.introduction,
+        managerName: selectedItem.managerName,
+        totalHc: selectedItem.totalHc,
+      };
+      res = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/admin/delete",
+        formData2
+      );
+      console.log("삭제 완료");
+
+    } else { // 식당 수정 -> 식당 주소, 식당 전화번호, 식당 이름
+      const formData = {
+        id: dataList[0].id,
+        password: dataList[0].password,
+        adTel: selectedItem.adTel,
+        adName: selectedItem.adName,
+        address: selectedItem.address,
+      };
+      console.log("formData : ", formData);
+      let res = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/modifyPw",
+        formData
+      );
+      console.log("수정 완료");
+      const formData2 = {
+        adName: selectedItem.adName,
+        adTel: selectedItem.adTel,
+        address: selectedItem.address,
+        id: selectedItem.id,
+        introduction: selectedItem.introduction,
+        managerName: selectedItem.managerName,
+        totalHc: selectedItem.totalHc,
+      };
+      res = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/admin/delete",
+        formData2
+      );
+      console.log("삭제 완료");
+    }
+
+
+  };
+
+
+
+  const acceptMethod2 = async () => {
+    console.log('거절하기 버튼이 눌렸습니다.');
+    console.log(selectedItem);
+
+    const formData2 = {
+      adName: selectedItem.adName,
+      adTel: selectedItem.adTel,
+      address: selectedItem.address,
+      id: selectedItem.id,
+      introduction: selectedItem.introduction,
+      managerName: selectedItem.managerName,
+      totalHc: selectedItem.totalHc,
+    };
+    res = await axios.post(
+      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/admin/delete",
+      formData2
+    );
+    console.log("거절 완료");
+  };
+
 
   const closeModal = () => {
     return new Promise((resolve) => {
@@ -118,9 +244,12 @@ const BottomsheetAC = ({ modalVisible, setModalVisible, navigation }) => {
                   </TouchableOpacity>
                 </View>
 
-                {/* 삭제 하기 */}
+                {/* 수락 하기 */}
                 <View style={{ width: "100%", height: "28%" }}>
-                  <TouchableOpacity style={{ width: "100%", height: "100%" }}>
+                  <TouchableOpacity
+                    style={{ width: "100%", height: "100%" }}
+                    onPress={acceptMethod} // 수락하기 버튼을 눌렀을 때 acceptMethod를 실행
+                  >
                     <Text
                       style={{
                         fontFamily: "Play-Regular",
@@ -135,9 +264,9 @@ const BottomsheetAC = ({ modalVisible, setModalVisible, navigation }) => {
                   </TouchableOpacity>
                 </View>
 
-                {/* 수정 하기 */}
+                {/* 거절 하기 */}
                 <View style={{ width: "100%", height: "28%" }}>
-                  <TouchableOpacity style={{ width: "100%", height: "100%" }}>
+                  <TouchableOpacity style={{ width: "100%", height: "100%" }} onPress={acceptMethod2}>
                     <Text
                       style={{
                         fontFamily: "Play-Regular",
