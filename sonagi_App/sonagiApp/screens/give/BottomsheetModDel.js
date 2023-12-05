@@ -35,12 +35,42 @@ const BottomsheetModDel = ({
     duration: 300,
     useNativeDriver: true,
   });
+  const [modalData, setModalData] = useState(null);
 
   const closeBottomSheet = Animated.timing(panY, {
     toValue: screenHeight,
     duration: 300,
     useNativeDriver: true,
   });
+
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+
+  useEffect(() => {
+    if (item != null) {
+      const fetchData = async () => {
+        try {
+          console.log(item);
+          const formData = {
+            textNum: item,
+          };
+          const response = await axios.post(
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/notice/textNumSearch",
+            formData
+          );
+
+          // Assuming the response contains the data you want to display
+          setModalData(response.data);
+          console.log("response.data", response.data);
+
+        } catch (error) {
+          console.error("Cannot fetch data: ", error);
+        }
+      };
+      fetchData();
+    }
+
+  }, [isNotionModalVisible3, item]);
 
   const panResponders = useRef(
     PanResponder.create({
@@ -141,10 +171,10 @@ const BottomsheetModDel = ({
               {/* 제목 입력칸 */}
               <TextInput
                 style={styles.inputtext}
-                placeholder="제목을 입력하세요."
+                placeholder={modalData ? modalData[0].title : 'Title Placeholder'}
                 placeholderTextColor="#808080"
                 onChangeText={text => setTitle(text)}
-              // value={title}
+                value={title}
               />
 
               {/* 선 긋기 */}
@@ -152,12 +182,12 @@ const BottomsheetModDel = ({
 
               <TextInput
                 style={styles.inputtext2}
-                placeholder="내용을 입력하세요."
+                placeholder={modalData ? modalData[0].context : 'Context Placeholder'}
                 placeholderTextColor="#808080"
                 multiline={true}
                 numberOfLines={10}
                 onChangeText={text => setContent(text)}
-              // value={content}
+                value={content}
               />
 
               {/* 등록 버튼 */}
