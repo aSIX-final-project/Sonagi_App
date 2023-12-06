@@ -163,11 +163,6 @@ const ManagePage = ({ navigation, route }) => {
                 </>
               )}
 
-
-
-
-
-
             </View>
           </View>
         </TouchableOpacity>

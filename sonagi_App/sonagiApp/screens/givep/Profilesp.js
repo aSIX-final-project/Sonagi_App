@@ -117,7 +117,7 @@ const Profilesp = ({ navigation, route }) => {
   };
 
   // 고객센터 연결하기 기능
-  const CenterPhone = () => {};
+  const CenterPhone = () => { };
 
   // 로그아웃 버튼을 눌렀을때 값을 서버에 보냄
   const [isLogoutSuccessModalVisible, setLogoutSuccessModalVisible] =
@@ -309,146 +309,62 @@ const Profilesp = ({ navigation, route }) => {
         </View>
 
         {/* 고객센터 */}
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: "5%",
-            width: "88%",
-            height: "10%",
-            backgroundColor: "#E1F1FF",
-            borderRadius: 16,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Image
-            style={{
-              width: 65,
-              height: 65,
-              marginRight: "7%",
-              marginLeft: "0%",
-            }}
-            source={require("../../assets/call.png")}
-            resizeMode="contain"
-          />
-
-          <Text
-            style={{
-              fontFamily: "Play-Bold",
-              fontSize: 23,
-              color: "#8B8E90",
-              marginRight: "25%",
-            }}
-          >
-            고객센터 연결
-          </Text>
-
-          <TouchableOpacity style={{}} onPress={CenterPhone}>
+        <TouchableOpacity style={{ marginTop: '5%', width: '88%', height: '10%', backgroundColor: '#E1F1FF', borderRadius: 16, justifyContent: 'center', alignItems: 'center' }} onPress={CenterPhone}>
+          <View style={{ flexDirection: 'row', }}>
             <Image
-              style={{ width: 35, height: 35 }}
-              source={require("../../assets/next.png")}
+              style={{ width: 65, height: 65, marginRight: '7%', marginLeft: '0%' }}
+              source={require('../../assets/call.png')}
               resizeMode="contain"
             />
-          </TouchableOpacity>
-        </View>
+
+            <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#8B8E90', marginRight: '25%', marginTop: '6%' }}>고객센터 연결</Text>
+            <Image
+              style={{ width: 35, height: 35, marginTop: '4%' }}
+              source={require('../../assets/next.png')}
+              resizeMode="contain"
+            />
+          </View>
+        </TouchableOpacity>
 
         {/* 비밀번호 변경 */}
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: "5%",
-            width: "88%",
-            height: "10%",
-            backgroundColor: "#E1F1FF",
-            borderRadius: 16,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Image
-            style={{
-              width: 65,
-              height: 65,
-              marginRight: "7%",
-              marginLeft: "0%",
-            }}
-            source={require("../../assets/pwchange.png")}
-            resizeMode="contain"
-          />
-
-          <Text
-            style={{
-              fontFamily: "Play-Bold",
-              fontSize: 23,
-              color: "#8B8E90",
-              marginRight: "25%",
-            }}
-          >
-            비밀번호 변경
-          </Text>
-
-          <TouchableOpacity
-            style={{}}
-            onPress={() =>
-              navigation.navigate("ChangePwp", { userInfo: userInfo })
-            }
-          >
+        <TouchableOpacity style={{ marginTop: '5%', width: '88%', height: '10%', backgroundColor: '#E1F1FF', borderRadius: 16, justifyContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('ChangePwp')}>
+          <View style={{ flexDirection: 'row' }}>
             <Image
-              style={{ width: 35, height: 35 }}
-              source={require("../../assets/next.png")}
+              style={{ width: 65, height: 65, marginRight: '7%', marginLeft: '0%' }}
+              source={require('../../assets/pwchange.png')}
               resizeMode="contain"
             />
-          </TouchableOpacity>
-        </View>
+
+            <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#8B8E90', marginRight: '25%', marginTop: '6%' }}>비밀번호 변경</Text>
+
+
+            <Image
+              style={{ width: 35, height: 35, marginTop: '4%' }}
+              source={require('../../assets/next.png')}
+              resizeMode="contain"
+            />
+          </View>
+        </TouchableOpacity>
 
         {/* 시설 소개 */}
-        <View
-          style={{
-            flexDirection: "row",
-            marginTop: "5%",
-            width: "88%",
-            height: "10%",
-            backgroundColor: "#E1F1FF",
-            borderRadius: 16,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Image
-            style={{
-              width: 65,
-              height: 65,
-              marginRight: "7%",
-              marginLeft: "0%",
-            }}
-            source={require("../../assets/introduce2.png")}
-            resizeMode="contain"
-          />
-
-          <Text
-            style={{
-              fontFamily: "Play-Bold",
-              fontSize: 23,
-              color: "#8B8E90",
-              marginRight: "34%",
-            }}
-          >
-            시설 소개
-          </Text>
-
-          <TouchableOpacity
-            style={{}}
-            onPress={() =>
-              navigation.navigate("ChangeInfop", { userInfo: userInfo })
-            }
-          >
+        <TouchableOpacity style={{ marginTop: '5%', width: '88%', height: '10%', backgroundColor: '#E1F1FF', borderRadius: 16, justifyContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('ChangeInfop')}>
+          <View style={{ flexDirection: 'row', }}>
             <Image
-              style={{ width: 35, height: 35 }}
-              source={require("../../assets/next.png")}
+              style={{ width: 65, height: 65, marginRight: '7%', marginLeft: '0%' }}
+              source={require('../../assets/introduce2.png')}
               resizeMode="contain"
             />
-          </TouchableOpacity>
-        </View>
+
+            <Text style={{ fontFamily: 'Play-Bold', fontSize: 23, color: '#8B8E90', marginRight: '23%', marginTop: '6%' }}>시설 정보 변경</Text>
+
+
+            <Image
+              style={{ width: 35, height: 35, marginTop: '4%' }}
+              source={require('../../assets/next.png')}
+              resizeMode="contain"
+            />
+          </View>
+        </TouchableOpacity>
       </View>
     </TouchableWithoutFeedback>
   );
