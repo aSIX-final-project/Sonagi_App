@@ -31,6 +31,7 @@ const Donatep = ({ navigation, route }) => {
   const [content, setContent] = useState("");
   const [review, setReview] = useState("");
   // 바텀시트 (삭제, 수정)
+  const [selectedDonation, setSelectedDonation] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
   const [modalVisible3, setModalVisible3] = useState(false);
@@ -71,7 +72,6 @@ const Donatep = ({ navigation, route }) => {
 
         setDonations(donationsWithAdNameAndDonatedDate); // 데이터를 donations state에 저장합니다.
         console.log(donationsWithAdNameAndDonatedDate);
-        setDonations(donationsWithAdNameAndDonatedDate);
         setSelectedValue({
           adName: donationsWithAdNameAndDonatedDate[0].adName,
           donatedProvider: donationsWithAdNameAndDonatedDate[0].donatedProvider,
@@ -121,6 +121,7 @@ const Donatep = ({ navigation, route }) => {
       const formDataForAdName = {
         id: selectedValue.donatedProvider,
       };
+
       const responseForAdName = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
         formDataForAdName
@@ -148,7 +149,9 @@ const Donatep = ({ navigation, route }) => {
         receiver: userInfo.adName, // 이 값을 적절하게 설정해 주세요.
         reviewImage: responseURL.data, // 이미지 URI. 필요에 따라 적절한 값을 설정해 주세요.
       };
+
       const response = await axios.post(
+        //  유효성 필요
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/regist",
         formData
       );
@@ -174,10 +177,11 @@ const Donatep = ({ navigation, route }) => {
         formDataIs
       );
 
-      console.log(response.data);
-      setModalVisible3(false);
-      setfoodImage("");
-      navigation.navigate("Donatep", { userInfo: userInfo });
+      if (responseIs.status === 200) {
+        setModalVisible3(false);
+        setfoodImage("");
+        navigation.navigate("Donatep", { userInfo: userInfo });
+      }
     } catch (error) {
       console.error("Cannot save data: ", error);
     }
@@ -205,16 +209,16 @@ const Donatep = ({ navigation, route }) => {
 
       const receiver = response.data[0].adName;
       const donator = response2.data[0].adName;
-      const donatedDate = donation.donatedDate;
 
       let response3 = await axios.get(
-        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findAll"
+        // "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findAll"
+        "http://10.20.104.110:8888/boot/review/findAll"
       );
       const matchedReviews = response3.data.filter(
         (review) =>
           review.receiver === receiver &&
           review.donator === donator &&
-          review.reviewDate === donatedDate
+          review.foodName === donation.foodTitle
       );
 
       console.log(matchedReviews);
@@ -336,7 +340,7 @@ const Donatep = ({ navigation, route }) => {
                     ) : (
                       <Image
                         style={{ width: 300, height: 150, borderRadius: 16 }}
-                        source={require("../../assets/food4.png")}
+                        source={require("../../assets/galally.png")}
                         resizeMode="contain"
                       />
                     )}
@@ -346,21 +350,33 @@ const Donatep = ({ navigation, route }) => {
                 {/* 내가 기부받은 기부자 목록 찾기 피커 */}
                 <Picker
                   selectedValue={selectedValue.donatedProvider}
-                  onValueChange={(itemValue, itemIndex) =>
+                  onValueChange={(itemValue, itemIndex) => {
+                    const selectedDonation = donations.filter(
+                      (donation) =>
+                        !donation.isReviewed &&
+                        donation.adName + "-" + donation.foodTitle === itemValue
+                    )[0]; // 선택한 donation을 찾음
+                    [itemIndex]; // 선택한 donation을 찾음
                     setSelectedValue({
-                      adName: donations[itemIndex].adName,
+                      adName: selectedDonation.adName,
                       donatedProvider: itemValue,
-                    })
-                  }
-                  style={{ width: 150, height: 50, marginTop: "20%" }}
+                    });
+                  }}
+                  style={{ width: 300, height: 50, marginTop: "20%" }}
                 >
                   {donations
                     .filter((donation) => !donation.isReviewed)
                     .map((donation, index) => (
                       <Picker.Item
-                        key={index}
-                        label={donation.adName}
-                        value={donation.donatedProvider}
+                        key={
+                          donation.adName +
+                          "-" +
+                          donation.foodTitle +
+                          "-" +
+                          index
+                        } // key 값을 adName, foodTitle, 인덱스의 조합으로 설정
+                        label={donation.adName + "-" + donation.foodTitle}
+                        value={donation.adName + "-" + donation.foodTitle}
                       />
                     ))}
                 </Picker>
@@ -374,16 +390,6 @@ const Donatep = ({ navigation, route }) => {
                   numberOfLines={10}
                   onChangeText={setContent}
                 />
-
-                {/* 가격 입력칸 */}
-                <TextInput
-                  style={[styles.inputtext3, { marginBottom: 150 }]}
-                  placeholder="가격을 입력하세요."
-                  placeholderTextColor="#808080"
-                  multiline={true}
-                  keyboardType="numeric" // 숫자만 입력
-                  maxLength={10} // 최대 숫자 개수를 10으로 지정
-                ></TextInput>
               </ScrollView>
               {/* 등록 버튼 */}
               <TouchableOpacity
@@ -648,7 +654,10 @@ const Donatep = ({ navigation, route }) => {
 
               <TouchableOpacity
                 style={{ marginLeft: "5%", marginTop: "2.5%" }}
-                onPress={pressButton}
+                onPress={() => {
+                  setSelectedDonation(donation); // 선택된 donation을 저장
+                  pressButton();
+                }}
               >
                 <Image
                   style={{ width: 15, height: 15 }}
@@ -685,6 +694,7 @@ const Donatep = ({ navigation, route }) => {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           navigation={navigation}
+          selectedDonation={selectedDonation}
         />
       </View>
     </View>

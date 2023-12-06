@@ -163,7 +163,6 @@ const RegistGive = ({ navigation, route }) => {
         if (response.status === 200) {
           // 음식 등록 성공
           console.log("음식 등록 성공");
-          setRegistSuccessModalVisible(true);
 
           //모달 띄우기
           setRegistSuccessModalVisible(true);
@@ -210,7 +209,40 @@ const RegistGive = ({ navigation, route }) => {
     }
     const result = await ImagePicker.launchCameraAsync();
     if (!result.cancelled) {
-      // 이곳에서 카메라의 url을 컨트롤 하면됨
+      try {
+        const formData = new FormData();
+        formData.append("file", {
+          uri: result.assets[0].uri,
+          type: "image/jpeg",
+          name: `profile_${userInfo.id}.jpg`,
+        });
+
+        // 'nameFile' 파라미터 추가
+        formData.append("nameFile", watch("foodName"));
+        // console.log(formData);
+
+        // 'folderName' 파라미터 추가
+        formData.append("folderName", "food");
+
+        const response = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/files",
+          // "http://172.16.104.97:8888/boot/food/files",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        console.log(response.data);
+        setProfileImage(null);
+        setProfileImage(response.data);
+        console.log("이미지 업로드 성공");
+        setCameraModalVisible(false);
+      } catch (error) {
+        console.error("이미지 업로드 오류:", error);
+      }
     }
   };
 
