@@ -211,8 +211,8 @@ const Donatep = ({ navigation, route }) => {
       const donator = response2.data[0].adName;
 
       let response3 = await axios.get(
-        // "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findAll"
-        "http://10.20.104.110:8888/boot/review/findAll"
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findAll"
+        // "http://10.20.104.110:8888/boot/review/findAll"
       );
       const matchedReviews = response3.data.filter(
         (review) =>

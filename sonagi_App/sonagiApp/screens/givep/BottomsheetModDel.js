@@ -172,8 +172,8 @@ const BottomsheetModDel = ({
 
     console.log(formData2);
     const response2 = await axios.post(
-      // "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findByDonatorReciverReviewTitle",
-      "http://10.20.104.110:8888/boot/review/findByDonatorReciverReviewTitle",
+      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findByDonatorReciverReviewTitle",
+      // "http://10.20.104.110:8888/boot/review/findByDonatorReciverReviewTitle",
       formData2
     );
 
@@ -203,8 +203,8 @@ const BottomsheetModDel = ({
 
       // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
       const response = await axios.post(
-        // "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/modify",
-        "http://10.20.104.110:8888/boot/review/modify",
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/modify",
+        // "http://10.20.104.110:8888/boot/review/modify",
         formData
       );
 
@@ -219,8 +219,8 @@ const BottomsheetModDel = ({
 
       // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
       const response2 = await axios.post(
-        // "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/updateImageUrl",
-        "http://10.20.104.110:8888/boot/review/updateImageUrl",
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/updateImageUrl",
+        // "http://10.20.104.110:8888/boot/review/updateImageUrl",
         formData2
       );
 
