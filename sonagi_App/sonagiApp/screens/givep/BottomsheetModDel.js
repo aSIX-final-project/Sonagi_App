@@ -14,11 +14,31 @@ import {
   TouchableOpacity,
   Keyboard,
 } from "react-native";
+import { useForm } from "react-hook-form";
 import { KeyboardAvoidingView } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import axios from "axios";
 
-const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
-  const [image, setImage] = useState(null);
+const BottomsheetModDel = ({
+  modalVisible,
+  setModalVisible,
+  navigation,
+  selectedDonation,
+}) => {
+  const [ImageUri, setImageUri] = useState(null);
+  const [ReviewTitle, setReviewTitle] = useState(null);
+  const [ReviewContext, setReviewContext] = useState(null);
+  const [ReviewImage, setReviewImage] = useState(null);
+
+  const [Receiver, setReceiver] = useState(null);
+  const [Donator, setDonator] = useState(null);
+  const [FoodName, setFoodName] = useState(null);
+
+  const {
+    watch, // 입력 값 감시
+    setValue, // 입력 값 설정
+    formState: { errors }, // 폼 상태와 에러
+  } = useForm();
 
   const openImagePicker = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -26,10 +46,48 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
       alert("갤러리 접근 권한이 허용되지 않았습니다.");
       return;
     }
+
     const result = await ImagePicker.launchImageLibraryAsync();
-    if (!result.canceled) {
-      console.log(result.assets[0].uri);
-      setImage(result.assets[0].uri);
+    if (status !== "granted") {
+      alert("카메라 접근 권한이 허용되지 않았습니다.");
+      return;
+    }
+
+    if (!result.cancelled) {
+      try {
+        const formData = new FormData();
+        formData.append("file", {
+          uri: result.assets[0].uri,
+          type: "image/jpeg",
+          name: `review_${selectedDonation.foodTitle}.jpg`,
+        });
+
+        const review = Receiver + " " + Donator + " " + FoodName;
+        // 'nameFile' 파라미터 추가
+        formData.append("nameFile", review);
+        // console.log(formData);
+
+        // 'folderName' 파라미터 추가
+        formData.append("folderName", "review");
+
+        const response = await axios.post(
+          "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/files",
+          // "http://172.16.104.97:8888/boot/food/files",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        console.log(response.data);
+        setReviewImage(null);
+        setReviewImage(response.data);
+        console.log("이미지 업로드 성공");
+      } catch (error) {
+        console.error("이미지 업로드 오류:", error);
+      }
     }
   };
 
@@ -91,10 +149,91 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
   // 수정 모달 상태(게시글 수정하기)
   const [isNotionModalVisible3, setNotionModalVisible3] = useState(false);
   // 게시판 버튼 클릭 핸들러
-  const handleNotionButtonClick3 = () => {
+  const handleNotionButtonClick3 = async () => {
+    const formData = {
+      id: selectedDonation.donatedReceiver,
+    };
+
+    const response = await axios.post(
+      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/findById",
+      // "http://10.20.104.110:8888/boot/member/findById",
+      formData
+    );
+
+    setReceiver(response.data[0].adName);
+    setDonator(selectedDonation.adName);
+    setFoodName(selectedDonation.foodTitle);
+
+    const formData2 = {
+      receiver: Receiver,
+      donator: Donator,
+      foodName: FoodName,
+    };
+
+    console.log(formData2);
+    const response2 = await axios.post(
+      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findByDonatorReciverReviewTitle",
+      // "http://10.20.104.110:8888/boot/review/findByDonatorReciverReviewTitle",
+      formData2
+    );
+
+    // console.log("ooooo", response2.data[0]);
+    setReviewTitle(response2.data[0].reviewTitle);
+    setReviewImage(response2.data[0].reviewImage);
+    setReviewContext(response2.data[0].reviewContext);
+
+    // console.log(ReviewTitle);
+    // console.log(ReviewImage);
+    // console.log(ReviewContext);
+
     closeModal().then(() => {
       setNotionModalVisible3(true);
     });
+  };
+
+  const handleReviewChange = async () => {
+    try {
+      const formData = {
+        receiver: Receiver,
+        donator: Donator,
+        foodName: FoodName,
+        reviewTitle: watch("ChangeTitle"),
+        reviewContext: watch("ChangeContext"),
+      };
+
+      // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
+      const response = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/modify",
+        // "http://10.20.104.110:8888/boot/review/modify",
+        formData
+      );
+
+      console.log(response.data[0]);
+
+      const formData2 = {
+        receiver: Receiver,
+        donator: Donator,
+        foodName: FoodName,
+        reviewImage: ReviewImage,
+      };
+
+      // 실제로는 axios를 사용하여 서버에 요청을 보냅니다.
+      const response2 = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/updateImageUrl",
+        // "http://10.20.104.110:8888/boot/review/updateImageUrl",
+        formData2
+      );
+
+      console.log(response.data);
+
+      if (response.status === 200 && response2.status === 200) {
+        console.log("리뷰 수정 완료!");
+
+        setNotionModalVisible3(false);
+      }
+    } catch (error) {
+      console.error("에러:", error);
+    }
   };
 
   return (
@@ -131,7 +270,8 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
               {/* 제목 입력칸 */}
               <TextInput
                 style={styles.inputtext}
-                placeholder="제목을 입력하세요."
+                onChangeText={(text) => setValue("ChangeTitle", text)}
+                placeholder={ReviewTitle}
                 placeholderTextColor="#808080"
               ></TextInput>
 
@@ -150,9 +290,7 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
                   onPress={openImagePicker}
                 >
                   <Image
-                    source={
-                      image ? { uri: image } : require("../../assets/food4.png")
-                    }
+                    source={{ uri: ReviewImage }}
                     style={{ width: 280, height: 170, borderRadius: 16 }}
                     resizeMode="contain"
                   />
@@ -162,20 +300,11 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
               {/* 내용을 입력칸 */}
               <TextInput
                 style={styles.inputtext2}
-                placeholder="내용을 입력하세요."
+                onChangeText={(text) => setValue("ChangeContext", text)}
+                placeholder={ReviewContext}
                 placeholderTextColor="#808080"
                 multiline={true}
                 numberOfLines={10}
-              ></TextInput>
-
-              {/* 가격 입력칸 */}
-              <TextInput
-                style={styles.inputtext3}
-                placeholder="가격을 입력하세요."
-                placeholderTextColor="#808080"
-                multiline={true}
-                keyboardType="numeric" // 숫자만 입력
-                maxLength={10} // 최대 숫자 개수를 10으로 지정
               ></TextInput>
 
               {/* 수정 버튼 */}
@@ -188,6 +317,7 @@ const BottomsheetModDel = ({ modalVisible, setModalVisible, navigation }) => {
                   alignItems: "center",
                   justifyContent: "center",
                 }}
+                onPress={handleReviewChange}
               >
                 <Text
                   style={{
