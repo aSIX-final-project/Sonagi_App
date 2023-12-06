@@ -343,7 +343,6 @@ const Donatep = ({ navigation, route }) => {
                   </TouchableOpacity>
                 </View>
 
-                {/* 내가 기부받은 기부자 목록 찾기 피커 */}
                 <Picker
                   selectedValue={selectedValue.donatedProvider}
                   onValueChange={(itemValue, itemIndex) =>
@@ -354,6 +353,7 @@ const Donatep = ({ navigation, route }) => {
                   }
                   style={{ width: 150, height: 50, marginTop: "20%" }}
                 >
+                  
                   {donations
                     .filter((donation) => !donation.isReviewed)
                     .map((donation, index) => (
@@ -374,16 +374,6 @@ const Donatep = ({ navigation, route }) => {
                   numberOfLines={10}
                   onChangeText={setContent}
                 />
-
-                {/* 가격 입력칸 */}
-                <TextInput
-                  style={[styles.inputtext3, { marginBottom: 150 }]}
-                  placeholder="가격을 입력하세요."
-                  placeholderTextColor="#808080"
-                  multiline={true}
-                  keyboardType="numeric" // 숫자만 입력
-                  maxLength={10} // 최대 숫자 개수를 10으로 지정
-                ></TextInput>
               </ScrollView>
               {/* 등록 버튼 */}
               <TouchableOpacity

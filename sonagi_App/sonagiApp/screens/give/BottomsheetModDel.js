@@ -30,6 +30,12 @@ const BottomsheetModDel = ({
     inputRange: [-1, 0, 1],
     outputRange: [0, 0, 1],
   });
+  useEffect(() => {
+    if (modalData && modalData.length > 0) {
+      setTitle(modalData[0].title);
+      setContent(modalData[0].context);
+    }
+  }, [modalData]);
   const resetBottomSheet = Animated.timing(panY, {
     toValue: 0,
     duration: 300,
@@ -120,6 +126,42 @@ const BottomsheetModDel = ({
     });
   };
 
+  const handleSubmit = async () => {
+    console.log(title, content);
+    try {
+      const formData2 = {
+        textNum: item,
+      };
+      const response2 = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/notice/textNumSearch",
+        formData2
+      );
+      console.log(response2.data[0].title);
+      console.log(response2.data[0].context);
+
+
+
+
+      const formData = {
+        textNum: item,
+        title: title || response2.data[0].title, // 만약 title이 null 또는 비어 있다면 item의 값 사용
+        context: content || response2.data[0].context, // 만약 content가 null 또는 비어 있다면 item의 값 사용
+      };
+      let response = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/notice/modify",
+        formData
+      );
+      closeModal(); // 메인 모달을 닫음
+      setNotionModalVisible3(false);
+      if (onClose) {
+        onClose();
+      }
+    } catch (error) {
+      console.error("데이터를 가져올 수 없습니다: ", error);
+    }
+  };
+
+
 
   const handleNotionButtonClick3 = async () => {
     console.log("Click3");
@@ -171,7 +213,7 @@ const BottomsheetModDel = ({
               {/* 제목 입력칸 */}
               <TextInput
                 style={styles.inputtext}
-                placeholder={modalData ? modalData[0].title : 'Title Placeholder'}
+                placeholder={!title ? (modalData ? modalData[0].title : 'Title Placeholder') : ''}
                 placeholderTextColor="#808080"
                 onChangeText={text => setTitle(text)}
                 value={title}
@@ -202,7 +244,7 @@ const BottomsheetModDel = ({
                   alignItems: "center",
                   justifyContent: "center",
                 }}
-              // onPress={handleSubmit}
+                onPress={handleSubmit}
               >
                 <Text
                   style={{

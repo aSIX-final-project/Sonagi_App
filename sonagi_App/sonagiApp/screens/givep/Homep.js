@@ -13,6 +13,8 @@ import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
 import { Linking } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
+import { Pagination } from 'react-native-snap-carousel';
+
 
 const components = [
   {
@@ -131,6 +133,34 @@ const Homep = ({ navigation, route }) => {
     }, [])
   );
 
+  const [activeReviewSlide, setReviewActiveSlide] = useState(0);
+  const [reviewList, setReviewList] = useState([]);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData3 = async () => {
+        try {
+          const response = await axios.get(
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findAll"
+          );
+          const receivedReviews = response.data;
+          console.log(receivedReviews);
+          if (Array.isArray(receivedReviews)) {
+            const sortedReviews = receivedReviews.sort(
+              (a, b) => new Date(b.reviewDate) - new Date(a.reviewDate)
+            );
+            const topFiveReviews = sortedReviews.slice(0, 5);
+            setReviewList(topFiveReviews);
+          }
+        } catch (error) {
+          console.error("리뷰 데이터를 가져오는데 실패했습니다:", error);
+        }
+      };
+
+
+      fetchData3();
+    }, [])
+  );
+
   return (
     <View style={styles.container}>
       {/* 첫번째 라인 */}
@@ -194,7 +224,7 @@ const Homep = ({ navigation, route }) => {
         <ScrollView
           style={{ width: "95%", height: "95%" }}
           showsVerticalScrollIndicator={true} // 스크롤바 표시
-          contentContainerStyle={{ paddingBottom: 530 }} // 공백 부분
+          contentContainerStyle={{ paddingBottom: 950 }} // 공백 부분
         >
           <View style={styles.fifthOneContainer}>
             <TouchableOpacity
@@ -455,7 +485,69 @@ const Homep = ({ navigation, route }) => {
               </TouchableOpacity>
             </View>
           </View>
+          <View style={{ width: '100%', height: '50%', alignItems: 'center', marginTop: 20 }}>
+            <View
+              style={{
+                justifyContent: "center",
+                height: "100%",
+                width: '95%',
+                backgroundColor: '#FFFFFF',
+                borderRadius: 30,
+                alignItems: "center",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.23,
+                shadowRadius: 2.62,
+                elevation: 4,
+              }}
+            >
+              <View style={styles.thirdContainer}>
+                <Carousel
+                  data={reviewList}
+                  renderItem={({ item }) => (
+                    <View>
+                      <View style={{ width: '94%', height: "30%" }}>
+                        <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 17, marginTop: 2 }}>{item.regionCategory} - {item.donator}</Text>
+                        <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 14, marginTop: 1 }}> {item.receiver}님의 리뷰 : {item.reviewTitle} </Text>
+                        <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 13, marginTop: 1 }}> {item.reviewDate}</Text>
+                      </View>
 
+                      <View style={{ width: '94%', height: '80%', alignItems: 'center' }}>
+                        <Image
+                          source={{ uri: item.reviewImage }}
+                          style={{ width: "90%", height: "75%", borderRadius: 30 }}
+                          resizeMode="cover"
+                        />
+                      </View>
+                    </View>
+                  )}
+                  sliderWidth={Dimensions.get("window").width}
+                  itemWidth={Dimensions.get("window").width}
+                  onSnapToItem={(index) => setReviewActiveSlide(index)}
+                />
+                <Pagination
+                  dotsLength={reviewList.length}
+                  activeDotIndex={activeReviewSlide}
+                  containerStyle={{ backgroundColor: 'transparent' }}
+                  dotStyle={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 5,
+                    marginHorizontal: 8,
+                    backgroundColor: 'rgba(0, 0, 0, 0.92)'
+                  }}
+                  inactiveDotStyle={{
+                    backgroundColor: 'gray'
+                  }}
+                  inactiveDotOpacity={0.4}
+                  inactiveDotScale={0.6}
+                />
+              </View>
+            </View>
+          </View>
           <View
             style={{
               justifyContent: "center",
@@ -478,7 +570,7 @@ const Homep = ({ navigation, route }) => {
                   <TouchableOpacity onPress={() => Linking.openURL('https://www.donorscamp.org/culSupportProgList_P.do')}>
                     <Image
                       source={{ uri: item.imageSrc }}
-                      style={{ width: "100%", height: "100%", borderRadius:30 }}
+                      style={{ width: "100%", height: "100%", borderRadius: 30 }}
                       resizeMode="cover"
                     />
                   </TouchableOpacity>

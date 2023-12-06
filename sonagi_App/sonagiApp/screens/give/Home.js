@@ -14,6 +14,8 @@ import axios from "axios";
 import { useFocusEffect } from "@react-navigation/native";
 import Carousel from "react-native-snap-carousel";
 import { Linking } from "react-native";
+import { Pagination } from 'react-native-snap-carousel';
+
 
 const components = [
   {
@@ -49,7 +51,7 @@ const Home = ({ navigation, route }) => {
   const [noticeList, setNoticeList] = useState({});
   const [latestNotice, setLatestNotice] = useState(null);
   const [requestList, setRequestList] = useState([]);
-
+  const [reviewList, setReviewList] = useState([]);
   const callPhone = (phoneNum) => {
     // 카카오 네비게이션 API를 이용해 길찾기 실행
     const url = `tel:${phoneNum}`;
@@ -82,7 +84,7 @@ const Home = ({ navigation, route }) => {
     },
   ];
   const [activeSlide, setActiveSlide] = useState(0);
-
+  const [activeReviewSlide, setReviewActiveSlide] = useState(0);
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1));
@@ -131,6 +133,27 @@ const Home = ({ navigation, route }) => {
       };
 
       fetchData2();
+
+      const fetchData3 = async () => {
+        try {
+          const response = await axios.get(
+            "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findAll"
+          );
+          const receivedReviews = response.data;
+          console.log(receivedReviews);
+          if (Array.isArray(receivedReviews)) {
+            const sortedReviews = receivedReviews.sort(
+              (a, b) => new Date(b.reviewDate) - new Date(a.reviewDate)
+            );
+            const topFiveReviews = sortedReviews.slice(0, 5);
+            setReviewList(topFiveReviews);
+          }
+        } catch (error) {
+          console.error("리뷰 데이터를 가져오는데 실패했습니다:", error);
+        }
+      };
+
+      fetchData3();
     }, [])
   );
 
@@ -197,7 +220,7 @@ const Home = ({ navigation, route }) => {
         <ScrollView
           style={{ width: "95%", height: "95%" }}
           showsVerticalScrollIndicator={true} // 스크롤바 표시
-          contentContainerStyle={{ paddingBottom: 500 }} // 공백 부분
+          contentContainerStyle={{ paddingBottom: 950 }} // 공백 부분
         >
           <View style={styles.fifthOneContainer}>
             <TouchableOpacity
@@ -317,7 +340,6 @@ const Home = ({ navigation, route }) => {
                       justifyContent: "center",
                       alignItems: "center",
                       marginBottom: "20%",
-                      marginTop: "5%",
                     }}
                   >
                     <Text
@@ -404,7 +426,7 @@ const Home = ({ navigation, route }) => {
                   <View
                     style={{
                       position: "absolute",
-                      top: 69,
+                      top: 85,
                       right: 50,
                       width: 30,
                       height: 30,
@@ -429,6 +451,72 @@ const Home = ({ navigation, route }) => {
             </View>
           </View>
 
+          <View style={{ width: '100%', height: '50%', alignItems: 'center', marginTop: 20 }}>
+            <View
+              style={{
+                justifyContent: "center",
+                height: "100%",
+                width: '95%',
+                backgroundColor: '#FFFFFF',
+                borderRadius: 30,
+                alignItems: "center",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.23,
+                shadowRadius: 2.62,
+                elevation: 4,
+              }}
+            >
+              <View style={styles.thirdContainer}>
+                <Carousel
+                  data={reviewList}
+                  renderItem={({ item }) => (
+                    <View>
+                      <View style={{ width: '94%', height: "30%" }}>
+                        <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 17, marginTop: 2 }}>{item.regionCategory} - {item.donator}</Text>
+                        <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 14, marginTop: 1 }}> {item.receiver}님의 리뷰 : {item.reviewTitle} </Text>
+                        <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 13, marginTop: 1 }}> {item.reviewDate}</Text>
+                      </View>
+
+                      <View style={{ width: '94%', height: '80%', alignItems: 'center'}}>
+                        <Image
+                          source={{ uri: item.reviewImage }}
+                          style={{ width: "90%", height: "75%", borderRadius: 30 }}
+                          resizeMode="cover"
+                        />
+                      </View>
+                    </View>
+                  )}
+                  sliderWidth={Dimensions.get("window").width}
+                  itemWidth={Dimensions.get("window").width}
+                  onSnapToItem={(index) => setReviewActiveSlide(index)}
+                />
+                <Pagination
+                  dotsLength={reviewList.length} 
+                  activeDotIndex={activeReviewSlide} 
+                  containerStyle={{ backgroundColor: 'transparent' }} 
+                  dotStyle={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: 5,
+                    marginHorizontal: 8,
+                    backgroundColor: 'rgba(0, 0, 0, 0.92)' 
+                  }}
+                  inactiveDotStyle={{
+                    backgroundColor: 'gray'
+                  }}
+                  inactiveDotOpacity={0.4}
+                  inactiveDotScale={0.6}
+                />
+              </View>
+            </View>
+          </View>
+
+
+
           <View
             style={{
               justifyContent: "center",
@@ -442,6 +530,7 @@ const Home = ({ navigation, route }) => {
               shadowOpacity: 0.23,
               shadowRadius: 2.62,
               elevation: 4,
+              marginTop: 20
             }}
           >
             <View style={styles.thirdContainer}>
@@ -451,7 +540,6 @@ const Home = ({ navigation, route }) => {
                   <TouchableOpacity
                     onPress={() => {
                       if (item.nav) {
-
                         navigation.navigate(item.nav, { userInfo: userInfo });
                       } else if (item.web) {
                         Linking.openURL(item.web);
@@ -475,6 +563,8 @@ const Home = ({ navigation, route }) => {
               />
             </View>
           </View>
+
+
         </ScrollView>
       </View>
 
@@ -564,7 +654,7 @@ const styles = StyleSheet.create({
   },
 
   fourthOneContainer: {
-    width: "150px",
+    width: 200,
     height: "95%",
     backgroundColor: "#44A5FF",
     borderRadius: 30,
@@ -586,11 +676,11 @@ const styles = StyleSheet.create({
     width: "96%",
     height: "95%",
     backgroundColor: "#ffffff",
-    borderRadius: 30,
     justifyContent: "flex-start",
     alignItems: "center",
     marginLeft: "2%",
     marginTop: "3%",
+    borderRadius: 30,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
