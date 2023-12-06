@@ -48,19 +48,30 @@ const ManageNotice = ({ navigation, route }) => {
             alignItems: 'center',
           }}
         >
-          <Text
-            style={{
-              fontFamily: "Play-Bold",
-              fontSize: 20,
-              color: "#656565",
-              marginTop: "2%",
-              zIndex:10,
-            }}
-          >
-            [공지]{item.title}
-          </Text>
+          <View style={{ flexDirection: 'column', width: '90%' }}>
+            <Text
+              style={{
+                fontFamily: "Play-Bold",
+                fontSize: 22,
+                color: "#656565",
+                zIndex: 10,
+              }}
+            >
+              [공지]
+            </Text>
+            <Text
+              style={{
+                fontFamily: "Play-Bold",
+                fontSize: 20,
+                color: "#656565",
+                zIndex: 10,
+              }}
+            >
+              {item.title}
+            </Text>
+          </View>
           <TouchableOpacity
-            style={{ marginLeft: "5%", marginTop: "2.5%", width: "7%", height: "80%" }}
+            style={{ marginLeft: "5%", marginTop: "2.5%", width: "7%", height: "80%", zIndex: 15 }}
             onPress={() => pressButton(item.textNum)}
           >
             <Image
