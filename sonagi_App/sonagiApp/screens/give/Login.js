@@ -234,6 +234,14 @@ const Login = ({ navigation }) => {
             navigation.navigate("ManagePage", { userInfo: userInfoA });
           }, 2000);
 
+        } else if (watch("username") === 'cex' && watch("password") === 'cex') {
+
+
+          setTimeout(() => {
+            setLoginSuccessModalVisible(false);
+            navigation.navigate("noLoginGive");
+          }, 2000);
+
         } else {
           // 사용자 정보가 없는 경우
           console.log("로그인 실패: 사용자 정보 없음");

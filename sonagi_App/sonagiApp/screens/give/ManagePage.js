@@ -148,7 +148,7 @@ const ManagePage = ({ navigation, route }) => {
                       color: "white",
                     }}
                   >
-                    {latestNotice.title}
+                    {latestNotice.title.length > 6 ? `${latestNotice.title.substring(0, 6)}...` : latestNotice.title}
                   </Text>
                   <Text
                     style={{
@@ -227,13 +227,62 @@ const ManagePage = ({ navigation, route }) => {
       </View>
 
       {/* 네번째 라인 */}
-      <TouchableOpacity onPress={() => navigation.navigate("KakaoMapA", { userInfo: userInfo })}>
-        <View style={styles.thirdContainer}>
-          <Image
-            source={require("../../assets/map.jpg")}
-            style={{ width: "100%", height: "100%" }}
-            resizeMode="cover"
-          />
+      <TouchableOpacity onPress={() => navigation.navigate("noLoginReq", { userInfo: userInfo })}>
+        <View style={styles.fourthTwoContainer2}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              top: "15%",
+              left: "3%",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                fontFamily: "Play-Regular",
+                color: "#6F6A6A",
+                marginTop:"-15%"
+              }}
+            >
+              재능기부 요청 관리
+            </Text>
+            <Image
+              style={{ width: 50, height: 25, left: "10%", marginTop:"-17%" }}
+              source={require("../../assets/donation.png")}
+              resizeMode="contain"
+            />
+          </View>
+
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              bottom: "5%",
+              right: "1%",
+              marginTop:"-8%"
+            }}
+          >
+            <View style={{ marginTop: "29%" }}>
+              <Image
+                style={{ width: 400, height: 80, left: "0%" }}
+                source={require("../../assets/circle2.png")}
+                resizeMode="contain"
+              />
+              <Text
+                style={{
+                  fontSize: 60,
+                  fontFamily: "Play-Bold",
+                  color: "#ffffff",
+                  textAlign: "center",
+                  bottom: "50%",
+                }}
+              >
+                {dataList.length}
+              </Text>
+            </View>
+          </View>
         </View>
       </TouchableOpacity>
     </View>
@@ -288,6 +337,18 @@ const styles = StyleSheet.create({
     marginLeft: 14,
     borderColor: "#44A5FF",
     borderWidth: 1,
+  },
+  fourthTwoContainer2: {
+    width: "100%",
+    height: "45%",
+    alignItems: "center",
+    bottom: "0%",
+    backgroundColor: "#ffffff",
+    borderRadius: 30,
+    marginLeft: 14,
+    borderColor: "#44A5FF",
+    borderWidth: 1,
+    marginTop: "3%",
   },
 
   fifthContainer: {

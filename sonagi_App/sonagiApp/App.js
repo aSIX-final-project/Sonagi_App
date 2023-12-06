@@ -21,7 +21,10 @@ import BottomsheetModDel from "./screens/give/BottomsheetModDel";
 import GiveMapConnect from "./screens/give/GiveMapConnect";
 import CrawlingNotice from "./screens/give/CrawlingNotice";
 import CrawlingNaver from "./screens/give/CrawlingNaver";
-
+import noLoginGive from "./screens/give/noLoginGive";
+import BottomsheetNoLogin from "./screens/give/BottomsheetNoLogin";
+import noLoginReq from "./screens/give/noLoginReq";
+import BottomsheetNoLoginModDel from "./screens/give/BottomsheetNoLoginModDel";
 
 // 피기부자
 import Homep from "./screens/givep/Homep";
@@ -292,6 +295,35 @@ export default function App() {
         <Stack.Screen
           name="BottomsheetModDel"
           component={BottomsheetModDel}
+          options={{
+            headerShown: false,
+          }}
+        />
+
+        <Stack.Screen
+          name="BottomsheetNoLogin"
+          component={BottomsheetNoLogin}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="noLoginGive"
+          component={noLoginGive}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="noLoginReq"
+          component={noLoginReq}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="BottomsheetNoLoginModDel"
+          component={BottomsheetNoLoginModDel}
           options={{
             headerShown: false,
           }}
