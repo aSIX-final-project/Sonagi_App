@@ -218,15 +218,15 @@ const GiveReq = ({ navigation, route }) => {
                   position: "absolute",
                   top: 20,
                   right: 25,
-                  width: 30,
-                  height: 30,
+                  width: 40,
+                  height: 40,
                   backgroundColor: "white",
                   justifyContent: "center",
                   alignItems: "center",
                   borderRadius: 10,
                   padding: 5,
                   borderColor: "#65C8FF",
-                  borderWidth: 3,
+                  borderWidth: 2,
                 }}
                 onPress={() => callPhone(item.senderTel)}
               >

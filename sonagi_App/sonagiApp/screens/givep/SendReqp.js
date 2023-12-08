@@ -145,7 +145,7 @@ const SendReqp = ({ navigation, route }) => {
           fontSize: 18,
           color: "#8B8E90",
           marginTop: "5%",
-          marginRight: "30%",
+          marginRight: "45%",
         }}
       >
         총 {reqList.length}건의 보낸 요청이 있습니다.

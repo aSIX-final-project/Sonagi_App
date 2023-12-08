@@ -632,7 +632,7 @@ const Donatep = ({ navigation, route }) => {
                   fontSize: 20,
                   color: "#656565",
                   marginTop: "2%",
-                  marginRight: "15%",
+                  marginRight: "40%",
                 }}
               >
                 {donation.foodTitle}

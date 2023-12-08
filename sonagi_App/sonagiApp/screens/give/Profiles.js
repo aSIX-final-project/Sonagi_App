@@ -303,7 +303,7 @@ const Profiles = ({ navigation, route }) => {
 
       {/* 비밀번호 변경 */}
       {/* 비밀번호 변경 */}
-      <TouchableOpacity style={{ marginTop: '5%', width: '88%', height: '10%', backgroundColor: '#E1F1FF', borderRadius: 16, justifyContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('ChangePw')}>
+      <TouchableOpacity style={{ marginTop: '5%', width: '88%', height: '10%', backgroundColor: '#E1F1FF', borderRadius: 16, justifyContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('ChangePw',{userInfo : userInfo})}>
         <View style={{ flexDirection: 'row' }}>
           <Image
             style={{ width: 65, height: 65, marginRight: '7%', marginLeft: '0%' }}
@@ -323,7 +323,7 @@ const Profiles = ({ navigation, route }) => {
       </TouchableOpacity>
 
       {/* 시설 소개 */}
-      <TouchableOpacity style={{ marginTop: '5%', width: '88%', height: '10%', backgroundColor: '#E1F1FF', borderRadius: 16, justifyContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('ChangeInfo')}>
+      <TouchableOpacity style={{ marginTop: '5%', width: '88%', height: '10%', backgroundColor: '#E1F1FF', borderRadius: 16, justifyContent: 'center', alignItems: 'center' }} onPress={() => navigation.navigate('ChangeInfo',{userInfo : userInfo})}>
         <View style={{ flexDirection: 'row', }}>
           <Image
             style={{ width: 65, height: 65, marginRight: '7%', marginLeft: '0%' }}

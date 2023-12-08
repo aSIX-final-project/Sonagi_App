@@ -374,7 +374,7 @@ const ChangePw = ({ navigation, route }) => {
               returnKeyType="next"
               onChangeText={(text) => setValue("CurPw", text)}
               clearButtonMode="while-editing"
-              placeholder="Enter password"
+              placeholder="비밀번호를 입력하세요."
               name="CurPw"
             />
             <Text
@@ -394,7 +394,7 @@ const ChangePw = ({ navigation, route }) => {
               returnKeyType="next"
               onChangeText={(text) => setValue("ChangePw", text)}
               clearButtonMode="while-editing"
-              placeholder="Enter password"
+              placeholder="비밀번호를 입력하세요."
               name="ChangePw"
             />
             <Text
@@ -414,7 +414,7 @@ const ChangePw = ({ navigation, route }) => {
               returnKeyType="next"
               onChangeText={(text) => setValue("ChangePwCheck", text)}
               clearButtonMode="while-editing"
-              placeholder="Enter password"
+              placeholder="비밀번호를 입력하세요."
               name="ChangePwCheck"
             />
             <TouchableOpacity

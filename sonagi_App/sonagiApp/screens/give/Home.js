@@ -235,7 +235,7 @@ const Home = ({ navigation, route }) => {
                   width: "100%",
                   marginLeft: "2%",
                   marginBottom: "3%",
-                  marginTop: "3%",
+                  marginTop: "1%",
                 }}
               >
                 <Text
@@ -252,7 +252,7 @@ const Home = ({ navigation, route }) => {
               <Image
                 style={{
                   width: "100%",
-                  height: "75%",
+                  height: "77%",
                   borderRadius: 15,
                   marginBottom: "3%",
                 }}
@@ -266,10 +266,11 @@ const Home = ({ navigation, route }) => {
           <View
             style={{
               width: "94%",
-              height: "30%",
+              height: "20%",
               backgroundColor: "#D3EAFF",
               borderRadius: 15,
-              margin: "3%",
+              marginHorizontal: "3%",
+              marginTop: '3%',
               justifyContent: "center",
               alignItems: "center",
               shadowColor: "#000",
@@ -288,7 +289,7 @@ const Home = ({ navigation, route }) => {
                 fontFamily: "Play-Regular",
                 color: "#3D3D3D",
                 marginRight: "0%",
-                marginTop: "0%",
+                marginTop: "2%",
                 width: "87%",
                 textAlign: "left",
                 marginBottom: "3%",
@@ -300,7 +301,7 @@ const Home = ({ navigation, route }) => {
             <TouchableOpacity
               style={{
                 marginBottom: "2%",
-                marginRight: "63%",
+                marginRight: "64%",
                 borderRadius: 15,
                 backgroundColor: "#FFFFFF",
                 padding: "2%",
@@ -339,7 +340,7 @@ const Home = ({ navigation, route }) => {
                       flexDirection: "row",
                       justifyContent: "center",
                       alignItems: "center",
-                      marginBottom: "20%",
+                      marginBottom: "30%",
                     }}
                   >
                     <Text
@@ -412,22 +413,22 @@ const Home = ({ navigation, route }) => {
                         fontFamily: "Play-Regular",
                         color: "#6F6A6A",
                         marginRight: "30%",
-                        marginTop: "15%",
+                        marginTop: "20%",
                       }}
                     >
                       기부 요청
                     </Text>
                   </View>
                   <Image
-                    style={{ width: "40%", height: "40%", marginTop: "9%" }}
+                    style={{ width: "50%", height: "50%", marginTop: "6%" }}
                     source={require("../../assets/givereq.png")}
                     resizeMode="contain"
                   />
                   <View
                     style={{
                       position: "absolute",
-                      top: 85,
-                      right: 50,
+                      top: 75,
+                      right: 40,
                       width: 30,
                       height: 30,
                       borderRadius: 15,
@@ -451,7 +452,7 @@ const Home = ({ navigation, route }) => {
             </View>
           </View>
 
-          <View style={{ width: '100%', height: '50%', alignItems: 'center', marginTop: 20 }}>
+          <View style={{ width: '100%', height: '90%', alignItems: 'center', marginTop: -30,  }}>
             <View
               style={{
                 justifyContent: "center",
@@ -470,21 +471,21 @@ const Home = ({ navigation, route }) => {
                 elevation: 4,
               }}
             >
-              <View style={styles.thirdContainer}>
+              <View style={styles.thirdSecondContainer}>
                 <Carousel
                   data={reviewList}
                   renderItem={({ item }) => (
                     <View>
-                      <View style={{ width: '94%', height: "30%" }}>
+                      <View style={{ width: '94%', height: "30%",}}>
                         <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 17, marginTop: 2 }}>{item.regionCategory} - {item.donator}</Text>
                         <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 14, marginTop: 1 }}> {item.receiver}님의 리뷰 : {item.reviewTitle} </Text>
                         <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 13, marginTop: 1 }}> {item.reviewDate}</Text>
                       </View>
 
-                      <View style={{ width: '94%', height: '80%', alignItems: 'center'}}>
+                      <View style={{ width: '90%', height: '70%', alignItems: 'center'}}>
                         <Image
                           source={{ uri: item.reviewImage }}
-                          style={{ width: "90%", height: "75%", borderRadius: 30 }}
+                          style={{ width: "90%", height: "100%", borderRadius: 30 }}
                           resizeMode="cover"
                         />
                       </View>
@@ -530,7 +531,6 @@ const Home = ({ navigation, route }) => {
               shadowOpacity: 0.23,
               shadowRadius: 2.62,
               elevation: 4,
-              marginTop: 20
             }}
           >
             <View style={styles.thirdContainer}>
@@ -638,30 +638,40 @@ const styles = StyleSheet.create({
 
   thirdContainer: {
     width: "94%",
-    height: "100%",
+    height: "90%",
     borderRadius: 30,
-    marginTop: 20,
+    marginTop: 25,
     overflow: "hidden",
   },
+
+
+  thirdSecondContainer: {
+    width: "94%",
+    height: "80%",
+    borderRadius: 30,
+    overflow: "hidden",
+  },
+
+
 
   fourthContainer: {
     flexDirection: "row",
     width: "93.5%",
-    height: "50%",
+    height: "60%",
     justifyContent: "center", // 가로 방향으로 가운데 정렬
     alignItems: "center", // 세로 방향으로 가운데 정렬
     marginHorizontal: "3%",
   },
 
   fourthOneContainer: {
-    width: 200,
-    height: "95%",
+    width: 190,
+    height: "85%",
     backgroundColor: "#44A5FF",
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
     marginRight: "4%",
-    marginTop: "3%",
+    marginTop: "0%",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -674,12 +684,12 @@ const styles = StyleSheet.create({
 
   fourthTwoContainer: {
     width: "96%",
-    height: "95%",
+    height: "85%",
     backgroundColor: "#ffffff",
     justifyContent: "flex-start",
     alignItems: "center",
     marginLeft: "2%",
-    marginTop: "3%",
+    marginTop: "0%",
     borderRadius: 30,
     shadowColor: "#000",
     shadowOffset: {
@@ -693,7 +703,7 @@ const styles = StyleSheet.create({
 
   fifthOneContainer: {
     width: "94%",
-    height: "60%",
+    height: "40%",
     padding: "4%",
     backgroundColor: "#FFFFFF",
     borderRadius: 15,
@@ -718,7 +728,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 30,
     marginLeft: 14,
-    marginTop: 25,
+    marginTop: 0,
     right: "1%",
   },
 

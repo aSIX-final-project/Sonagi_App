@@ -538,7 +538,7 @@ overlay${i}.setMap(map);
           }}
         >
           <TouchableOpacity
-            style={{ marginLeft: "6%", marginRight: "2%" }}
+            style={{ marginLeft: "6%", marginRight: "2%", marginTop: '2%' }}
             onPress={() => navigation.navigate("Home", { userInfo: userInfo })}
           >
             <Image
