@@ -343,7 +343,7 @@ const ChangeInfo = ({ navigation, route }) => {
               returnKeyType="next"
               onChangeText={(text) => setValue("Changeadd", text)}
               clearButtonMode="while-editing"
-              placeholder="Enter address"
+              placeholder="시설 주소를 입력하세요."
               name="Changeadd"
             />
             <Text
@@ -363,7 +363,7 @@ const ChangeInfo = ({ navigation, route }) => {
               returnKeyType="next"
               onChangeText={(text) => setValue("Changenum", text)}
               clearButtonMode="while-editing"
-              placeholder="Enter number"
+              placeholder="시설 전화번호를 입력하세요."
               name="Changenum"
             />
             <Text
@@ -383,7 +383,7 @@ const ChangeInfo = ({ navigation, route }) => {
               returnKeyType="next"
               onChangeText={(text) => setValue("Changename", text)}
               clearButtonMode="while-editing"
-              placeholder="Enter name"
+              placeholder="시설 이름을 입력하세요."
               name="Changename"
             />
             <TouchableOpacity

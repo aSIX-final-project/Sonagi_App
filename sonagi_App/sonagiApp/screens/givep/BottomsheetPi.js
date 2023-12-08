@@ -210,6 +210,7 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
         // 3초 후에 모달 숨김
         setTimeout(() => {
           setSignupSuccessModalVisible(false);
+          navigation.navigate("Login");
         }, 2000);
       } else {
         console.log("회원 가입 실패");
@@ -424,9 +425,8 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
               {phoneNumberError && (
-                <Text style={styles.errorText4}>
-                  전화번호는 숫자만 입력할 수 있습니다.
-                </Text>
+
+                <Text style={styles.errorText3_1}>전화번호는 숫자만 입력할 수 있습니다.</Text>
               )}
               {/* ///////////////////////////////////////////////////////////// */}
 
@@ -703,6 +703,62 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
+
+  errorText: {
+    color: "red",
+    fontSize: 15,
+    marginTop: 1,
+    marginRight: "39%",
+  },
+
+  errorText2: {
+    color: "red",
+    fontSize: 15,
+    marginTop: 1,
+    marginRight: "23%",
+  },
+
+  errorText3: {
+    color: "red",
+    fontSize: 15,
+    marginTop: 1,
+    marginRight: "66%",
+  },
+
+  errorText3_1: {
+    color: "red",
+    fontSize: 15,
+    marginTop: 1,
+    marginRight: "66%",
+  },
+
+  errorText4: {
+    color: "red",
+    fontSize: 15,
+    marginTop: 1,
+    marginRight: "43%",
+  },
+
+  errorText5: {
+    color: "red",
+    fontSize: 15,
+    marginTop: 1,
+    marginRight: "60%",
+  },
+
+  errorText6: {
+    color: "red",
+    fontSize: 15,
+    marginTop: 1,
+    marginRight: "43%",
+  },
+
+  errorText7: {
+    color: "red",
+    fontSize: 15,
+    marginTop: 1,
+    marginRight: "40%",
+  }
 });
 
 export default BottomSheetP;

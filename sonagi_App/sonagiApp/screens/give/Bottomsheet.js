@@ -144,7 +144,7 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
 
     // 시설 전화번호 유효성 검사
     if (!isGiverAdTelValid) {
-      handleGiverAdTelChange(true);
+      setGiverAdTelError(true);
       return;
     }
 
@@ -171,6 +171,7 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
         adName: givername,
         address: giveraddress,
         bNum: businessNumber,
+        profileImage : null
       };
 
       // 폼 데이터를 JSON 문자열로 변환하여 확인
@@ -187,6 +188,12 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
 
       if (response.data === 1) {
         console.log("회원 가입 완료!");
+        setSignupSuccessModalVisible(true);
+        // 2초 후에 홈 화면으로 이동
+        setTimeout(() => {
+          setSignupSuccessModalVisible(false);
+          navigation.navigate("Login");
+        }, 2000);
       } else {
         console.log("회원 가입 실패");
       }
@@ -513,7 +520,7 @@ const BottomSheet = ({ modalVisible, setModalVisible, navigation }) => {
                   올바른 사업자 등록번호를 입력하세요
                 </Text>
               )}
-
+              <View style={{height: 55}} />
               {/* ///////////////////////////////////////////////////////////// */}
             </ScrollView>
 
@@ -662,14 +669,14 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 15,
     marginTop: 1,
-    marginRight: "29%",
+    marginRight: "39%",
   },
 
   errorText2: {
     color: "red",
     fontSize: 15,
     marginTop: 1,
-    marginRight: "10%",
+    marginRight: "23%",
   },
 
   errorText3: {

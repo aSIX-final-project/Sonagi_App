@@ -219,8 +219,8 @@ const Homep = ({ navigation, route }) => {
         </View>
       </View>
 
-      <View style={{ flex: 1 }}>
-        {/* 세번째 라인(기부하기) */}
+      <View style={{ flex: 1, padding: '3%', alignItems: 'center' }}>
+        {/* 세번째 라인(기부 받기) */}
         <ScrollView
           style={{ width: "95%", height: "95%" }}
           showsVerticalScrollIndicator={true} // 스크롤바 표시
@@ -256,7 +256,7 @@ const Homep = ({ navigation, route }) => {
               <Image
                 style={{
                   width: "100%",
-                  height: "75%",
+                  height: "73%",
                   borderRadius: 15,
                   marginBottom: "3%",
                 }}
@@ -270,10 +270,11 @@ const Homep = ({ navigation, route }) => {
           <View
             style={{
               width: "94%",
-              height: "30%",
+              height: "20%",
               backgroundColor: "#D3EAFF",
               borderRadius: 15,
-              margin: "3%",
+              marginTop: "2%",
+              marginLeft: "3%",
               justifyContent: "center",
               alignItems: "center",
               shadowColor: "#000",
@@ -292,7 +293,7 @@ const Homep = ({ navigation, route }) => {
                 fontFamily: "Play-Regular",
                 color: "#3D3D3D",
                 marginRight: "0%",
-                marginTop: "0%",
+                marginTop: "2%",
                 width: "87%",
                 textAlign: "left",
                 marginBottom: "3%",
@@ -328,7 +329,8 @@ const Homep = ({ navigation, route }) => {
 
           {/* 다섯번째 라인 (공지사항) */}
           <View style={styles.fourthContainer}>
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between",
+                      alignItems: "center", width: '100%', }}>
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate("Noticep", {
@@ -343,7 +345,10 @@ const Homep = ({ navigation, route }) => {
                       flexDirection: "row",
                       justifyContent: "center",
                       alignItems: "center",
-                      marginBottom: "5%",
+                      marginBottom: "30%",
+                      width: '50%',
+                     
+                      
                     }}
                   >
                     <Text
@@ -351,14 +356,14 @@ const Homep = ({ navigation, route }) => {
                         fontSize: 22,
                         fontFamily: "Play-Regular",
                         color: "white",
-                        marginRight: "14%",
-                        marginLeft: "5%",
+                        marginLeft: "10%",
+                        right: '80%'
                       }}
                     >
                       공지사항
                     </Text>
                     <Image
-                      style={{ width: 50, height: 25, left: "10%" }}
+                      style={{ width: 50, height: 25, left: "80%" }}
                       source={require("../../assets/notice.png")}
                       resizeMode="contain"
                     />
@@ -367,14 +372,15 @@ const Homep = ({ navigation, route }) => {
                     style={{
                       flexDirection: "column",
                       justifyContent: "center",
-                    }}
+                      
+                     }}
                   >
                     {latestNotice &&
                       latestNotice.map((notice, index) => (
                         <View key={index}>
                           <Text
                             style={{
-                              fontSize: 18,
+                              fontSize: 15,
                               fontWeight: "bold",
                               fontFamily: "Play-Bold",
                               color: "white",
@@ -414,8 +420,8 @@ const Homep = ({ navigation, route }) => {
                       justifyContent: "center",
                       alignItems: "center",
                       marginBottom: "20%",
-                      marginTop: "5%",
-                      marginRight: "30%",
+                      marginTop: "10%",
+                      marginRight: "10%",
                     }}
                   >
                     <Text
@@ -423,13 +429,14 @@ const Homep = ({ navigation, route }) => {
                         fontSize: 22,
                         fontFamily: "Play-Regular",
                         color: "#6F6A6A",
-                        marginRight: "7%",
+                        marginRight: "5%",
+
                       }}
                     >
                       보낸 요청
                     </Text>
                     <Image
-                      style={{ width: 50, height: 25, left: "10%" }}
+                      style={{ width: 50, height: 25, left: "100%" }}
                       source={require("../../assets/sendreq.png")}
                       resizeMode="contain"
                     />
@@ -439,8 +446,9 @@ const Homep = ({ navigation, route }) => {
                     style={{
                       flexDirection: "column",
                       justifyContent: "center",
-                      marginRight: "30%",
-                      marginBottom: "10%",
+                      textAlign: "center",
+                      marginTop: "10%"
+                      
                     }}
                   >
                     {latestReqList && latestReqList.length > 0 ? (
@@ -485,12 +493,15 @@ const Homep = ({ navigation, route }) => {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{ width: '100%', height: '50%', alignItems: 'center', marginTop: 20 }}>
+
+
+          <View style={{ width: '100%', height: '70%', alignItems: 'center', marginTop: 20 }}>
             <View
               style={{
                 justifyContent: "center",
                 height: "100%",
                 width: '95%',
+
                 backgroundColor: '#FFFFFF',
                 borderRadius: 30,
                 alignItems: "center",
@@ -509,20 +520,20 @@ const Homep = ({ navigation, route }) => {
                   data={reviewList}
                   renderItem={({ item }) => (
                     <View>
-                      <View style={{ width: '94%', height: "30%" }}>
-                        <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 17, marginTop: 2 }}>{item.regionCategory} - {item.donator}</Text>
-                        <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 14, marginTop: 1 }}> {item.receiver}님의 리뷰 : {item.reviewTitle} </Text>
-                        <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 13, marginTop: 1 }}> {item.reviewDate}</Text>
-                      </View>
-
-                      <View style={{ width: '94%', height: '80%', alignItems: 'center' }}>
-                        <Image
-                          source={{ uri: item.reviewImage }}
-                          style={{ width: "90%", height: "75%", borderRadius: 30 }}
-                          resizeMode="cover"
-                        />
-                      </View>
+                    <View style={{ width: '94%', height: "30%",}}>
+                      <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 17, marginTop: 2 }}>{item.regionCategory} - {item.donator}</Text>
+                      <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 14, marginTop: 1 }}> {item.receiver}님의 리뷰 : {item.reviewTitle} </Text>
+                      <Text style={{ textAlign: 'center', color: 'black', fontFamily: 'Play-Bold', fontSize: 13, marginTop: 1 }}> {item.reviewDate}</Text>
                     </View>
+
+                    <View style={{ width: '90%', height: '70%', alignItems: 'center'}}>
+                      <Image
+                        source={{ uri: item.reviewImage }}
+                        style={{ width: "90%", height: "100%", borderRadius: 30 }}
+                        resizeMode="cover"
+                      />
+                    </View>
+                  </View>
                   )}
                   sliderWidth={Dimensions.get("window").width}
                   itemWidth={Dimensions.get("window").width}
@@ -655,34 +666,34 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     backgroundColor: "#FAFAFC",
+    
   },
 
   thirdContainer: {
-    width: "85%",
-    height: "90%",
-    marginTop: 20,
+    width: "94%",
+    height: "80%",
+    borderRadius: 30,
     overflow: "hidden",
   },
 
   fourthContainer: {
     flexDirection: "row",
     width: "93.5%",
-    height: "50%",
-    justifyContent: "center", // 가로 방향으로 가운데 정렬
-    alignItems: "center", // 세로 방향으로 가운데 정렬
-    marginHorizontal: "3%",
+    height: "48%",
+    marginLeft: '2%',
+    marginRight: '2%',
+
   },
 
   fourthOneContainer: {
-    width: "150px",
-    height: "95%",
+    width: '110%',
+    height: "80%",
     backgroundColor: "#44A5FF",
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: "4%",
-    marginTop: "3%",
     shadowColor: "#000",
+    marginLeft: '0%',
     shadowOffset: {
       width: 0,
       height: 2,
@@ -693,14 +704,14 @@ const styles = StyleSheet.create({
   },
 
   fourthTwoContainer: {
-    width: "96%",
-    height: "95%",
+    width: "90%",
+    height: "80%",
     backgroundColor: "#ffffff",
-    borderRadius: 30,
     justifyContent: "flex-start",
     alignItems: "center",
-    marginLeft: "2%",
-    marginTop: "3%",
+    marginLeft: "10%",
+    marginTop: "0%",
+    borderRadius: 30,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -713,7 +724,7 @@ const styles = StyleSheet.create({
 
   fifthOneContainer: {
     width: "94%",
-    height: "60%",
+    height: "40%",
     padding: "4%",
     backgroundColor: "#FFFFFF",
     borderRadius: 15,
@@ -731,14 +742,14 @@ const styles = StyleSheet.create({
   },
 
   fifthTwoContainer: {
-    width: "84.5%",
-    height: "100%",
+    width: "50%",
+    height: "50%",
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#ffffff",
     borderRadius: 30,
     marginLeft: 14,
-    marginTop: 25,
+    marginTop: 0,
     right: "1%",
   },
 

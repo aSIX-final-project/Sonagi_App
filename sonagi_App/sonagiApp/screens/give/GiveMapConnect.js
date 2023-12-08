@@ -147,9 +147,10 @@ const GiveMapConnect = ({ navigation, route }) => {
             }
           >
             <Image
-              style={{ width: 50, height: 50 }}
+              style={{ width: 50, height: 50, marginTop: '10%'}}
               source={require("../../assets/backkey.png")}
               resizeMode="contain"
+              
             />
           </TouchableOpacity>
         </View>
@@ -159,7 +160,7 @@ const GiveMapConnect = ({ navigation, route }) => {
       <Image
         style={{ width: "100%", height: "30%" }}
         source={{ uri: foodData ? foodData[0].foodImage : null }}
-        resizeMode="contain"
+        resizeMode="cover"
       />
 
       <View
@@ -190,7 +191,7 @@ const GiveMapConnect = ({ navigation, route }) => {
         <View style={{ marginTop: "1%" }}>
           <Text
             style={{
-              fontSize: 20,
+              fontSize: 22,
               fontWeight: "bold",
               fontFamily: "Play-Bold",
               width: "100%",
@@ -218,6 +219,9 @@ const GiveMapConnect = ({ navigation, route }) => {
             flexDirection: "row",
             justifyContent: "space-around",
             marginLeft: "5%",
+            width: '80%',
+            marginBottom: '6%'
+            
           }}
         >
           <TouchableOpacity
@@ -233,7 +237,7 @@ const GiveMapConnect = ({ navigation, route }) => {
             }}
             onPress={() => callPhone(foodData[0].foodTel)}
           >
-            <Ionicons name="call" size={18} color="#8BD5FF" />
+            <Ionicons name="call" size={25} color="#8BD5FF" />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => kakaoMap(foodData[0].foodAddress)}>
@@ -243,11 +247,14 @@ const GiveMapConnect = ({ navigation, route }) => {
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: 10,
-                padding: 5,
+                paddingHorizontal: 12,
+                paddingTop: 8,
+                paddingBottom: 8
+                
               }}
             >
-              <Feather name="corner-up-right" size={18} color="white" />
-              <Text style={{ color: "white", fontSize: 12 }}>길찾기</Text>
+              <Feather name="corner-up-right" size={20} color="white" />
+              <Text style={{ color: "white", fontSize: 13, marginTop: '10%' }}>길찾기</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -285,7 +292,7 @@ const GiveMapConnect = ({ navigation, route }) => {
           >
             <Text
               style={{
-                fontSize: 23,
+                fontSize: 35,
                 fontWeight: "bold",
                 fontFamily: "Play-Bold",
               }}
@@ -318,7 +325,7 @@ const GiveMapConnect = ({ navigation, route }) => {
           <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
             <Text
               style={{
-                fontSize: 17,
+                fontSize: 18,
                 fontWeight: "bold",
                 fontFamily: "Play-Regular",
                 width: "100%",

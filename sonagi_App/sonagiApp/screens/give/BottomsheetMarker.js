@@ -230,7 +230,7 @@ const BottomsheetMarker = ({
               <View
                 style={{
                   flexDirection: "row",
-                  marginRight: "35%",
+                  marginRight: "37%",
                   marginTop: "2%",
                 }}
               >

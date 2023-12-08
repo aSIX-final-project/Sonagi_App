@@ -339,6 +339,7 @@ const Profiles = ({ navigation, route }) => {
         onPress={() => navigation.navigate("ChangePw", { userInfo: userInfo })}
       >
         <View style={{ flexDirection: "row" }}>
+
           <Image
             style={{
               width: 65,

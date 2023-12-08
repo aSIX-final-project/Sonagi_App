@@ -263,6 +263,7 @@ const BottomsheetMarkerP = ({
                   alignItems: "center",
                   marginTop: "10%",
                   paddingRight: "40%",
+                  marginBottom: '10%'
                 }}
               >
                 <View>
