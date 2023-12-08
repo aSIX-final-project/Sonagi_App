@@ -316,7 +316,7 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
 
               {/* 단체명(팀, 동아리) */}
               <Image
-                style={{ width: 140, height: 60, top: "1.5%", right: "25.4%" }}
+                style={{ width: 140, height: 60, top: "1.5%", right: "25.7%" }}
                 source={require("../../assets/noLoginNanumAdName.png")}
                 resizeMode="contain"
               />
@@ -335,7 +335,7 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
 
               {/* 대표자 이름 */}
               <Image
-                style={{ width: 125, height: 60, top: "1.5%", right: "32%" }}
+                style={{ width: 125, height: 60, top: "1.5%", right: "27%" }}
                 source={require("../../assets/noLoginNanumName.png")}
                 resizeMode="contain"
               />
@@ -354,7 +354,7 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
 
               {/* 대표자 전화번호 */}
               <Image
-                style={{ width: 120, height: 60, top: "1.5%", right: "32%" }}
+                style={{ width: 120, height: 60, top: "1.5%", right: "27%" }}
                 source={require("../../assets/noLoginNanumPhoneNum.png")}
                 resizeMode="contain"
               />
@@ -373,7 +373,7 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
 
               {/* 단체 소개 */}
               <Image
-                style={{ width: 100, height: 60, top: "1.5%", right: "34%" }}
+                style={{ width: 100, height: 60, top: "1.5%", right: "30%" }}
                 source={require("../../assets/noLoginNanumIntroduce.png")}
                 resizeMode="contain"
               />
@@ -394,7 +394,7 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
 
               {/* 기부 원하는 날짜 */}
               <Image
-                style={{ width: 100, height: 60, top: "1.5%", right: "34%" }}
+                style={{ width: 100, height: 60, top: "1.5%", right: "30%" }}
                 source={require("../../assets/noLoginNanumDay.png")}
                 resizeMode="contain"
               />
@@ -413,7 +413,7 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
 
               {/* 나눔 진행 시간 */}
               <Image
-                style={{ width: 100, height: 60, top: "1.5%", right: "34%" }}
+                style={{ width: 100, height: 60, top: "1.5%", right: "30%" }}
                 source={require("../../assets/noLoginNanumTime.png")}
                 resizeMode="contain"
               />
@@ -432,7 +432,7 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
 
               {/* 나눔하는 인원 수 */}
               <Image
-                style={{ width: 90, height: 55, top: "1.5%", right: "35%" }}
+                style={{ width: 90, height: 55, top: "1.5%", right: "31%" }}
                 source={require("../../assets/noLoginNanumPersonnel.png")}
                 resizeMode="contain"
               />
@@ -451,7 +451,7 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
 
               {/* 나눔하는데 필요한 공간 (㎡) */}
               <Image
-                style={{ width: 100, height: 60, top: "1.5%", right: "34%" }}
+                style={{ width: 100, height: 60, top: "1.5%", right: "30%" }}
                 source={require("../../assets/noLoginNanumNeedPlace.png")}
                 resizeMode="contain"
               />
@@ -470,7 +470,7 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
 
               {/* 나눔하는 내용 */}
               <Image
-                style={{ width: 100, height: 60, top: "1.5%", right: "34%" }}
+                style={{ width: 100, height: 60, top: "1.5%", right: "30%" }}
                 source={require("../../assets/noLoginNanumContent.png")}
                 resizeMode="contain"
               />
@@ -483,11 +483,6 @@ const BottomSheetP = ({ modalVisible, setModalVisible, navigation }) => {
                 multiline={true}
                 numberOfLines={5}
               ></TextInput>
-
-              {/* 선 긋기 */}
-              <View style={styles.lineStyle} />
-
-              {/* ///////////////////////////////////////////////////////////// */}
 
               {/* 선 긋기 */}
               <View style={styles.lineStyle} />
@@ -631,7 +626,7 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
     borderColor: "#828282",
     top: "2%",
-    left: "6%",
+    left: "8%",
     fontSize: 20,
     marginBottom: 10,
     color: "#6F6A6A",

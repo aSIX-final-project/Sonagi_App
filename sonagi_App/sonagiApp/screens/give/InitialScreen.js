@@ -70,16 +70,16 @@ const styles = StyleSheet.create({
     },
     bottombutton: {
         backgroundColor: '#ffffff',
-        width: '70%',
+        width: '80%',
         height: '65%',
-        paddingHorizontal: '15%',
+        paddingHorizontal: '20%',
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 30
     },
     bottomtext: {
         fontFamily: "Play-Bold",
-        fontSize: 22,
+        fontSize: 20,
         color: "#383838",
     },
 

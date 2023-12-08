@@ -30,11 +30,32 @@ const Signup = ({ navigation }) => {
   const pressButton = () => {
     setModalVisible(true);
   };
+  const pressButton2 = () => {
+    navigation.navigate("InitialScreen");
+  };
+
 
   return (
     <View style={styles.container}>
+      {/* back key */}
+      <TouchableOpacity onPress={pressButton2}>
+        <View
+          style={{
+            marginTop: '20%',
+            width: 65,
+            height: 60,
+            marginRight: "70%",
+          }}
+        >
+          <Image
+            style={{ width: "70%", height: "100%" }}
+            source={require("../../assets/backkey.png")}
+            resizeMode="contain"
+          />
+        </View>
+      </TouchableOpacity>
       <View
-        style={{ flexDirection: "columm", alignItems: "center", top: "25%" }}
+        style={{ flexDirection: "columm", alignItems: "center", top: "20%" }}
       >
         {/* 회원가입 */}
         <Image
@@ -42,7 +63,7 @@ const Signup = ({ navigation }) => {
             width: 270,
             height: 130,
             bottom: "0.5%",
-            right: "20%",
+            right: "0%",
             top: "2%",
             alignItems: "center",
             justifyContent: "center",

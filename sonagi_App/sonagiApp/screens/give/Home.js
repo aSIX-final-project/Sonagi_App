@@ -252,7 +252,7 @@ const Home = ({ navigation, route }) => {
               <Image
                 style={{
                   width: "100%",
-                  height: "77%",
+                  height: "72%",
                   borderRadius: 15,
                   marginBottom: "3%",
                 }}
