@@ -17,7 +17,12 @@ import {
 import { KeyboardAvoidingView } from "react-native";
 import axios from "axios";
 
-const BottomsheetAC = ({ modalVisible, setModalVisible, navigation, selectedItem }) => {
+const BottomsheetAC = ({
+  modalVisible,
+  setModalVisible,
+  navigation,
+  selectedItem,
+}) => {
   const [dataList, setDataList] = useState([]);
 
   const screenHeight = Dimensions.get("screen").height;
@@ -66,7 +71,6 @@ const BottomsheetAC = ({ modalVisible, setModalVisible, navigation, selectedItem
     }
   }, [modalVisible]);
 
-
   useEffect(() => {
     const fetchData = async () => {
       if (selectedItem != null) {
@@ -94,16 +98,14 @@ const BottomsheetAC = ({ modalVisible, setModalVisible, navigation, selectedItem
     fetchData();
   }, [selectedItem]); // selectedItem이 변경될 때마다 fetchData가 실행됩니다.
 
-
-
-
   const acceptMethod = async () => {
     // 수락 버튼이 눌렸을 때 실행할 로직을 이곳에 작성합니다.
-    console.log('수락하기 버튼이 눌렸습니다.');
+    console.log("수락하기 버튼이 눌렸습니다.");
     console.log(dataList);
     console.log(selectedItem);
 
-    if (selectedItem.introduction != null) {// 시설 수정 -> 시설 이름, 시설 전화번호, 시설 주소, 시설 인원수, 시설 소개
+    if (selectedItem.introduction != null) {
+      // 시설 수정 -> 시설 이름, 시설 전화번호, 시설 주소, 시설 인원수, 시설 소개
       const formData1 = {
         id: dataList[0].id,
         password: dataList[0].password,
@@ -132,8 +134,8 @@ const BottomsheetAC = ({ modalVisible, setModalVisible, navigation, selectedItem
         formData2
       );
       console.log("삭제 완료");
-
-    } else { // 식당 수정 -> 식당 주소, 식당 전화번호, 식당 이름
+    } else {
+      // 식당 수정 -> 식당 주소, 식당 전화번호, 식당 이름
       const formData = {
         id: dataList[0].id,
         password: dataList[0].password,
@@ -162,14 +164,10 @@ const BottomsheetAC = ({ modalVisible, setModalVisible, navigation, selectedItem
       );
       console.log("삭제 완료");
     }
-
-
   };
 
-
-
   const acceptMethod2 = async () => {
-    console.log('거절하기 버튼이 눌렸습니다.');
+    console.log("거절하기 버튼이 눌렸습니다.");
     console.log(selectedItem);
 
     const formData2 = {
@@ -187,7 +185,6 @@ const BottomsheetAC = ({ modalVisible, setModalVisible, navigation, selectedItem
     );
     console.log("거절 완료");
   };
-
 
   const closeModal = () => {
     return new Promise((resolve) => {
@@ -266,7 +263,10 @@ const BottomsheetAC = ({ modalVisible, setModalVisible, navigation, selectedItem
 
                 {/* 거절 하기 */}
                 <View style={{ width: "100%", height: "28%" }}>
-                  <TouchableOpacity style={{ width: "100%", height: "100%" }} onPress={acceptMethod2}>
+                  <TouchableOpacity
+                    style={{ width: "100%", height: "100%" }}
+                    onPress={acceptMethod2}
+                  >
                     <Text
                       style={{
                         fontFamily: "Play-Regular",

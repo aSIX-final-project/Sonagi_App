@@ -23,8 +23,10 @@ const Donatep = ({ navigation, route }) => {
   const [selectedValue, setSelectedValue] = useState({
     adName: "",
     donatedProvider: "",
-    donatedDate: "",
+    foodName: "",
+    itemValue: "",
   });
+  console.log("여긴가", selectedValue);
   const [donations, setDonations] = useState([]);
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
@@ -106,7 +108,7 @@ const Donatep = ({ navigation, route }) => {
       formDataURI.append("folderName", "review");
 
       const responseURL = await axios.post(
-        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/files",
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/files",
         // "http://172.16.104.97:8888/boot/member/files",
         formDataURI,
         {
@@ -121,13 +123,15 @@ const Donatep = ({ navigation, route }) => {
       const formDataForAdName = {
         id: selectedValue.donatedProvider,
       };
+      console.log(formDataForAdName); // 콘솔에 출력합니다.
 
       const responseForAdName = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
         formDataForAdName
       );
 
-      console.log(responseForAdName.data); // 콘솔에 출력합니다.
+      console.log(responseForAdName.status);
+      console.log(responseForAdName); // 안찍으면 값이 안들어옴( 왜인지 모름 )
       const adName = responseForAdName.data[0].adName;
       const address = responseForAdName.data[0].address;
 
@@ -145,7 +149,7 @@ const Donatep = ({ navigation, route }) => {
         regionCategory: firstPartOfAddress, // 이 값을 적절하게 설정해 주세요.
         reviewTitle: title,
         reviewContext: content,
-        donator: adName, // 이 값을 적절하게 설정해 주세요.
+        donator: selectedValue.adName, // 이 값을 적절하게 설정해 주세요.
         receiver: userInfo.adName, // 이 값을 적절하게 설정해 주세요.
         reviewImage: responseURL.data, // 이미지 URI. 필요에 따라 적절한 값을 설정해 주세요.
       };
@@ -156,18 +160,21 @@ const Donatep = ({ navigation, route }) => {
         formData
       );
 
-      const responseFood = await axios.post(
-        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/findById",
-        formDataForAdName
-      );
+      console.log(response);
 
-      const foodName = responseFood.data[0].foodName;
-      console.log(foodName);
+      // const responseFood = await axios.post(
+      //   "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/findById",
+      //   formDataForAdName
+      // );
+
+      // console.log(responseFood);
+      // const foodName = responseFood.data[0].foodName;
+      // console.log(foodName);
 
       const formDataIs = {
         isReviewed: 1,
         donatedProvider: selectedValue.donatedProvider,
-        foodTitle: foodName,
+        foodTitle: selectedValue.foodName,
       };
       console.log(selectedValue.adName);
       console.log(formDataIs);
@@ -348,7 +355,7 @@ const Donatep = ({ navigation, route }) => {
                 </View>
 
                 <Picker
-                  selectedValue={selectedValue.donatedProvider}
+                  selectedValue={selectedValue.itemValue}
                   onValueChange={(itemValue, itemIndex) => {
                     const selectedDonation = donations.filter(
                       (donation) =>
@@ -358,12 +365,13 @@ const Donatep = ({ navigation, route }) => {
                     [itemIndex]; // 선택한 donation을 찾음
                     setSelectedValue({
                       adName: selectedDonation.adName,
-                      donatedProvider: itemValue,
+                      donatedProvider: selectedDonation.donatedProvider,
+                      foodName: selectedDonation.foodTitle,
+                      itemValue: itemValue,
                     });
                   }}
                   style={{ width: 300, height: 50, marginTop: "20%" }}
                 >
-                  
                   {donations
                     .filter((donation) => !donation.isReviewed)
                     .map((donation, index) => (
