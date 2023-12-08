@@ -23,8 +23,10 @@ const Donatep = ({ navigation, route }) => {
   const [selectedValue, setSelectedValue] = useState({
     adName: "",
     donatedProvider: "",
-    donatedDate: "",
+    foodName: "",
+    itemValue: "",
   });
+  console.log("여긴가", selectedValue);
   const [donations, setDonations] = useState([]);
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
@@ -106,7 +108,7 @@ const Donatep = ({ navigation, route }) => {
       formDataURI.append("folderName", "review");
 
       const responseURL = await axios.post(
-        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/files",
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/files",
         // "http://172.16.104.97:8888/boot/member/files",
         formDataURI,
         {
@@ -121,13 +123,15 @@ const Donatep = ({ navigation, route }) => {
       const formDataForAdName = {
         id: selectedValue.donatedProvider,
       };
+      console.log(formDataForAdName); // 콘솔에 출력합니다.
 
       const responseForAdName = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
         formDataForAdName
       );
 
-      console.log(responseForAdName.data); // 콘솔에 출력합니다.
+      console.log(responseForAdName.status);
+      console.log(responseForAdName); // 안찍으면 값이 안들어옴( 왜인지 모름 )
       const adName = responseForAdName.data[0].adName;
       const address = responseForAdName.data[0].address;
 
@@ -145,9 +149,10 @@ const Donatep = ({ navigation, route }) => {
         regionCategory: firstPartOfAddress, // 이 값을 적절하게 설정해 주세요.
         reviewTitle: title,
         reviewContext: content,
-        donator: adName, // 이 값을 적절하게 설정해 주세요.
+        donator: selectedValue.adName, // 이 값을 적절하게 설정해 주세요.
         receiver: userInfo.adName, // 이 값을 적절하게 설정해 주세요.
         reviewImage: responseURL.data, // 이미지 URI. 필요에 따라 적절한 값을 설정해 주세요.
+        foodName: selectedValue.foodName,
       };
 
       const response = await axios.post(
@@ -156,18 +161,21 @@ const Donatep = ({ navigation, route }) => {
         formData
       );
 
-      const responseFood = await axios.post(
-        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/findById",
-        formDataForAdName
-      );
+      console.log(response);
 
-      const foodName = responseFood.data[0].foodName;
-      console.log(foodName);
+      // const responseFood = await axios.post(
+      //   "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/food/findById",
+      //   formDataForAdName
+      // );
+
+      // console.log(responseFood);
+      // const foodName = responseFood.data[0].foodName;
+      // console.log(foodName);
 
       const formDataIs = {
         isReviewed: 1,
         donatedProvider: selectedValue.donatedProvider,
-        foodTitle: foodName,
+        foodTitle: selectedValue.foodName,
       };
       console.log(selectedValue.adName);
       console.log(formDataIs);
@@ -189,50 +197,51 @@ const Donatep = ({ navigation, route }) => {
 
   const handleClick2 = async (donation) => {
     try {
+      console.log(donation);
+
       const formData = {
-        id: userInfo.id,
+        id: donation.donatedReceiver,
       };
+
       let response = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/findById",
         formData
       );
 
-      const donatorId = donation.donatedProvider;
+      console.log(response.data[0].adName);
 
       const formData2 = {
-        id: donatorId,
+        id: donation.donatedProvider,
       };
       let response2 = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
         formData2
       );
 
-      const receiver = response.data[0].adName;
-      const donator = response2.data[0].adName;
+      console.log(response2.data[0].adName);
 
-      let response3 = await axios.get(
-        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findAll"
-        // "http://10.20.104.110:8888/boot/review/findAll"
+      const formData3 = {
+        receiver: response.data[0].adName,
+        donator: response2.data[0].adName,
+        foodName: donation.foodTitle,
+      };
+
+      let response3 = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findByDonatorReciverReviewTitle",
+        formData3
+        // "http://10.20.104.110:8888/boot/review/findByDonatorReciverReviewTitle"
       );
-      const matchedReviews = response3.data.filter(
-        (review) =>
-          review.receiver === receiver &&
-          review.donator === donator &&
-          review.foodName === donation.foodTitle
-      );
 
-      console.log(matchedReviews);
+      console.log(response3.data[0]);
 
-      if (matchedReviews.length > 0) {
-        setReceiver(matchedReviews[0].receiver);
-        setDonator(matchedReviews[0].donator);
-        setDonatedDate(matchedReviews[0].reviewDate);
-        setReviewContext(matchedReviews[0].reviewContext);
-        setReviewTitle(matchedReviews[0].reviewTitle);
-        setReviewImage(matchedReviews[0].reviewImage);
+      setReceiver(response3.data[0].receiver);
+      setDonator(response3.data[0].donator);
+      setDonatedDate(response3.data[0].reviewDate);
+      setReviewContext(response3.data[0].reviewContext);
+      setReviewTitle(response3.data[0].reviewTitle);
+      setReviewImage(response3.data[0].reviewImage);
 
-        setModalVisible2(true);
-      }
+      setModalVisible2(true);
     } catch (error) {
       console.error("Cannot fetch data: ", error);
     }
@@ -348,7 +357,7 @@ const Donatep = ({ navigation, route }) => {
                 </View>
 
                 <Picker
-                  selectedValue={selectedValue.donatedProvider}
+                  selectedValue={selectedValue.itemValue}
                   onValueChange={(itemValue, itemIndex) => {
                     const selectedDonation = donations.filter(
                       (donation) =>
@@ -358,12 +367,13 @@ const Donatep = ({ navigation, route }) => {
                     [itemIndex]; // 선택한 donation을 찾음
                     setSelectedValue({
                       adName: selectedDonation.adName,
-                      donatedProvider: itemValue,
+                      donatedProvider: selectedDonation.donatedProvider,
+                      foodName: selectedDonation.foodTitle,
+                      itemValue: itemValue,
                     });
                   }}
                   style={{ width: 300, height: 50, marginTop: "20%" }}
                 >
-                  
                   {donations
                     .filter((donation) => !donation.isReviewed)
                     .map((donation, index) => (
