@@ -152,6 +152,7 @@ const Donatep = ({ navigation, route }) => {
         donator: selectedValue.adName, // 이 값을 적절하게 설정해 주세요.
         receiver: userInfo.adName, // 이 값을 적절하게 설정해 주세요.
         reviewImage: responseURL.data, // 이미지 URI. 필요에 따라 적절한 값을 설정해 주세요.
+        foodName: selectedValue.foodName,
       };
 
       const response = await axios.post(
@@ -196,50 +197,51 @@ const Donatep = ({ navigation, route }) => {
 
   const handleClick2 = async (donation) => {
     try {
+      console.log(donation);
+
       const formData = {
-        id: userInfo.id,
+        id: donation.donatedReceiver,
       };
+
       let response = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/member/findById",
         formData
       );
 
-      const donatorId = donation.donatedProvider;
+      console.log(response.data[0].adName);
 
       const formData2 = {
-        id: donatorId,
+        id: donation.donatedProvider,
       };
       let response2 = await axios.post(
         "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/restaurant/findById",
         formData2
       );
 
-      const receiver = response.data[0].adName;
-      const donator = response2.data[0].adName;
+      console.log(response2.data[0].adName);
 
-      let response3 = await axios.get(
-        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findAll"
-        // "http://10.20.104.110:8888/boot/review/findAll"
+      const formData3 = {
+        receiver: response.data[0].adName,
+        donator: response2.data[0].adName,
+        foodName: donation.foodTitle,
+      };
+
+      let response3 = await axios.post(
+        "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findByDonatorReciverReviewTitle",
+        formData3
+        // "http://10.20.104.110:8888/boot/review/findByDonatorReciverReviewTitle"
       );
-      const matchedReviews = response3.data.filter(
-        (review) =>
-          review.receiver === receiver &&
-          review.donator === donator &&
-          review.foodName === donation.foodTitle
-      );
 
-      console.log(matchedReviews);
+      console.log(response3.data[0]);
 
-      if (matchedReviews.length > 0) {
-        setReceiver(matchedReviews[0].receiver);
-        setDonator(matchedReviews[0].donator);
-        setDonatedDate(matchedReviews[0].reviewDate);
-        setReviewContext(matchedReviews[0].reviewContext);
-        setReviewTitle(matchedReviews[0].reviewTitle);
-        setReviewImage(matchedReviews[0].reviewImage);
+      setReceiver(response3.data[0].receiver);
+      setDonator(response3.data[0].donator);
+      setDonatedDate(response3.data[0].reviewDate);
+      setReviewContext(response3.data[0].reviewContext);
+      setReviewTitle(response3.data[0].reviewTitle);
+      setReviewImage(response3.data[0].reviewImage);
 
-        setModalVisible2(true);
-      }
+      setModalVisible2(true);
     } catch (error) {
       console.error("Cannot fetch data: ", error);
     }
