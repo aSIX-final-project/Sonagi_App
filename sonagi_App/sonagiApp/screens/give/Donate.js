@@ -67,7 +67,7 @@ const Donate = ({ navigation, route }) => {
 
   const handleClick = async (item) => {
     console.log(
-      `리시버 아이디: ${item.donatedReceiver}, 도네이트 아이디: ${item.donatedProvider}, 도네이트 데이트 : ${item.donatedDate}`
+      `리시버 아이디: ${item.donatedReceiver}, 도네이트 아이디: ${item.donatedProvider}, 도네이트 푸드타이틀 : ${item.foodTitle}`
     );
     setSelectedItem(item);
 
@@ -90,31 +90,28 @@ const Donate = ({ navigation, route }) => {
     const donatedReceiver = response1.data[0].adName;
     const donatedProvider = response2.data[0].adName;
 
-    console.log(donatedReceiver);
-    console.log(donatedProvider);
+    const formData3 = {
+      receiver: donatedReceiver,
+      donator: donatedProvider,
+      foodName: item.foodTitle,
+    };
 
-    let response3 = await axios.get(
-      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findAll"
+    let response3 = await axios.post(
+      "https://port-0-sonagi-app-project-1drvf2lloka4swg.sel5.cloudtype.app/boot/review/findByDonatorReciverReviewTitle",
+      formData3
+      // "http://10.20.104.110:8888/boot/review/findByDonatorReciverReviewTitle"
     );
-    const matchedReviews = response3.data.filter(
-      (review) =>
-        review.receiver === donatedReceiver &&
-        review.donator === donatedProvider &&
-        review.reviewDate === item.donatedDate
-    );
 
-    console.log(matchedReviews);
+    console.log(response3.data[0]);
 
-    if (matchedReviews.length > 0) {
-      setReceiver(matchedReviews[0].receiver);
-      setDonator(matchedReviews[0].donator);
-      setDonatedDate(matchedReviews[0].reviewDate);
-      setReviewContext(matchedReviews[0].reviewContext);
-      setReviewTitle(matchedReviews[0].reviewTitle);
-      setReviewImage(matchedReviews[0].reviewImage);
+    setReceiver(response3.data[0].receiver);
+    setDonator(response3.data[0].donator);
+    setDonatedDate(response3.data[0].reviewDate);
+    setReviewContext(response3.data[0].reviewContext);
+    setReviewTitle(response3.data[0].reviewTitle);
+    setReviewImage(response3.data[0].reviewImage);
 
-      setModalVisible(true);
-    }
+    setModalVisible(true);
   };
 
   // 카메라 버튼 클릭 핸들러
