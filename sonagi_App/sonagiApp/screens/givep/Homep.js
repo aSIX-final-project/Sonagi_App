@@ -19,28 +19,32 @@ import { Pagination } from 'react-native-snap-carousel';
 const components = [
   {
     name: "공지사항",
-    icon: "notifications-outline",
-    activeIcon: "notifications",
+    icon: require('../../assets/notice1.png'),
+    activeIcon: require('../../assets/notice.png'),
     route: "Noticep",
   },
   {
     name: "기부내역",
-    icon: "bookmark-outline",
-    activeIcon: "bookmark",
+    icon: require('../../assets/card.png'),
+    activeIcon: require('../../assets/card.png'),
     route: "Donatep",
   },
-  { name: "홈", icon: "home", activeIcon: "home-outline", route: "Homep" },
-  {
-    name: "기부받기",
-    icon: "map-outline",
-    activeIcon: "map",
-    route: "KakaoMapP",
-  },
+  { 
+    name: "홈", 
+    icon: require('../../assets/home.png'),
+    activeIcon: require('../../assets/home.png'),
+    route: "Homep" },
   {
     name: "보낸요청",
-    icon: "paper-plane-outline",
-    activeIcon: "paper-plane",
+    icon: require('../../assets/message.png'),
+    activeIcon: require('../../assets/message.png'),
     route: "SendReqp",
+  },
+  {
+    name: "기부받기",
+    icon: require('../../assets/map1.png'),
+    activeIcon: require('../../assets/map1.png'),
+    route: "KakaoMapP",
   },
 ];
 
@@ -224,7 +228,7 @@ const Homep = ({ navigation, route }) => {
         <ScrollView
           style={{ width: "95%", height: "95%" }}
           showsVerticalScrollIndicator={true} // 스크롤바 표시
-          contentContainerStyle={{ paddingBottom: 950 }} // 공백 부분
+          contentContainerStyle={{ paddingBottom: 800 }} // 공백 부분
         >
           <View style={styles.fifthOneContainer}>
             <TouchableOpacity
@@ -515,7 +519,7 @@ const Homep = ({ navigation, route }) => {
                 elevation: 4,
               }}
             >
-              <View style={styles.thirdContainer}>
+              <View style={styles.reviewContainer}>
                 <Carousel
                   data={reviewList}
                   renderItem={({ item }) => (
@@ -643,15 +647,22 @@ const Homep = ({ navigation, route }) => {
               marginRight: index === components.length - 1 ? 22 : 0,
             }}
           >
-            <Ionicons
-              name={
+            <Image
+              source={
                 activeIndex === index ? component.activeIcon : component.icon
               }
-              size={27}
-              color="black"
-              style={{ textAlign: "center" }}
+              style={{ 
+                width: component.name === "공지사항" ? 32 : component.name === "홈" ? 27 : component.name === "보낸요청" ? 38 : component.name === "기부받기" ? 30 : 35, 
+                height: component.name === "공지사항" ? 32 : component.name === "홈" ? 27 : component.name === "보낸요청" ? 38 : component.name === "기부받기" ? 30 : 35, 
+                marginTop: component.name === "홈" ? 3 : component.name === "기부내역" ? 0 : component.name === "기부받기" ? 4 : 1, 
+                alignSelf: "center" 
+              }}
             />
-            <Text style={{ textAlign: "center", fontSize: 12 }}>
+            <Text style={{
+              textAlign: "center", 
+              fontSize: 13,
+              marginTop: component.name === "홈" ? 8 : component.name === "보낸요청" ? 0 : component.name === "기부받기" ? 7 : 3 
+            }}>
               {component.name}
             </Text>
           </TouchableOpacity>
@@ -670,6 +681,13 @@ const styles = StyleSheet.create({
   },
 
   thirdContainer: {
+    width: "94%",
+    height: "80%",
+    borderRadius: 30,
+    overflow: "hidden",
+  },
+
+  reviewContainer: {
     width: "94%",
     height: "80%",
     borderRadius: 30,

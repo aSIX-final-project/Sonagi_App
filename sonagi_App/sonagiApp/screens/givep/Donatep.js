@@ -643,6 +643,7 @@ const Donatep = ({ navigation, route }) => {
                   color: "#656565",
                   marginTop: "2%",
                   marginRight: "40%",
+                  position: 'absolute',
                 }}
               >
                 {donation.foodTitle}
@@ -652,7 +653,8 @@ const Donatep = ({ navigation, route }) => {
                   width: 20,
                   height: 20,
                   marginTop: "1.8%",
-                  marginLeft: "25%",
+                  marginLeft: "80%",
+                  
                 }}
                 source={
                   Number(donation.isReviewed) === 1

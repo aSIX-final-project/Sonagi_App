@@ -853,7 +853,7 @@ const RegistGive = ({ navigation, route }) => {
               marginTop: "2%",
             }}
           >
-            ※ 음식 이름을 입력하세요.
+            ※ 음식 설명을 입력하세요.
           </Text>
         </ScrollView>
       </TouchableWithoutFeedback>

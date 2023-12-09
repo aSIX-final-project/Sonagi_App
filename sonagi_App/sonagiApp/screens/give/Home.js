@@ -20,28 +20,33 @@ import { Pagination } from 'react-native-snap-carousel';
 const components = [
   {
     name: "공지사항",
-    icon: "notifications-outline",
-    activeIcon: "notifications",
+    icon: require('../../assets/notice1.png'),
+    activeIcon: require('../../assets/notice.png'),
     route: "Notice",
   },
   {
     name: "기부내역",
-    icon: "bookmark-outline",
-    activeIcon: "bookmark",
+    icon: require('../../assets/card.png'),
+    activeIcon: require('../../assets/card.png'),
     route: "Donate",
   },
-  { name: "홈", icon: "home", activeIcon: "home-outline", route: "Home" },
-  {
-    name: "기부하기",
-    icon: "map-outline",
-    activeIcon: "map",
-    route: "KakaoMap",
-  },
+  { 
+    name: "홈", 
+    icon: require('../../assets/home.png'),
+    activeIcon: require('../../assets/home.png'),
+    route: "Home" },
+  
   {
     name: "기부요청",
-    icon: "star-outline",
-    activeIcon: "star",
+    icon: require('../../assets/message.png'),
+    activeIcon: require('../../assets/message.png'),
     route: "GiveReq",
+  },
+  {
+    name: "기부하기",
+    icon: require('../../assets/map1.png'),
+    activeIcon: require('../../assets/map1.png'),
+    route: "KakaoMap",
   },
 ];
 
@@ -220,7 +225,7 @@ const Home = ({ navigation, route }) => {
         <ScrollView
           style={{ width: "95%", height: "95%" }}
           showsVerticalScrollIndicator={true} // 스크롤바 표시
-          contentContainerStyle={{ paddingBottom: 950 }} // 공백 부분
+          contentContainerStyle={{ paddingBottom: 850 }} // 공백 부분
         >
           <View style={styles.fifthOneContainer}>
             <TouchableOpacity
@@ -611,15 +616,22 @@ const Home = ({ navigation, route }) => {
               marginRight: index === components.length - 1 ? 22 : 0,
             }}
           >
-            <Ionicons
-              name={
+            <Image
+              source={
                 activeIndex === index ? component.activeIcon : component.icon
               }
-              size={27}
-              color="black"
-              style={{ textAlign: "center" }}
+              style={{ 
+                width: component.name === "공지사항" ? 32 : component.name === "홈" ? 27 : component.name === "기부요청" ? 38 : component.name === "기부하기" ? 30 : 35, 
+                height: component.name === "공지사항" ? 32 : component.name === "홈" ? 27 : component.name === "기부요청" ? 38 : component.name === "기부하기" ? 30 : 35, 
+                marginTop: component.name === "홈" ? 3 : component.name === "기부내역" ? 0 : component.name === "기부하기" ? 4 : 1, 
+                alignSelf: "center" 
+              }}
             />
-            <Text style={{ textAlign: "center", fontSize: 12 }}>
+            <Text style={{
+              textAlign: "center", 
+              fontSize: 13,
+              marginTop: component.name === "홈" ? 8 : component.name === "기부요청" ? 0 : component.name === "기부하기" ? 7 : 3 
+            }}>
               {component.name}
             </Text>
           </TouchableOpacity>
