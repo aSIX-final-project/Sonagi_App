@@ -26,7 +26,7 @@ const Donatep = ({ navigation, route }) => {
     foodName: "",
     itemValue: "",
   });
-  console.log("여긴가", selectedValue);
+  // console.log("여긴가", selectedValue);
   const [donations, setDonations] = useState([]);
   const [image, setImage] = useState(null);
   const [title, setTitle] = useState("");
@@ -65,20 +65,27 @@ const Donatep = ({ navigation, route }) => {
 
         setdonateInfo(response.data);
         // donations에 adName 및 donatedDate 추가
-        const donationsWithAdNameAndDonatedDate = await Promise.all(
+        const donationsWithAdNameAndFoodTitle = await Promise.all(
           response.data.map(async (donation) => {
             const adName = await getAdName(donation.donatedProvider);
             return { ...donation, adName }; // 기존 donation에 adName 및 donatedDate 추가
           })
         );
 
-        setDonations(donationsWithAdNameAndDonatedDate); // 데이터를 donations state에 저장합니다.
-        console.log(donationsWithAdNameAndDonatedDate);
-        setSelectedValue({
-          adName: donationsWithAdNameAndDonatedDate[0].adName,
-          donatedProvider: donationsWithAdNameAndDonatedDate[0].donatedProvider,
-          donatedDate: donationsWithAdNameAndDonatedDate[0].donatedDate,
-        });
+        setDonations(donationsWithAdNameAndFoodTitle); // 데이터를 donations state에 저장합니다.
+        console.log(donationsWithAdNameAndFoodTitle);
+
+        for (let i = 0; i < donationsWithAdNameAndFoodTitle.length; i++) {
+          if (donationsWithAdNameAndFoodTitle[i].isReviewed === 0) {
+            setSelectedValue({
+              adName: donationsWithAdNameAndFoodTitle[i].adName,
+              donatedProvider:
+                donationsWithAdNameAndFoodTitle[i].donatedProvider,
+              foodName: donationsWithAdNameAndFoodTitle[i].foodTitle,
+            });
+            break;
+          }
+        }
       } catch (error) {
         console.error("Cannot fetch data: ", error);
       }
@@ -144,6 +151,7 @@ const Donatep = ({ navigation, route }) => {
       console.log(new Date());
       console.log(userInfo.adName);
       console.log(responseURL.data);
+      console.log(selectedValue.foodName);
 
       const formData = {
         regionCategory: firstPartOfAddress, // 이 값을 적절하게 설정해 주세요.
@@ -643,7 +651,6 @@ const Donatep = ({ navigation, route }) => {
                   color: "#656565",
                   marginTop: "2%",
                   marginRight: "40%",
-                  position: 'absolute',
                 }}
               >
                 {donation.foodTitle}
@@ -653,8 +660,7 @@ const Donatep = ({ navigation, route }) => {
                   width: 20,
                   height: 20,
                   marginTop: "1.8%",
-                  marginLeft: "80%",
-                  
+                  marginLeft: "25%",
                 }}
                 source={
                   Number(donation.isReviewed) === 1
