@@ -105,8 +105,19 @@ const Donatep = ({ navigation, route }) => {
         name: `profile_${userInfo.id}.jpg`,
       });
 
-      const filename =
-        foodAdName + " " + userInfo.adName + " " + donateInfo[0].donatedDate;
+      for (let i = 0; i < donateInfo.length; i++) {
+        if (donateInfo[i].adName) {
+          const filename =
+            foodAdName +
+            " " +
+            userInfo.adName +
+            " " +
+            selectedValue.foodName +
+            " " +
+            donateInfo[i].donatedDate;
+        }
+      }
+
       console.log(filename);
 
       // 'nameFile' 파라미터 추가

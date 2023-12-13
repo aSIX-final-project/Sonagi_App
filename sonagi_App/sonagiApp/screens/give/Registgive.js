@@ -655,7 +655,7 @@ const RegistGive = ({ navigation, route }) => {
               <Picker
                 selectedValue={selectedPeriod}
                 style={{ height: 50, width: 100 }}
-                onValueRegist={(itemValue) => setSelectedPeriod(itemValue)}
+                onValueChange={(itemValue) => setSelectedPeriod(itemValue)}
               >
                 <Picker.Item label="오전" value="오전" />
                 <Picker.Item label="오후" value="오후" />
@@ -664,7 +664,7 @@ const RegistGive = ({ navigation, route }) => {
               <Picker
                 selectedValue={selectedHour}
                 style={{ height: 50, width: 100 }}
-                onValueRegist={(itemValue) => setSelectedHour(itemValue)}
+                onValueChange={(itemValue) => setSelectedHour(itemValue)}
               >
                 {Array.from({ length: 12 }, (_, i) => i + 1).map((item) => (
                   <Picker.Item
@@ -678,7 +678,7 @@ const RegistGive = ({ navigation, route }) => {
               <Picker
                 selectedValue={selectedMinute}
                 style={{ height: 50, width: 100 }}
-                onValueRegist={(itemValue) => setSelectedMinute(itemValue)}
+                onValueChange={(itemValue) => setSelectedMinute(itemValue)}
               >
                 {Array.from({ length: 6 }, (_, i) => i * 10).map((item) => (
                   <Picker.Item
