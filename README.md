@@ -43,12 +43,3 @@
 <br>
 #### 사용 API
 <img src="https://img.shields.io/badge/ffmpeg-007808?style=for-the-badge&logo=ffmpeg&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/webrtc-333333?style=for-the-badge&logo=webrtc&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/openai-412991?style=for-the-badge&logo=openai&logoColor=white">
-
-
-
-
-
-
-https://youtu.be/96V_vCy1H0w
-
-
